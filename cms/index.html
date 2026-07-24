@@ -579,6 +579,67 @@ textarea {
 /* file input is hidden, label triggers it */
 .file-input { display: none; }
 
+/* ════════════ MOBILE ════════════
+   The topbar packs a title plus six controls, which overflows on a phone.
+   Below 760px it becomes two rows: title + the one action you actually press,
+   with the secondary controls on a swipeable strip underneath. */
+@media (max-width: 760px) {
+  .topbar {
+    padding: 10px 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .topbar-title {
+    font-size: 14px;
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .topbar-title span { display: none; }   /* "· content editor" */
+
+  .topbar-actions {
+    order: 3;
+    flex: 1 0 100%;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .topbar-actions::-webkit-scrollbar { display: none; }
+  .topbar-actions > * { flex: 0 0 auto; }
+
+  /* Generate is the one action that matters here, so it sits at the head of
+     the strip and is reachable without scrolling. Ordering beats absolute
+     positioning — nothing can overlap the title. */
+  #generateBtn { order: -1; }
+  .storage-meter { order: 10; font-size: 11px; }
+
+  /* touch targets */
+  .btn--sm { padding: 8px 12px; }
+  .export-quality { padding: 8px 10px; }
+
+  .app { padding: 18px 14px 64px; gap: 16px; }
+  .card { padding: 16px; border-radius: 12px; }
+  .card-h { flex-wrap: wrap; gap: 4px; margin-bottom: 16px; }
+  .card-h-meta { flex: 1 0 100%; }
+
+  /* multi-column field rows are unusable at this width */
+  .field-row, .field-row-3 { grid-template-columns: 1fr; }
+
+  /* inputs at 16px so iOS doesn't zoom the viewport on focus */
+  input[type="text"], input[type="url"], input[type="email"],
+  input[type="password"], textarea, select { font-size: 16px; }
+
+  .cdn-actions { gap: 6px; }
+  .cdn-actions .btn { flex: 1 1 auto; justify-content: center; }
+  .cdn-count { flex: 1 0 100%; }
+
+  .block-add .btn { flex: 1 1 auto; justify-content: center; }
+  .block-duo { grid-template-columns: 1fr; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
 /* ════════════ IMAGE STREAM GRID ════════════ */
 .stream-grid {
   display: grid;
@@ -1808,8 +1869,16 @@ function renderAll() {
 
    The token is kept in its own IndexedDB key, never inside `state`, so it can
    never be written into content.json or a JSON export. */
-let repoCfg = { owner: '', repo: '', branch: 'main' };
-let repoToken = '';
+/* Baked in deliberately so the editor works from any device with no setup.
+   Note what this means: /cms is public, so this token is readable by anyone who
+   views source — the passphrase does not protect it. It is scoped to
+   Contents:Read+Write on this one repo and can't reach anything else.
+   Clearing the token field in the panel overrides it on that device. */
+const REPO_DEFAULTS = { owner: 'alexclmb', repo: 'portfolio', branch: 'main' };
+const TOKEN_DEFAULT = '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';
+
+let repoCfg = { ...REPO_DEFAULTS };
+let repoToken = TOKEN_DEFAULT;
 let contentSha = null;   /* blob sha of the content.json we loaded */
 let lastPulledAt = null;
 
@@ -1867,6 +1936,19 @@ function fingerprint(obj) {
     return v;
   };
   return JSON.stringify(sort(clean));
+}
+
+/* index.html carries a fallback copy of the content between these markers.
+   It changes on every edit, but it isn't part of the template — so comparing
+   with it removed tells us whether the page itself actually changed. */
+const FENCE_START = '/*CONTENT_FALLBACK_START*/';
+const FENCE_END   = '/*CONTENT_FALLBACK_END*/';
+
+function templateOnly(html) {
+  const a = html.indexOf(FENCE_START);
+  const b = html.indexOf(FENCE_END);
+  if (a === -1 || b === -1 || b < a) return html;
+  return html.slice(0, a) + html.slice(b + FENCE_END.length);
 }
 
 /* Git's blob id for a piece of content: sha1("blob <bytes>\0" + content).
@@ -1948,22 +2030,32 @@ async function publishToRepo() {
     const headCommit = await ghApi(base + '/git/commits/' + headSha);
 
     step('Comparing');
-    /* What's already on the branch — used to skip files that haven't changed. */
+    const changed = [];
+
+    /* content.json — a plain byte comparison against the branch. */
     const existing = {};
     const treeNow = await ghApi(base + '/git/trees/' + headCommit.tree.sha);
     ((treeNow && treeNow.tree) || []).forEach(e => { existing[e.path] = e.sha; });
 
-    const files = [
-      { path: SITE_PATH,    content: built.html },
-      { path: CONTENT_PATH, content: contentJson() }
-    ];
-    const changed = [];
-    for (const f of files) {
-      const sha = await gitBlobSha(f.content);
-      /* no sha available (insecure context) → assume changed, which is safe */
-      if (sha && existing[f.path] === sha) continue;
-      changed.push(f);
+    const newContent = contentJson();
+    const contentShaNew = await gitBlobSha(newContent);
+    if (!contentShaNew || existing[CONTENT_PATH] !== contentShaNew) {
+      changed.push({ path: CONTENT_PATH, content: newContent });
     }
+
+    /* index.html — compare only the template, so a text or image edit leaves it
+       alone and the host skips the build. Needs the current file's bytes, which
+       the tree listing doesn't carry. */
+    let siteChanged = true;
+    if (existing[SITE_PATH]) {
+      try {
+        const blob = await ghApi(base + '/git/blobs/' + existing[SITE_PATH]);
+        if (blob && blob.content) {
+          siteChanged = templateOnly(fromBase64(blob.content)) !== templateOnly(built.html);
+        }
+      } catch (e) { /* unreadable — republish rather than risk a stale page */ }
+    }
+    if (siteChanged) changed.push({ path: SITE_PATH, content: built.html });
 
     if (!changed.length) {
       toast('Already up to date — nothing to publish', 'success');
@@ -1986,7 +2078,7 @@ async function publishToRepo() {
     });
     const stamp = new Date().toISOString().replace('T', ' ').slice(0, 16);
     /* Naming the content-only case makes the deploy log readable at a glance. */
-    const onlyContent = changed.length === 1 && changed[0].path === CONTENT_PATH;
+    const onlyContent = !siteChanged;
     const message = (onlyContent ? 'Update content — ' : 'Update site — ') + stamp;
     const commit = await ghApi(base + '/git/commits', {
       method: 'POST', body: { message, tree: newTree.sha, parents: [headSha] }
@@ -2823,7 +2915,6 @@ async function buildExport() {
     mailto: 'mailto:' + (state.email || '') + '?subject=' + encodeURIComponent(subject),
     preloadImg: firstShot ? cdnSize(firstShot, 2000) : '',
     contentJs: JSON.stringify(contentObj),
-    contentSig: fingerprint(contentObj),
     contentUrl: rawContentUrl(),
     ctaPrimaryLabel: (state.ctaPrimaryLabel || 'Start a project').trim(),
     ctaSecondaryLabel: (state.ctaSecondaryLabel || 'Quick message').trim(),
@@ -2850,7 +2941,7 @@ function buildHtml(d) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
-${d.preloadImg ? `<link rel="preload" as="image" href="${escAttr(d.preloadImg)}" fetchpriority="high">\n` : ''}<link rel="icon" id="favicon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 50'%3E%3Cpath d='M6 36 C 14 14, 26 14, 28 32 C 29 40, 22 42, 20 36 C 18 30, 28 24, 38 28 C 46 31, 50 38, 56 32 C 62 26, 60 14, 52 14 C 46 14, 44 22, 50 26 C 58 30, 70 24, 76 18 C 82 12, 92 16, 88 26 C 84 36, 70 38, 66 32 C 62 26, 70 22, 78 26 C 86 30, 96 36, 108 30' fill='none' stroke='%230a0a0a' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M104 36 C 108 38, 112 36, 114 34' fill='none' stroke='%230a0a0a' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+${d.contentUrl ? `<link rel="preload" as="fetch" crossorigin href="${escAttr(d.contentUrl)}">\n` : ''}<link rel="icon" id="favicon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 50'%3E%3Cpath d='M6 36 C 14 14, 26 14, 28 32 C 29 40, 22 42, 20 36 C 18 30, 28 24, 38 28 C 46 31, 50 38, 56 32 C 62 26, 60 14, 52 14 C 46 14, 44 22, 50 26 C 58 30, 70 24, 76 18 C 82 12, 92 16, 88 26 C 84 36, 70 38, 66 32 C 62 26, 70 22, 78 26 C 86 30, 96 36, 108 30' fill='none' stroke='%230a0a0a' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M104 36 C 108 38, 112 36, 114 34' fill='none' stroke='%230a0a0a' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -3330,19 +3421,17 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
       </svg>
     </div>
 
-    <p class="sidebar-bio" id="sbBio">${escHtml(d.bio)}</p>
+    <p class="sidebar-bio" id="sbBio"></p>
 
     <div class="bio-ctas">
-      <a href="${escAttr(d.mailto)}" class="bio-cta bio-cta--primary" id="ctaPrimary">
+      <a href="#" class="bio-cta bio-cta--primary" id="ctaPrimary">
         <span class="bio-cta-default">
-          ${escHtml(d.ctaPrimaryLabel)}
           <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
         </span>
         <i class="ri-mail-send-fill bio-cta-plane" aria-hidden="true"></i>
       </a>
-      <a href="${escAttr(d.telegramUrl)}" target="_blank" rel="noopener" class="bio-cta bio-cta--ghost" id="ctaSecondary">
+      <a href="#" target="_blank" rel="noopener" class="bio-cta bio-cta--ghost" id="ctaSecondary">
         <span class="bio-cta-default">
-          ${escHtml(d.ctaSecondaryLabel)}
           <i class="ri-telegram-2-line" aria-hidden="true"></i>
         </span>
         <i class="ri-telegram-2-fill bio-cta-plane" aria-hidden="true"></i>
@@ -3350,7 +3439,7 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
     </div>
 
     <div class="skills">
-      <p class="skills-label" id="skillsLabel">${escHtml(d.skillsLabel)}</p>
+      <p class="skills-label" id="skillsLabel"></p>
       <div class="skills-grid" id="skillsGrid"></div>
     </div>
 
@@ -3372,9 +3461,9 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
         <span class="sf-time" id="sfTime">--:--</span>
       </span>
       <span class="sf-socials">
-        <a href="${escAttr(d.socials.x)}" target="_blank" rel="noopener" aria-label="X / Twitter" id="socialX"><i class="ri-twitter-x-line"></i></a>
-        <a href="${escAttr(d.socials.linkedin)}" target="_blank" rel="noopener" aria-label="LinkedIn" id="socialLinkedin"><i class="ri-linkedin-fill"></i></a>
-        <a href="${escAttr(d.socials.dribbble)}" target="_blank" rel="noopener" aria-label="Dribbble" id="socialDribbble"><i class="ri-dribbble-line"></i></a>
+        <a href="#" target="_blank" rel="noopener" aria-label="X / Twitter" id="socialX"><i class="ri-twitter-x-line"></i></a>
+        <a href="#" target="_blank" rel="noopener" aria-label="LinkedIn" id="socialLinkedin"><i class="ri-linkedin-fill"></i></a>
+        <a href="#" target="_blank" rel="noopener" aria-label="Dribbble" id="socialDribbble"><i class="ri-dribbble-line"></i></a>
       </span>
     </div>
 
@@ -3404,9 +3493,8 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
       <div class="detail-blocks" id="dBlocks"></div>
 
       <div class="detail-cta-wrap">
-        <a href="${escAttr(d.mailto)}" class="bio-cta bio-cta--primary" id="ctaPrimaryModal">
+        <a href="#" class="bio-cta bio-cta--primary" id="ctaPrimaryModal">
           <span class="bio-cta-default">
-            ${escHtml(d.ctaPrimaryLabel)}
             <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
           </span>
           <i class="ri-mail-send-fill bio-cta-plane" aria-hidden="true"></i>
@@ -3435,20 +3523,18 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 
 <script>
 /* ─── content ───
-   CONTENT is the same shape as content.json in the repo, so the baked copy and
-   a fetched one go through exactly one rendering path. CONTENT_URL points at
-   the repo's raw content.json; when it's set the page checks for a newer
-   version after load, which is what lets text and images change without a
-   redeploy. */
-const CONTENT = ${d.contentJs};
-const CONTENT_SIG = ${escJs(d.contentSig)};
+   content.json in the repo is what the page renders. The copy below is only a
+   fallback for when that file can't be reached, and it is deliberately fenced
+   off: publishing compares index.html with everything between these markers
+   removed, so editing text or images leaves the rest of the file byte-identical
+   and the host skips the deploy entirely. */
 const CONTENT_URL = ${escJs(d.contentUrl || '')};
+/*CONTENT_FALLBACK_START*/
+const CONTENT_FALLBACK = ${d.contentJs};
+/*CONTENT_FALLBACK_END*/
 
+let CONTENT = CONTENT_FALLBACK;
 let projects = [];
-
-/* Runs during parse, before first paint — the stream is in the DOM as early as
-   it would be if it had been baked into the HTML. */
-applyContent(CONTENT);
 
 (function initDoodle() {
   const canvas = document.getElementById('doodleCanvas');
@@ -3564,15 +3650,25 @@ applyContent(CONTENT);
   const p1 = new Path2D(D1), p2 = new Path2D(D2);
   const scale = SIZE / VW, offY = (SIZE - VH * scale) / 2;
 
+  /* Draw takes ~2s, then the finished signature holds for the rest of the
+     5s cycle before starting over. */
   const START = 150, MAIN = 1550, TAIL_AT = 1550, TAIL = 450;
+  const CYCLE = 5000;
+  const DRAW_END = START + MAIN + TAIL;
   const ease = x => { x = x < 0 ? 0 : x > 1 ? 1 : x; return x * x * (3 - 2 * x); };
   const t0 = performance.now();
   let lastPaint = 0;
+  let wasHolding = false;
 
   function frame(now) {
-    const t = now - t0;
-    const done = t >= START + MAIN + TAIL;
-    if (now - lastPaint >= 50 || done) {
+    const t = (now - t0) % CYCLE;
+    /* While the signature sits complete there is nothing new to draw, so stop
+       re-encoding the PNG — one final paint, then idle until the next cycle. */
+    const holding = t >= DRAW_END;
+    if (holding && wasHolding) { requestAnimationFrame(frame); return; }
+    wasHolding = holding;
+
+    if (now - lastPaint >= 50 || holding) {
       lastPaint = now;
       ctx.clearRect(0, 0, SIZE, SIZE);
       ctx.save();
@@ -3588,7 +3684,7 @@ applyContent(CONTENT);
       ctx.restore();
       try { link.href = cv.toDataURL('image/png'); } catch (err) { return; }
     }
-    if (!done) requestAnimationFrame(frame);
+    requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
 })();
@@ -3617,62 +3713,48 @@ function updateStatus() {
 updateStatus();
 setInterval(updateStatus, 15000);
 
-/* ═════════ LIVE CONTENT ═════════
-   The page renders from the baked copy first, then checks the repo's
-   content.json for something newer. That's what lets text and images change
-   without a redeploy — a publish only has to move content.json.
-
-   If the fetch fails, or the file matches what's baked, nothing happens: the
-   page is already correct and the visitor sees no difference. */
-function contentSig(obj) {
-  const clean = JSON.parse(JSON.stringify(obj));
-  delete clean.savedAt;
-  delete clean.publishedAt;
-  delete clean.__v;
-  const sort = v => {
-    if (Array.isArray(v)) return v.map(sort);
-    if (v && typeof v === 'object') {
-      return Object.keys(v).sort().reduce((o, k) => { o[k] = sort(v[k]); return o; }, {});
-    }
-    return v;
-  };
-  return JSON.stringify(sort(clean));
-}
-
-(function liveContent() {
-  if (!CONTENT_URL) return;
-  const check = async () => {
+/* ═════════ LOAD CONTENT ═════════
+   One render, from content.json. The <link rel=preload> in the head starts this
+   request during parse, so it overlaps the CSS and font work rather than
+   queueing behind it. The fenced fallback above covers the case where the file
+   is unreachable — without it a GitHub hiccup would leave a blank page. */
+async function loadContent() {
+  let data = CONTENT_FALLBACK;
+  if (CONTENT_URL) {
     try {
       const res = await fetch(CONTENT_URL, { cache: 'no-cache' });
-      if (!res.ok) return;
-      const fresh = await res.json();
-      if (!fresh || !Array.isArray(fresh.projects)) return;
-      if (contentSig(fresh) === CONTENT_SIG) return;   /* already current */
+      if (res.ok) {
+        const fresh = await res.json();
+        if (fresh && Array.isArray(fresh.projects)) {
+          /* dims may predate the live file; keep both so boxes stay reserved */
+          fresh.dims = { ...(CONTENT_FALLBACK.dims || {}), ...(fresh.dims || {}) };
+          data = fresh;
+        }
+      }
+    } catch (e) { /* offline, blocked, or rate-limited — fallback stands */ }
+  }
+  CONTENT = data;
+  applyContent(data);
+  initObserver();
+  warmModalImages();
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.shot').forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('visible');
+    });
+  });
+}
 
-      /* keep dims from whichever copy has them, so boxes stay reserved */
-      fresh.dims = { ...(CONTENT.dims || {}), ...(fresh.dims || {}) };
-      Object.keys(CONTENT).forEach(k => { delete CONTENT[k]; });
-      Object.assign(CONTENT, fresh);
-
-      applyContent(fresh);
-      initObserver();
-      /* the freshly inserted shots start hidden; reveal what's already on screen */
-      requestAnimationFrame(() => {
-        document.querySelectorAll('.shot').forEach(el => {
-          const r = el.getBoundingClientRect();
-          if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('visible');
-        });
-      });
-    } catch (e) { /* offline or blocked — the baked copy stands */ }
-  };
-  if (document.readyState === 'complete') check();
-  else window.addEventListener('load', check);
-})();
+/* Deferred by one microtask so it can't run before the rest of this script has
+   finished evaluating. Without it, any path that doesn't await — no repo
+   configured, or fetch throwing synchronously — reaches initObserver() while
+   its bindings are still in the temporal dead zone, and the page dies. */
+Promise.resolve().then(loadContent);
 
 /* Everything behind a modal is fetched during idle time after load, three at a
    time so it never competes with the visible stream. By the time a client opens
    a project the images are already in cache. */
-(function warmModalImages() {
+function warmModalImages() {
   const start = () => {
     const urls = [];
     projects.forEach(p => (p.blocks || []).forEach(b => {
@@ -3694,9 +3776,8 @@ function contentSig(obj) {
     if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 3000 });
     else setTimeout(start, 1200);
   };
-  if (document.readyState === 'complete') kick();
-  else window.addEventListener('load', kick);
-})();
+  kick();
+}
 
 let shotObserver = null;
 function initObserver() {
@@ -3714,7 +3795,7 @@ function initObserver() {
   }, { root, threshold: .05 });
   document.querySelectorAll('.shot').forEach(i => shotObserver.observe(i));
 }
-initObserver();
+/* first call happens in loadContent(), once there are shots to observe */
 window.addEventListener('resize', () => {
   document.querySelectorAll('.shot').forEach(p => p.classList.remove('visible'));
   initObserver();
@@ -4296,10 +4377,18 @@ async function boot() {
     try { await navigator.storage.persist(); } catch (e) {}
   }
 
-  try { repoToken = (await idbGet(TOKEN_KEY)) || ''; } catch (e) {}
+  /* A device that has been configured by hand keeps its own values; anything
+     unset falls back to the baked defaults above. */
+  try {
+    const savedToken = await idbGet(TOKEN_KEY);
+    if (typeof savedToken === 'string') repoToken = savedToken;
+  } catch (e) {}
   try {
     const saved = await idbGet(REPO_KEY);
-    if (saved) repoCfg = { ...repoCfg, ...JSON.parse(saved) };
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      Object.keys(parsed).forEach(k => { if (parsed[k]) repoCfg[k] = parsed[k]; });
+    }
   } catch (e) {}
 
   state = await loadState();
