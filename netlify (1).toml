@@ -1,0 +1,32 @@
+# Static site — nothing to build, serve the repo root as-is.
+[build]
+  publish = "."
+
+# Keep the editor out of search results.
+# robots.txt only asks crawlers not to *fetch* the page; a URL can still get
+# indexed if something links to it. This header is the directive that actually
+# forbids indexing, so it's the one doing the real work.
+[[headers]]
+  for = "/cms"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
+[[headers]]
+  for = "/cms/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+
+# content.json is public either way (the site is public), but there's no reason
+# for it to show up in search results. It also must not be cached hard, or the
+# CMS could pull a stale copy after a publish.
+[[headers]]
+  for = "/content.json"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# index.html must never be cached hard either, or a publish won't show up.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
