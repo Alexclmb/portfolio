@@ -5,10 +5,6 @@
   "ctaPrimaryLabel": "Start a project",
   "ctaSubject": "Project Enquiry",
   "ctaSecondaryLabel": "Quick message",
-  "cdn": {
-    "cloudName": "pc2jrabx",
-    "preset": "portfolio"
-  },
   "dims": {
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851712/xch9sacwhrpw04lb6oi6.webp": "2400x1800",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851713/kkx89vdltv0ojvlgbtkn.webp": "2400x1800",
@@ -240,5 +236,7 @@
       "caption": "SmartSolve",
       "metric": "500k+ users"
     }
-  ]
+  ],
+  "publishedAt": "2026-07-24T20:50:01.383Z",
+  "savedAt": "2026-07-24T20:50:01.383Z"
 }
