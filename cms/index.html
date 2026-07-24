@@ -1869,6 +1869,27 @@ function fingerprint(obj) {
   return JSON.stringify(sort(clean));
 }
 
+/* Git's blob id for a piece of content: sha1("blob <bytes>\0" + content).
+   Lets us tell whether a file really changed without downloading it, so a
+   content-only edit doesn't rewrite index.html and trigger a deploy. */
+async function gitBlobSha(str) {
+  if (!crypto || !crypto.subtle) return null;   /* file:// — not a secure context */
+  const body = new TextEncoder().encode(str);
+  const head = new TextEncoder().encode('blob ' + body.length + '\0');
+  const buf = new Uint8Array(head.length + body.length);
+  buf.set(head, 0); buf.set(body, head.length);
+  const hash = await crypto.subtle.digest('SHA-1', buf);
+  return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* Where the published site reads content.json from. Empty when no repo is set,
+   in which case the export stays entirely self-contained. */
+function rawContentUrl() {
+  if (!repoCfg.owner || !repoCfg.repo) return '';
+  return 'https://raw.githubusercontent.com/' + repoCfg.owner + '/' + repoCfg.repo +
+         '/' + (repoCfg.branch || 'main') + '/' + CONTENT_PATH;
+}
+
 /* Content only — never repo config or credentials. */
 function contentJson() {
   const copy = structuredClone(state);
@@ -1917,13 +1938,33 @@ async function publishToRepo() {
     const headSha = ref.object.sha;
     const headCommit = await ghApi(base + '/git/commits/' + headSha);
 
-    step('Uploading');
+    step('Comparing');
+    /* What's already on the branch — used to skip files that haven't changed. */
+    const existing = {};
+    const treeNow = await ghApi(base + '/git/trees/' + headCommit.tree.sha);
+    ((treeNow && treeNow.tree) || []).forEach(e => { existing[e.path] = e.sha; });
+
     const files = [
       { path: SITE_PATH,    content: built.html },
       { path: CONTENT_PATH, content: contentJson() }
     ];
-    const tree = [];
+    const changed = [];
     for (const f of files) {
+      const sha = await gitBlobSha(f.content);
+      /* no sha available (insecure context) → assume changed, which is safe */
+      if (sha && existing[f.path] === sha) continue;
+      changed.push(f);
+    }
+
+    if (!changed.length) {
+      toast('Already up to date — nothing to publish', 'success');
+      btn.innerHTML = label; btn.disabled = false;
+      return;
+    }
+
+    step('Uploading');
+    const tree = [];
+    for (const f of changed) {
       const blob = await ghApi(base + '/git/blobs', {
         method: 'POST', body: { content: toBase64(f.content), encoding: 'base64' }
       });
@@ -1935,8 +1976,11 @@ async function publishToRepo() {
       method: 'POST', body: { base_tree: headCommit.tree.sha, tree }
     });
     const stamp = new Date().toISOString().replace('T', ' ').slice(0, 16);
+    /* Naming the content-only case makes the deploy log readable at a glance. */
+    const onlyContent = changed.length === 1 && changed[0].path === CONTENT_PATH;
+    const message = (onlyContent ? 'Update content — ' : 'Update site — ') + stamp;
     const commit = await ghApi(base + '/git/commits', {
-      method: 'POST', body: { message: 'Update site — ' + stamp, tree: newTree.sha, parents: [headSha] }
+      method: 'POST', body: { message, tree: newTree.sha, parents: [headSha] }
     });
     await ghApi(base + '/git/refs/heads/' + encodeURIComponent(branch), {
       method: 'PATCH', body: { sha: commit.sha }
@@ -1947,7 +1991,8 @@ async function publishToRepo() {
     state.publishedAt = new Date().toISOString();
     await saveState();
     renderRepoPanel();
-    toast('Published ' + commit.sha.slice(0, 7) + ' · ' + fmtBytes(built.html.length), 'success');
+    toast('Published ' + commit.sha.slice(0, 7) + ' · ' +
+          (onlyContent ? 'content only, no deploy' : 'site rebuilt'), 'success');
   } catch (err) {
     toast('Publish failed: ' + err.message, 'error');
   }
@@ -2744,92 +2789,20 @@ async function buildExport() {
   }
   const out = src => imgMap.get(src) || src;
 
-  /* ─── Build dynamic HTML fragments ─── */
+  /* ─── Content payload ───
+     The page renders itself from this object, and content.json in the repo is
+     the same shape — so the baked copy and a later fetch share one code path
+     and can't drift. */
+  const contentObj = structuredClone(state);
+  if (imgMap.size) {
+    /* export-time compression only applies to still-embedded images */
+    (contentObj.stream || []).forEach(sh => { if (sh.image) sh.image = out(sh.image); });
+    (contentObj.projects || []).forEach(pr => (pr.blocks || []).forEach(bl => {
+      if (bl.image) bl.image = out(bl.image);
+      if (Array.isArray(bl.images)) bl.images = bl.images.map(im => im ? out(im) : im);
+    }));
+  }
 
-  /* Skills grid items */
-  const skillsHtml = (state.skills || []).map(s =>
-    `        <span class="skill"><i class="${escAttr(s.icon)}"></i>${escHtml(s.label)}</span>`
-  ).join('\n');
-
-  /* Carousel — SVG logos only (text wordmarks are skipped as of v6).
-     The track is duplicated downstream for the seamless loop. */
-  const wmHtml = () => state.wordmarks
-    .filter(w => w.logo)
-    .map(w => `        <span class="sb-wm sb-wm--logo"><img src="${escAttr(w.logo)}" alt="${escAttr(w.name || '')}"></span>`)
-    .join('\n');
-
-  /* Image stream — built directly from state.stream. Each shot includes an
-     optional caption banner: parts of the caption are split on ' · ' and
-     joined back with proper separator spans, with the metric appended in
-     the orange highlight color. */
-  const streamHtml = state.stream.map((s, idx) => {
-    if (!s.image) return '';
-    const proj = state.projects[s.projectIdx];
-    const altText = proj ? proj.title : '';
-
-    /* Build caption HTML only if there's actual content to show */
-    let captionHtml = '';
-    const caption = (s.caption || '').trim();
-    const metric = (s.metric || '').trim();
-    if (caption || metric) {
-      const parts = [];
-      if (caption) {
-        /* split on " · " (with spaces) — fall back to whole string if no separator */
-        const segments = caption.split(/\s*·\s*/).filter(Boolean);
-        segments.forEach((seg, idx) => {
-          if (idx > 0) parts.push('<span class="sep">·</span>');
-          parts.push(escHtml(seg));
-        });
-      }
-      if (metric) {
-        if (parts.length > 0) parts.push('<span class="sep">·</span>');
-        parts.push(`<span class="metric">${escHtml(metric)}</span>`);
-      }
-      captionHtml = `\n        <div class="shot-caption">${parts.join('')}</div>`;
-    }
-
-    const wh = dimsOf(s.image);
-    const sizeAttr = wh ? ` width="${wh[0]}" height="${wh[1]}"` : '';
-    /* first shot is the LCP candidate — load it eagerly, lazy-load the rest */
-    const prio = idx === 0
-      ? ' loading="eager" fetchpriority="high" decoding="async"'
-      : ' loading="lazy" decoding="async"';
-    const media = isVideoSrc(s.image)
-      ? `<video src="${escAttr(cdnSize(out(s.image), 1600))}" poster="${escAttr(cdnPoster(s.image, 1600))}"${sizeAttr} muted loop autoplay playsinline preload="metadata" disablepictureinpicture></video>`
-      : `<img src="${escAttr(cdnSize(out(s.image), 2000))}" alt="${escAttr(altText)}"${sizeAttr}${prio}>`;
-    return `      <div class="shot" data-project="${s.projectIdx}">
-        ${media}${captionHtml}
-        <div class="shot-hover"><div class="shot-btn">View more <i class="ri-arrow-right-s-line"></i></div></div>
-      </div>`;
-  }).filter(Boolean).join('\n');
-
-  /* Projects array (used by the modal JS) */
-  const projectsJsArr = state.projects.map((p, i) => {
-    return `  {
-    client: ${escJs(p.client)},
-    title: ${escJs(p.title)},
-    website: ${escJs(p.website || '')},
-    desc1: ${escJs(p.desc1)},
-    desc2: ${escJs(p.desc2)},
-    blocks: [${(p.blocks || []).map(b => {
-      if (b.type === 'text') {
-        if (!(b.heading || '').trim() && !(b.body || '').trim()) return null;
-        return `{ type: 'text', heading: ${escJs(b.heading || '')}, body: ${escJs(b.body || '')} }`;
-      }
-      if (b.type === 'duo') {
-        const imgs = (b.images || []).filter(Boolean);
-        if (!imgs.length) return null;
-        return `{ type: 'duo', images: [${imgs.map(im => escJs(out(im))).join(', ')}], caption: ${escJs(b.caption || '')} }`;
-      }
-      if (!b.image) return null;
-      const wh = dimsOf(b.image);
-      const sz = wh ? `, w: ${wh[0]}, h: ${wh[1]}` : '';
-      return `{ type: 'image', image: ${escJs(out(b.image))}, caption: ${escJs(b.caption || '')}${sz} }`;
-    }).filter(Boolean).join(',\n      ')}]
-  }`;
-  }).join(',\n');
-
-  /* ─── Assemble full file ─── */
   const firstShot = (state.stream.find(s => s.image) || {}).image || '';
   const subject = (state.ctaSubject || 'Project Enquiry').trim();
   const html = buildHtml({
@@ -2838,14 +2811,13 @@ async function buildExport() {
     email: state.email,
     mailto: 'mailto:' + (state.email || '') + '?subject=' + encodeURIComponent(subject),
     preloadImg: firstShot ? cdnSize(firstShot, 2000) : '',
+    contentJs: JSON.stringify(contentObj),
+    contentSig: fingerprint(contentObj),
+    contentUrl: rawContentUrl(),
     ctaPrimaryLabel: (state.ctaPrimaryLabel || 'Start a project').trim(),
     ctaSecondaryLabel: (state.ctaSecondaryLabel || 'Quick message').trim(),
     socials: state.socials,
-    skillsLabel: state.skillsLabel,
-    skillsHtml,
-    wmHtml: wmHtml() + '\n        <!-- duplicate for seamless loop -->\n' + wmHtml(),
-    streamHtml,
-    projectsJsArr
+    skillsLabel: state.skillsLabel
   });
 
   return { html, savedBefore, savedAfter };
@@ -3347,17 +3319,17 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
       </svg>
     </div>
 
-    <p class="sidebar-bio">${escHtml(d.bio)}</p>
+    <p class="sidebar-bio" id="sbBio">${escHtml(d.bio)}</p>
 
     <div class="bio-ctas">
-      <a href="${escAttr(d.mailto)}" class="bio-cta bio-cta--primary">
+      <a href="${escAttr(d.mailto)}" class="bio-cta bio-cta--primary" id="ctaPrimary">
         <span class="bio-cta-default">
           ${escHtml(d.ctaPrimaryLabel)}
           <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
         </span>
         <i class="ri-mail-send-fill bio-cta-plane" aria-hidden="true"></i>
       </a>
-      <a href="${escAttr(d.telegramUrl)}" target="_blank" rel="noopener" class="bio-cta bio-cta--ghost">
+      <a href="${escAttr(d.telegramUrl)}" target="_blank" rel="noopener" class="bio-cta bio-cta--ghost" id="ctaSecondary">
         <span class="bio-cta-default">
           ${escHtml(d.ctaSecondaryLabel)}
           <i class="ri-telegram-2-line" aria-hidden="true"></i>
@@ -3367,16 +3339,12 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
     </div>
 
     <div class="skills">
-      <p class="skills-label">${escHtml(d.skillsLabel)}</p>
-      <div class="skills-grid">
-${d.skillsHtml}
-      </div>
+      <p class="skills-label" id="skillsLabel">${escHtml(d.skillsLabel)}</p>
+      <div class="skills-grid" id="skillsGrid"></div>
     </div>
 
     <div class="sb-carousel">
-      <div class="sb-carousel-track">
-${d.wmHtml}
-      </div>
+      <div class="sb-carousel-track" id="wmTrack"></div>
     </div>
 
     <div class="doodle-wrap" id="doodleWrap">
@@ -3393,18 +3361,16 @@ ${d.wmHtml}
         <span class="sf-time" id="sfTime">--:--</span>
       </span>
       <span class="sf-socials">
-        <a href="${escAttr(d.socials.x)}" target="_blank" rel="noopener" aria-label="X / Twitter"><i class="ri-twitter-x-line"></i></a>
-        <a href="${escAttr(d.socials.linkedin)}" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="ri-linkedin-fill"></i></a>
-        <a href="${escAttr(d.socials.dribbble)}" target="_blank" rel="noopener" aria-label="Dribbble"><i class="ri-dribbble-line"></i></a>
+        <a href="${escAttr(d.socials.x)}" target="_blank" rel="noopener" aria-label="X / Twitter" id="socialX"><i class="ri-twitter-x-line"></i></a>
+        <a href="${escAttr(d.socials.linkedin)}" target="_blank" rel="noopener" aria-label="LinkedIn" id="socialLinkedin"><i class="ri-linkedin-fill"></i></a>
+        <a href="${escAttr(d.socials.dribbble)}" target="_blank" rel="noopener" aria-label="Dribbble" id="socialDribbble"><i class="ri-dribbble-line"></i></a>
       </span>
     </div>
 
   </aside>
 
   <main class="main" id="mainScroll">
-    <div class="stream" id="stream">
-${d.streamHtml}
-    </div>
+    <div class="stream" id="stream"></div>
   </main>
 
 </div>
@@ -3427,7 +3393,7 @@ ${d.streamHtml}
       <div class="detail-blocks" id="dBlocks"></div>
 
       <div class="detail-cta-wrap">
-        <a href="${escAttr(d.mailto)}" class="bio-cta bio-cta--primary">
+        <a href="${escAttr(d.mailto)}" class="bio-cta bio-cta--primary" id="ctaPrimaryModal">
           <span class="bio-cta-default">
             ${escHtml(d.ctaPrimaryLabel)}
             <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
@@ -3457,9 +3423,21 @@ ${d.streamHtml}
 </div>
 
 <script>
-const projects = [
-${d.projectsJsArr}
-];
+/* ─── content ───
+   CONTENT is the same shape as content.json in the repo, so the baked copy and
+   a fetched one go through exactly one rendering path. CONTENT_URL points at
+   the repo's raw content.json; when it's set the page checks for a newer
+   version after load, which is what lets text and images change without a
+   redeploy. */
+const CONTENT = ${d.contentJs};
+const CONTENT_SIG = ${escJs(d.contentSig)};
+const CONTENT_URL = ${escJs(d.contentUrl || '')};
+
+let projects = [];
+
+/* Runs during parse, before first paint — the stream is in the DOM as early as
+   it would be if it had been baked into the HTML. */
+applyContent(CONTENT);
 
 (function initDoodle() {
   const canvas = document.getElementById('doodleCanvas');
@@ -3467,6 +3445,10 @@ ${d.projectsJsArr}
   const clear  = document.getElementById('doodleClear');
   if (!canvas || !wrap) return;
   const ctx = canvas.getContext('2d');
+  /* Some privacy settings and extensions make this return null. Without this
+     guard the throw would abort the whole script and take the modal, the
+     lightbox and the live-content check down with it. */
+  if (!ctx) return;
   let drawing = false, last = null, hasStrokes = false;
   /* Faint dot-grid placeholder — like a designer's notebook page. */
   function drawPlaceholder() {
@@ -3624,6 +3606,58 @@ function updateStatus() {
 updateStatus();
 setInterval(updateStatus, 15000);
 
+/* ═════════ LIVE CONTENT ═════════
+   The page renders from the baked copy first, then checks the repo's
+   content.json for something newer. That's what lets text and images change
+   without a redeploy — a publish only has to move content.json.
+
+   If the fetch fails, or the file matches what's baked, nothing happens: the
+   page is already correct and the visitor sees no difference. */
+function contentSig(obj) {
+  const clean = JSON.parse(JSON.stringify(obj));
+  delete clean.savedAt;
+  delete clean.publishedAt;
+  delete clean.__v;
+  const sort = v => {
+    if (Array.isArray(v)) return v.map(sort);
+    if (v && typeof v === 'object') {
+      return Object.keys(v).sort().reduce((o, k) => { o[k] = sort(v[k]); return o; }, {});
+    }
+    return v;
+  };
+  return JSON.stringify(sort(clean));
+}
+
+(function liveContent() {
+  if (!CONTENT_URL) return;
+  const check = async () => {
+    try {
+      const res = await fetch(CONTENT_URL, { cache: 'no-cache' });
+      if (!res.ok) return;
+      const fresh = await res.json();
+      if (!fresh || !Array.isArray(fresh.projects)) return;
+      if (contentSig(fresh) === CONTENT_SIG) return;   /* already current */
+
+      /* keep dims from whichever copy has them, so boxes stay reserved */
+      fresh.dims = { ...(CONTENT.dims || {}), ...(fresh.dims || {}) };
+      Object.keys(CONTENT).forEach(k => { delete CONTENT[k]; });
+      Object.assign(CONTENT, fresh);
+
+      applyContent(fresh);
+      initObserver();
+      /* the freshly inserted shots start hidden; reveal what's already on screen */
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.shot').forEach(el => {
+          const r = el.getBoundingClientRect();
+          if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('visible');
+        });
+      });
+    } catch (e) { /* offline or blocked — the baked copy stands */ }
+  };
+  if (document.readyState === 'complete') check();
+  else window.addEventListener('load', check);
+})();
+
 /* Everything behind a modal is fetched during idle time after load, three at a
    time so it never competes with the visible stream. By the time a client opens
    a project the images are already in cache. */
@@ -3653,13 +3687,21 @@ setInterval(updateStatus, 15000);
   else window.addEventListener('load', kick);
 })();
 
+let shotObserver = null;
 function initObserver() {
+  /* Without IntersectionObserver the reveal-on-scroll class never lands and the
+     shots would stay invisible — so show them all rather than fail closed. */
+  if (typeof IntersectionObserver === 'undefined') {
+    document.querySelectorAll('.shot').forEach(i => i.classList.add('visible'));
+    return;
+  }
   const isMobile = window.innerWidth <= 900;
   const root = isMobile ? null : document.getElementById('mainScroll');
-  const obs = new IntersectionObserver(entries => {
+  if (shotObserver) shotObserver.disconnect();
+  shotObserver = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { root, threshold: .05 });
-  document.querySelectorAll('.shot').forEach(i => obs.observe(i));
+  document.querySelectorAll('.shot').forEach(i => shotObserver.observe(i));
 }
 initObserver();
 window.addEventListener('resize', () => {
@@ -3716,6 +3758,130 @@ function cdnAt(u, w) {
   if (i === -1) return u;
   const cut = i + marker.length;
   return u.slice(0, cut) + 'f_auto,q_auto,c_limit,w_' + w + '/' + u.slice(cut);
+}
+
+/* ═════════ RENDER FROM CONTENT ═════════ */
+function dimsOf(url) {
+  const v = (CONTENT.dims || {})[url];
+  if (!v) return null;
+  const [w, h] = String(v).split('x').map(Number);
+  return (w && h) ? [w, h] : null;
+}
+
+function renderSkills(c) {
+  document.getElementById('skillsGrid').innerHTML = (c.skills || [])
+    .map(sk => '<span class="skill"><i class="' + esc(sk.icon) + '"></i>' + esc(sk.label) + '</span>')
+    .join('');
+}
+
+function renderWordmarks(c) {
+  const one = (c.wordmarks || [])
+    .filter(w => w.logo)
+    .map(w => '<span class="sb-wm sb-wm--logo"><img src="' + esc(w.logo) + '" alt="' + esc(w.name || '') + '"></span>')
+    .join('');
+  /* duplicated so the marquee can loop seamlessly */
+  document.getElementById('wmTrack').innerHTML = one + one;
+}
+
+function captionHtml(sh) {
+  const caption = (sh.caption || '').trim();
+  const metric  = (sh.metric  || '').trim();
+  if (!caption && !metric) return '';
+  const parts = [];
+  if (caption) {
+    caption.split(/\s*·\s*/).filter(Boolean).forEach((seg, i) => {
+      if (i > 0) parts.push('<span class="sep">·</span>');
+      parts.push(esc(seg));
+    });
+  }
+  if (metric) {
+    if (parts.length) parts.push('<span class="sep">·</span>');
+    parts.push('<span class="metric">' + esc(metric) + '</span>');
+  }
+  return '<div class="shot-caption">' + parts.join('') + '</div>';
+}
+
+function renderStream(c) {
+  const html = (c.stream || []).map((sh, idx) => {
+    if (!sh.image) return '';
+    const proj = (c.projects || [])[sh.projectIdx];
+    const alt = proj ? proj.title : '';
+    const wh = dimsOf(sh.image);
+    const size = wh ? ' width="' + wh[0] + '" height="' + wh[1] + '"' : '';
+    /* first shot is the LCP candidate — everything after it can wait */
+    const prio = idx === 0
+      ? ' loading="eager" fetchpriority="high" decoding="async"'
+      : ' loading="lazy" decoding="async"';
+    const media = isVideoSrc(sh.image)
+      ? '<video src="' + cdnAt(sh.image, 1600) + '" poster="' + cdnPoster(sh.image, 1600) + '"' + size +
+        ' muted loop autoplay playsinline preload="metadata" disablepictureinpicture></video>'
+      : '<img src="' + cdnAt(sh.image, 2000) + '" alt="' + esc(alt) + '"' + size + prio + '>';
+    return '<div class="shot" data-project="' + (sh.projectIdx || 0) + '">' + media + captionHtml(sh) +
+      '<div class="shot-hover"><div class="shot-btn">View more <i class="ri-arrow-right-s-line"></i></div></div></div>';
+  }).filter(Boolean).join('');
+  document.getElementById('stream').innerHTML = html;
+}
+
+function projectsFrom(c) {
+  return (c.projects || []).map(p => ({
+    client: p.client || '',
+    title: p.title || '',
+    website: p.website || '',
+    desc1: p.desc1 || '',
+    desc2: p.desc2 || '',
+    blocks: (p.blocks || []).map(b => {
+      if (b.type === 'text') {
+        if (!(b.heading || '').trim() && !(b.body || '').trim()) return null;
+        return { type: 'text', heading: b.heading || '', body: b.body || '' };
+      }
+      if (b.type === 'duo') {
+        const imgs = (b.images || []).filter(Boolean);
+        return imgs.length ? { type: 'duo', images: imgs, caption: b.caption || '' } : null;
+      }
+      if (!b.image) return null;
+      const wh = dimsOf(b.image);
+      const o = { type: 'image', image: b.image, caption: b.caption || '' };
+      if (wh) { o.w = wh[0]; o.h = wh[1]; }
+      return o;
+    }).filter(Boolean)
+  }));
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el && typeof value === 'string') el.textContent = value;
+}
+function setHref(id, value) {
+  const el = document.getElementById(id);
+  if (el && typeof value === 'string') el.href = value;
+}
+function setCtaLabel(id, label) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const span = el.querySelector('.bio-cta-default');
+  if (span && span.firstChild) span.firstChild.nodeValue = ' ' + label + ' ';
+}
+
+function applyContent(c) {
+  const subject = (c.ctaSubject || 'Project Enquiry').trim();
+  const mailto = 'mailto:' + (c.email || '') + '?subject=' + encodeURIComponent(subject);
+
+  setText('sbBio', c.bio);
+  setText('skillsLabel', c.skillsLabel);
+  setHref('ctaPrimary', mailto);
+  setHref('ctaPrimaryModal', mailto);
+  setHref('ctaSecondary', c.telegramUrl);
+  setCtaLabel('ctaPrimary', (c.ctaPrimaryLabel || 'Start a project').trim());
+  setCtaLabel('ctaPrimaryModal', (c.ctaPrimaryLabel || 'Start a project').trim());
+  setCtaLabel('ctaSecondary', (c.ctaSecondaryLabel || 'Quick message').trim());
+  setHref('socialX', (c.socials || {}).x);
+  setHref('socialLinkedin', (c.socials || {}).linkedin);
+  setHref('socialDribbble', (c.socials || {}).dribbble);
+
+  projects = projectsFrom(c);
+  renderSkills(c);
+  renderWordmarks(c);
+  renderStream(c);
 }
 
 function isVideoSrc(u) {
@@ -3816,8 +3982,9 @@ function closeOverlay() {
   unlockScroll();
 }
 
-document.querySelectorAll('.shot').forEach(el => {
-  el.addEventListener('click', () => openProject(+el.dataset.project));
+document.getElementById('stream').addEventListener('click', e => {
+  const shot = e.target.closest('.shot');
+  if (shot) openProject(+shot.dataset.project);
 });
 closeBtn.addEventListener('click', closeOverlay);
 backdrop.addEventListener('click', closeOverlay);

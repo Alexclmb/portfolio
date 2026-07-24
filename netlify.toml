@@ -2,6 +2,14 @@
 [build]
   publish = "."
 
+  # This is the rule that stops content edits from costing a deploy.
+  # Netlify runs it before building: exit 0 cancels the build, non-zero proceeds.
+  # git diff --quiet exits 0 when nothing outside content.json changed — i.e. a
+  # content-only publish is skipped, while a new index.html still deploys.
+  # If it errors (first build, no parent commit) it exits non-zero and builds,
+  # which is the safe direction.
+  ignore = "git diff --quiet HEAD^ HEAD -- . ':(exclude)content.json'"
+
 # Keep the editor out of search results.
 # robots.txt only asks crawlers not to *fetch* the page; a URL can still get
 # indexed if something links to it. This header is the directive that actually
