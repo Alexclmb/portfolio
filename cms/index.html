@@ -1890,11 +1890,20 @@ function rawContentUrl() {
          '/' + (repoCfg.branch || 'main') + '/' + CONTENT_PATH;
 }
 
-/* Content only — never repo config or credentials. */
+/* Everything that is NOT page content and must never reach a public file.
+   index.html and content.json are both world-readable, so anything that grants
+   access to something — the Cloudinary upload preset above all — is stripped
+   here rather than at each call site. */
+const PRIVATE_KEYS = ['cdn', 'gh', 'repo', 'token', '__v'];
+
+function publicContent(src) {
+  const copy = structuredClone(src || state);
+  PRIVATE_KEYS.forEach(k => { delete copy[k]; });
+  return copy;
+}
+
 function contentJson() {
-  const copy = structuredClone(state);
-  delete copy.__v;
-  return JSON.stringify(copy, null, 2);
+  return JSON.stringify(publicContent(), null, 2);
 }
 
 async function pullContent(opts) {
@@ -2063,7 +2072,9 @@ function renderRepoPanel() {
       const remote = await pullContent();
       if (!remote) return;
       if (!confirm('Replace what you have open with content.json from the repo?')) return;
+      const keepCdn = state.cdn;
       state = normalizeState(remote);
+      if (keepCdn && keepCdn.cloudName) state.cdn = keepCdn;
       await saveState();
       renderAll();
       toast('Loaded from repo', 'success');
@@ -2793,7 +2804,7 @@ async function buildExport() {
      The page renders itself from this object, and content.json in the repo is
      the same shape — so the baked copy and a later fetch share one code path
      and can't drift. */
-  const contentObj = structuredClone(state);
+  const contentObj = publicContent();
   if (imgMap.size) {
     /* export-time compression only applies to still-embedded images */
     (contentObj.stream || []).forEach(sh => { if (sh.image) sh.image = out(sh.image); });
@@ -4313,7 +4324,9 @@ async function boot() {
         } else if (localTime > remoteTime) {
           toast('You have unpublished local edits — Publish to push them');
         } else {
+          const keepCdn = state.cdn;
           state = incoming;
+          if (keepCdn && keepCdn.cloudName) state.cdn = keepCdn;
           await saveState();
           renderAll();
           toast('Loaded content.json from the repo', 'success');
