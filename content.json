@@ -25,7 +25,8 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851722/spxgwwcifhblyhiayvnc.webp": "2400x1800",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851723/r8moqolud0x1d2dhbk6v.webp": "2400x1800",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851724/aralr5ydduq0dcou5tfd.webp": "2400x1800",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851724/tnfk9wpshriigubwklxn.webp": "2400x1800"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851724/tnfk9wpshriigubwklxn.webp": "2400x1800",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1784932907/hyq3gg9oazqlhx72caf3.mp4": "1404x658"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -172,6 +173,11 @@
           "type": "image",
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851721/encmnlrkpseo3zadtuir.webp",
           "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1784932907/hyq3gg9oazqlhx72caf3.mp4",
+          "caption": ""
         }
       ]
     },
@@ -237,6 +243,6 @@
       "metric": "500k+ users"
     }
   ],
-  "publishedAt": "2026-07-24T22:01:13.168Z",
-  "savedAt": "2026-07-24T22:39:37.077Z"
+  "publishedAt": "2026-07-24T22:39:43.922Z",
+  "savedAt": "2026-07-24T22:41:48.034Z"
 }
