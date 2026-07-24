@@ -221,19 +221,19 @@
     {
       "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851712/xch9sacwhrpw04lb6oi6.webp",
       "projectIdx": 3,
-      "caption": "Vallum · Product & Consulting",
+      "caption": "Vallum",
       "metric": "92% satisfaction score"
     },
     {
       "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851713/rwby2xa23thy1keahezt.webp",
       "projectIdx": 2,
-      "caption": "Raena AI · Product & Consulting",
+      "caption": "Raena AI",
       "metric": "0 → 1M+ users"
     },
     {
       "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851713/kkx89vdltv0ojvlgbtkn.webp",
       "projectIdx": 1,
-      "caption": "Kodai · Product",
+      "caption": "Kodai ",
       "metric": "200k+ users"
     },
     {
@@ -243,6 +243,6 @@
       "metric": "500k+ users"
     }
   ],
-  "publishedAt": "2026-07-24T22:39:43.922Z",
-  "savedAt": "2026-07-24T22:41:48.034Z"
+  "publishedAt": "2026-07-24T22:41:58.473Z",
+  "savedAt": "2026-07-24T22:45:09.553Z"
 }
