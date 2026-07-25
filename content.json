@@ -53,7 +53,8 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015618/kir1x0lyxybrwfyspiya.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/video/upload/v1785015938/bvsdtrd78sxro4wwlloh.mp4": "1920x1080",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785017506/htzsfjkhxsx6jgynuy2x.png": "3200x2400",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019455/tfphc8lbfbtzcbn0rkjp.png": "3200x2400"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019455/tfphc8lbfbtzcbn0rkjp.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019541/nwf7ayedlhgbltjhnqep.png": "3446x1766"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -119,7 +120,7 @@
       "name": "ItsCuzzo",
       "handle": "@ItsCuzzo",
       "avatar": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019455/tfphc8lbfbtzcbn0rkjp.png",
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019541/nwf7ayedlhgbltjhnqep.png"
     },
     {
       "quote": "The design looks so nice after everything has been put together — probably the cleanest designed site I've seen so far.",
@@ -432,6 +433,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-07-25T22:42:37.619Z",
-  "savedAt": "2026-07-25T22:44:16.895Z"
+  "publishedAt": "2026-07-25T22:44:29.086Z",
+  "savedAt": "2026-07-25T22:45:42.177Z"
 }
