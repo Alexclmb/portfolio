@@ -44,7 +44,13 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014802/ucwhdfpnukis1nc5jbyi.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014820/jkgqbeofmzwrs4m6bm5w.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014843/zyxog0ix6b0pzvhulln3.png": "3200x2400",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014877/qbdkmfokoimyjgto1hws.png": "3200x2400"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014877/qbdkmfokoimyjgto1hws.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015426/ybb4l81pibwnhvbh6bcw.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015601/nxgw5swr3kas58fsnhyu.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015605/zcjdjtlgwdjn726mo8ee.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015607/ykunpjhf5egnahpcnyzc.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015609/jmujrykimopdtod9ewts.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015618/kir1x0lyxybrwfyspiya.png": "3200x2400"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -253,6 +259,11 @@
         },
         {
           "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015426/ybb4l81pibwnhvbh6bcw.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014798/v88noww02g5yyvgrabbu.png",
           "caption": ""
         },
@@ -264,6 +275,35 @@
         {
           "type": "image",
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014802/ucwhdfpnukis1nc5jbyi.png",
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "title": "Emaily",
+      "client": "Emaily",
+      "website": "",
+      "desc1": "",
+      "desc2": "",
+      "blocks": [
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015601/nxgw5swr3kas58fsnhyu.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015605/zcjdjtlgwdjn726mo8ee.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015607/ykunpjhf5egnahpcnyzc.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015609/jmujrykimopdtod9ewts.png",
           "caption": ""
         }
       ]
@@ -299,8 +339,14 @@
       "projectIdx": 4,
       "caption": "Bau Match",
       "metric": "+60% MRR"
+    },
+    {
+      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015618/kir1x0lyxybrwfyspiya.png",
+      "projectIdx": 5,
+      "caption": "Emaily",
+      "metric": "+80% MRR"
     }
   ],
-  "publishedAt": "2026-07-25T21:23:02.152Z",
-  "savedAt": "2026-07-25T21:28:06.533Z"
+  "publishedAt": "2026-07-25T21:28:23.703Z",
+  "savedAt": "2026-07-25T21:41:08.864Z"
 }
