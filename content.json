@@ -55,7 +55,16 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785017506/htzsfjkhxsx6jgynuy2x.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019455/tfphc8lbfbtzcbn0rkjp.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019541/nwf7ayedlhgbltjhnqep.png": "3446x1766",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019615/pdwuwly8yfpsuaprcfwp.png": "3446x1766"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019615/pdwuwly8yfpsuaprcfwp.png": "3446x1766",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785020847/y9o1kpwan8paue8gv97f.png": "1200x244",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785020967/lxaugvljbrnjfwvpsg4d.png": "1818x154",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021010/pc7fzo67kjxnt0dsfu1c.png": "1750x150",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021159/aaomilpieixoctnztkpq.png": "1138x194",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021208/bqbds3uerrenlpkw1pig.png": "1064x108",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021270/sqy8bakta920xutzj0na.png": "1074x136",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021294/npg14wkbnsl428wippba.png": "624x118",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021338/tawbpam5id4k6bt7l3ck.png": "994x114",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021377/tjyznybdb1g44tap0tol.png": "1832x240"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -117,67 +126,67 @@
   ],
   "testimonials": [
     {
-      "quote": "The design looks so nice after everything has been put together — probably the cleanest designed site I've seen so far.",
-      "name": "Ganz",
-      "handle": "Developer",
+      "quote": "Honestly can't thank you enough.\nThe turnaround time for this project was so quick and the quality was so high.\nI really appreciate it.",
+      "name": "Cuzzy",
+      "handle": "Founder of Emaily",
       "avatar": null,
-      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019615/pdwuwly8yfpsuaprcfwp.png"
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785020847/y9o1kpwan8paue8gv97f.png"
+    },
+    {
+      "quote": "The design looks so nice after everything has been put together, probably the cleanest designed site I've seen so far.",
+      "name": "Ganz",
+      "handle": "CEO of Bau Match",
+      "avatar": null,
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785020967/lxaugvljbrnjfwvpsg4d.png"
     },
     {
       "quote": "You guys continuously amaze me with the creativity in these. I love the way the cities and the dots fade in.",
       "name": "Starry",
-      "handle": "@Starry",
+      "handle": "Founder",
       "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021010/pc7fzo67kjxnt0dsfu1c.png"
     },
     {
-      "quote": "Very different and I love it. I love the built-in captcha solver as part of the UI as well. Extremely well done.",
-      "name": "Pizzathehut",
-      "handle": "@notbzhou",
+      "quote": "This looks awesome, perfect. You are really talented. I can only thank you for these super fast returns, your work is awesome.",
+      "name": "Moritz",
+      "handle": "Founder",
       "avatar": null,
-      "proof": null
-    },
-    {
-      "quote": "This looks awesome, perfect. You are really talented. I can only thank you for these super fast returns — your work is awesome.",
-      "name": "moritz",
-      "handle": "@moritz",
-      "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021159/aaomilpieixoctnztkpq.png"
     },
     {
       "quote": "Very professional and quick to work with, top quality results as well.",
       "name": "Nick",
-      "handle": "@NotFungableNick",
+      "handle": "Founder",
       "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021208/bqbds3uerrenlpkw1pig.png"
     },
     {
       "quote": "11/10. A very cool dude who surprises me every time when we work together.",
       "name": "CookLab",
       "handle": "@CookLabIO",
       "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021270/sqy8bakta920xutzj0na.png"
     },
     {
       "quote": "Creative, fast & professional.",
       "name": "sevnth",
       "handle": "@txorigin",
       "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021294/npg14wkbnsl428wippba.png"
     },
     {
       "quote": "Thank you again for the professionalism. The website is live!",
       "name": "PIATEK9",
       "handle": "p9solutions.it",
       "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021377/tjyznybdb1g44tap0tol.png"
     },
     {
       "quote": "Really an awesome job you did Alex on the new website.",
       "name": "Atoms",
       "handle": "@Atoms",
       "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021338/tawbpam5id4k6bt7l3ck.png"
     }
   ],
   "projects": [
@@ -427,6 +436,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-07-25T22:47:08.728Z",
-  "savedAt": "2026-07-25T22:47:08.728Z"
+  "publishedAt": "2026-07-25T22:51:26.287Z",
+  "savedAt": "2026-07-25T23:16:17.756Z"
 }
