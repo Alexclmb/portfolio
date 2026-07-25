@@ -154,7 +154,6 @@ textarea {
 .btn--danger { color: var(--danger); background: transparent; border-color: transparent; padding: 6px 10px; }
 .btn--danger:hover { background: #fee2e2; color: var(--danger); }
 .btn--sm { font-size: 12px; padding: 6px 12px; }
-.export-quality { width: auto; font-size: 12px; padding: 6px 10px; border-radius: 7px; }
 .btn i { font-size: 15px; line-height: 1; }
 
 /* ════════════ UPLOAD ZONES ════════════ */
@@ -579,6 +578,51 @@ textarea {
 /* file input is hidden, label triggers it */
 .file-input { display: none; }
 
+/* ── preview ──
+   An iframe rather than a new tab: no popup blocker, works on a phone, and the
+   width toggle makes it a layout check rather than just a look. */
+.preview-overlay {
+  position: fixed; inset: 0; z-index: 400;
+  display: flex; flex-direction: column;
+  background: #f4f4f5;
+}
+.preview-overlay[hidden] { display: none; }
+.preview-bar {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.preview-title { font-size: 13px; font-weight: 600; color: var(--ink); }
+.preview-title span { font-weight: 400; color: var(--ink-mid); }
+.preview-widths {
+  display: flex; gap: 2px; margin-left: auto;
+  background: #f0f0f0; border-radius: 8px; padding: 2px;
+}
+.preview-w {
+  border: none; background: transparent; cursor: pointer;
+  font-family: var(--fi); font-size: 12px; color: var(--ink-mid);
+  padding: 6px 12px; border-radius: 6px; transition: all .15s ease;
+}
+.preview-w:hover { color: var(--ink); }
+.preview-w.is-on { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.preview-stage {
+  flex: 1 1 auto; min-height: 0; overflow: auto;
+  display: flex; justify-content: center; align-items: flex-start;
+  padding: 18px;
+}
+#previewFrame {
+  width: 100%; height: 100%; border: 0; background: #fff;
+  border-radius: 10px; box-shadow: 0 6px 30px rgba(0,0,0,.12);
+  transition: width .28s cubic-bezier(.22,.61,.36,1);
+}
+@media (max-width: 760px) {
+  .preview-bar { flex-wrap: wrap; gap: 8px; padding: 8px 10px; }
+  .preview-title span { display: none; }
+  .preview-widths { margin-left: 0; order: 3; flex: 1 0 100%; justify-content: space-between; }
+  .preview-w { flex: 1; padding: 7px 4px; }
+  .preview-stage { padding: 10px; }
+}
+
 /* ════════════ MOBILE ════════════
    The topbar packs a title plus six controls, which overflows on a phone.
    Below 760px it becomes two rows: title + the one action you actually press,
@@ -612,12 +656,11 @@ textarea {
   /* Generate is the one action that matters here, so it sits at the head of
      the strip and is reachable without scrolling. Ordering beats absolute
      positioning — nothing can overlap the title. */
-  #generateBtn { order: -1; }
+  #topPublishBtn { order: -1; }
   .storage-meter { order: 10; font-size: 11px; }
 
   /* touch targets */
   .btn--sm { padding: 8px 12px; }
-  .export-quality { padding: 8px 10px; }
 
   .app { padding: 18px 14px 64px; gap: 16px; }
   .card { padding: 16px; border-radius: 12px; }
@@ -829,14 +872,11 @@ textarea {
     <button class="btn btn--ghost btn--sm" id="resetBtn" title="Reset all data to defaults">
       <i class="ri-restart-line"></i> Reset
     </button>
-    <select id="exportQuality" class="export-quality" title="Images are resized + converted to WebP at export. Your originals stay untouched.">
-      <option value="high">Export: High · 2560px</option>
-      <option value="balanced" selected>Export: Balanced · 1920px</option>
-      <option value="light">Export: Light · 1440px</option>
-      <option value="off">Export: Originals (no compression)</option>
-    </select>
-    <button class="btn btn--primary btn--sm" id="generateBtn">
-      <i class="ri-download-line"></i> Generate index.html
+    <button class="btn btn--ghost btn--sm" id="previewBtn">
+      <i class="ri-eye-line"></i> Preview
+    </button>
+    <button class="btn btn--primary btn--sm" id="topPublishBtn">
+      <i class="ri-rocket-line"></i> Publish
     </button>
   </div>
 </div>
@@ -941,6 +981,9 @@ textarea {
       <button class="btn btn--ghost btn--sm" id="repoTestBtn"><i class="ri-plug-line"></i> Test access</button>
       <button class="btn btn--ghost btn--sm" id="repoPullBtn"><i class="ri-download-cloud-2-line"></i> Load from repo</button>
       <button class="btn btn--primary btn--sm" id="repoPublishBtn"><i class="ri-rocket-line"></i> Publish</button>
+      <button class="btn btn--ghost btn--sm" id="generateBtn" title="Only needed if publishing fails and you want to upload the file by hand">
+        <i class="ri-download-line"></i> Download index.html
+      </button>
       <span class="cdn-count" id="repoLast"></span>
     </div>
   </div>
@@ -1040,6 +1083,24 @@ textarea {
 </div>
 
 </div><!-- /#app -->
+
+<!-- PREVIEW -->
+<div class="preview-overlay" id="previewOverlay" hidden>
+  <div class="preview-bar">
+    <span class="preview-title">Preview <span id="previewNote">· unpublished, from this editor</span></span>
+    <div class="preview-widths" role="group" aria-label="Preview width">
+      <button class="preview-w is-on" data-w="full">Desktop</button>
+      <button class="preview-w" data-w="1024">Laptop</button>
+      <button class="preview-w" data-w="834">Tablet</button>
+      <button class="preview-w" data-w="390">Phone</button>
+    </div>
+    <button class="btn btn--ghost btn--sm" id="previewReload"><i class="ri-refresh-line"></i> Reload</button>
+    <button class="btn btn--ghost btn--sm" id="previewClose"><i class="ri-close-line"></i> Close</button>
+  </div>
+  <div class="preview-stage" id="previewStage">
+    <iframe id="previewFrame" title="Portfolio preview"></iframe>
+  </div>
+</div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
@@ -1342,6 +1403,7 @@ const DEFAULTS = {
     }
   ]
 };
+
 
 /* ── State ── */
 let state = structuredClone(DEFAULTS); /* replaced by loadState() during boot */
@@ -1833,7 +1895,10 @@ function renderWordmarks() {
       try {
         const text = await file.text();
         const cleaned = text.replace(/<\?xml[^>]*\?>/, '').trim();
-        state.wordmarks[idx].logo = 'data:image/svg+xml;utf8,' + encodeURIComponent(cleaned);
+        const inline = 'data:image/svg+xml;utf8,' + encodeURIComponent(cleaned);
+        state.wordmarks[idx].logo = cdnReady()
+          ? await uploadToCdn(new File([cleaned], 'wordmark.svg', { type: 'image/svg+xml' })).catch(() => inline)
+          : inline;
         if (await saveState()) {
           renderWordmarks();
           toast('Logo added', 'success');
@@ -1875,7 +1940,7 @@ function renderAll() {
    Contents:Read+Write on this one repo and can't reach anything else.
    Clearing the token field in the panel overrides it on that device. */
 const REPO_DEFAULTS = { owner: 'alexclmb', repo: 'portfolio', branch: 'main' };
-const TOKEN_DEFAULT = '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';
+const TOKEN_DEFAULT = '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';
 
 let repoCfg = { ...REPO_DEFAULTS };
 let repoToken = TOKEN_DEFAULT;
@@ -1889,6 +1954,10 @@ async function ghApi(path, opts) {
   opts = opts || {};
   const res = await fetch('https://api.github.com' + path, {
     method: opts.method || 'GET',
+    /* Without this the browser can hand back a cached branch ref, so the commit
+       gets built on a parent that is no longer the tip and GitHub rejects the
+       update as "not a fast forward". */
+    cache: 'no-store',
     headers: {
       'Authorization': 'Bearer ' + repoToken,
       'Accept': 'application/vnd.github+json',
@@ -2058,7 +2127,12 @@ async function publishToRepo() {
     if (siteChanged) changed.push({ path: SITE_PATH, content: built.html });
 
     if (!changed.length) {
-      toast('Already up to date — nothing to publish', 'success');
+      /* Reached when a previous attempt actually landed the commit even though
+         it reported an error — worth saying plainly so it doesn't look broken. */
+      toast('Repo already matches this content — nothing to send', 'success');
+      state.publishedAt = new Date().toISOString();
+      await saveState();
+      renderRepoPanel();
       btn.innerHTML = label; btn.disabled = false;
       return;
     }
@@ -2083,9 +2157,29 @@ async function publishToRepo() {
     const commit = await ghApi(base + '/git/commits', {
       method: 'POST', body: { message, tree: newTree.sha, parents: [headSha] }
     });
-    await ghApi(base + '/git/refs/heads/' + encodeURIComponent(branch), {
-      method: 'PATCH', body: { sha: commit.sha }
-    });
+    try {
+      await ghApi(base + '/git/refs/heads/' + encodeURIComponent(branch), {
+        method: 'PATCH', body: { sha: commit.sha }
+      });
+    } catch (err) {
+      /* Branch moved between reading the tip and writing it — another device,
+         a second tab, or a commit made on github.com. Rebuild the commit on the
+         new tip and try once more rather than making you click again. */
+      if (!/fast forward/i.test(err.message)) throw err;
+      step('Retrying');
+      const ref2 = await ghApi(base + '/git/ref/heads/' + encodeURIComponent(branch));
+      const head2 = await ghApi(base + '/git/commits/' + ref2.object.sha);
+      const tree2 = await ghApi(base + '/git/trees', {
+        method: 'POST', body: { base_tree: head2.tree.sha, tree }
+      });
+      const commit2 = await ghApi(base + '/git/commits', {
+        method: 'POST', body: { message, tree: tree2.sha, parents: [ref2.object.sha] }
+      });
+      await ghApi(base + '/git/refs/heads/' + encodeURIComponent(branch), {
+        method: 'PATCH', body: { sha: commit2.sha }
+      });
+      commit.sha = commit2.sha;
+    }
 
     /* refresh the sha so the next publish doesn't look like a conflict */
     try { await pullContent({ quiet: true }); } catch (e) {}
@@ -2094,6 +2188,7 @@ async function publishToRepo() {
     renderRepoPanel();
     toast('Published ' + commit.sha.slice(0, 7) + ' · ' +
           (onlyContent ? 'content only, no deploy' : 'site rebuilt'), 'success');
+
   } catch (err) {
     toast('Publish failed: ' + err.message, 'error');
   }
@@ -2185,6 +2280,13 @@ function renderRepoPanel() {
 function embeddedImageRefs() {
   const refs = [];
   const embedded = v => typeof v === 'string' && v.startsWith('data:image/') && v.includes(';base64,');
+  /* Inlined wordmark SVGs were ~119KB of a 129KB content.json — the single
+     biggest thing standing between a visitor and text on screen. */
+  (state.wordmarks || []).forEach((w, i) => {
+    if (embedded(w.logo)) {
+      refs.push({ get: () => w.logo, set: v => { w.logo = v; }, name: 'wordmark-' + i });
+    }
+  });
   (state.stream || []).forEach((s, i) => {
     if (embedded(s.image)) {
       refs.push({ get: () => s.image, set: v => { s.image = v; }, name: 'stream-' + i });
@@ -2762,71 +2864,57 @@ document.getElementById('resetBtn').onclick = () => {
    Builds the full file as a string by concatenating the static
    template parts with the dynamic content from state.
 ═════════════════════════════════════════════════════════════════ */
+/* ═════════ PREVIEW ═════════
+   Builds the real page from the current editor state and renders it in an
+   iframe. Nothing is written to the repo and nothing is deployed, so checking a
+   design change costs nothing. */
+const previewOverlay = document.getElementById('previewOverlay');
+const previewFrame   = document.getElementById('previewFrame');
+
+async function openPreview() {
+  const btn = document.getElementById('previewBtn');
+  const label = btn.innerHTML;
+  btn.innerHTML = '<i class="ri-loader-4-line"></i> Building';
+  btn.disabled = true;
+
+  const built = await buildExport({ preview: true });
+
+  btn.innerHTML = label;
+  btn.disabled = false;
+  if (!built) return;
+
+  previewOverlay.hidden = false;
+  document.body.style.overflow = 'hidden';
+  /* srcdoc keeps it self-contained — no blob URL to create or revoke, and it
+     reloads cleanly every time you reopen. */
+  previewFrame.srcdoc = built.html;
+}
+
+function closePreview() {
+  previewOverlay.hidden = true;
+  document.body.style.overflow = '';
+  previewFrame.srcdoc = '';   /* stop timers and media in the preview */
+}
+
+document.getElementById('previewBtn').onclick = openPreview;
+document.getElementById('previewClose').onclick = closePreview;
+document.getElementById('previewReload').onclick = openPreview;
+
+document.querySelectorAll('.preview-w').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('.preview-w').forEach(o => o.classList.remove('is-on'));
+    b.classList.add('is-on');
+    const w = b.dataset.w;
+    previewFrame.style.width = w === 'full' ? '100%' : w + 'px';
+  };
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !previewOverlay.hidden) closePreview();
+});
+
 document.getElementById('generateBtn').onclick = generatePortfolio;
-
-/* ═════════ EXPORT-TIME IMAGE COMPRESSION ═════════
-   Originals stay full-res in IndexedDB — this only touches the copy that gets
-   written into portfolio.html. Each raster data-URI is drawn to a canvas at a
-   capped long edge and re-encoded as WebP. SVGs, remote URLs and anything that
-   would come out bigger are passed through untouched. */
-const EXPORT_PRESETS = {
-  high:     { maxEdge: 2560, quality: 0.85 },
-  balanced: { maxEdge: 1920, quality: 0.82 },
-  light:    { maxEdge: 1440, quality: 0.74 },
-  off:      null
-};
-
-function compressDataUri(src, maxEdge, quality) {
-  return new Promise(resolve => {
-    if (!src || src.slice(0, 11) !== 'data:image/') return resolve(src); /* remote URL — leave it */
-    if (src.slice(0, 14) === 'data:image/svg') return resolve(src);      /* vectors stay vector */
-    const img = new Image();
-    img.onload = () => {
-      try {
-        const scale = Math.min(1, maxEdge / Math.max(img.naturalWidth, img.naturalHeight));
-        const w = Math.max(1, Math.round(img.naturalWidth  * scale));
-        const h = Math.max(1, Math.round(img.naturalHeight * scale));
-        const c = document.createElement('canvas');
-        c.width = w; c.height = h;
-        const ctx = c.getContext('2d');
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(img, 0, 0, w, h);
-        let out = c.toDataURL('image/webp', quality);
-        if (out.slice(0, 15) !== 'data:image/webp') {
-          /* browser has no WebP encoder — fall back to JPEG (drops alpha) */
-          out = c.toDataURL('image/jpeg', quality);
-        }
-        resolve(out.length < src.length ? out : src);
-      } catch (e) {
-        resolve(src);
-      }
-    };
-    img.onerror = () => resolve(src);
-    img.src = src;
-  });
-}
-
-/* First frame of a video as a still — fills the box instantly while the file
-   streams in, so there's no black flash. */
-function cdnPoster(u, w) {
-  if (typeof u !== 'string') return '';
-  const marker = '/video/upload/';
-  const i = u.indexOf(marker);
-  if (i === -1) return '';
-  const cut = i + marker.length;
-  return u.slice(0, cut) + 'so_0,f_auto,q_auto,c_limit,w_' + w + '/' + u.slice(cut).replace(/\.[^.\/]+$/, '.jpg');
-}
-
-/* Same transform trick, applied while writing the export. */
-function cdnSize(u, w) {
-  if (typeof u !== 'string') return u;
-  const marker = u.indexOf('/video/upload/') !== -1 ? '/video/upload/' : '/image/upload/';
-  const i = u.indexOf(marker);
-  if (i === -1) return u;
-  const cut = i + marker.length;
-  return u.slice(0, cut) + 'f_auto,q_auto,c_limit,w_' + w + '/' + u.slice(cut);
-}
+document.getElementById('topPublishBtn').onclick = () => publishToRepo();
 
 function fmtBytes(n) {
   return n > 1024 * 1024 ? (n / 1024 / 1024).toFixed(1) + ' MB'
@@ -2844,85 +2932,43 @@ async function generatePortfolio() {
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 10000);
 
-  const msg = built.savedBefore
-    ? `index.html — ${fmtBytes(blob.size)} (images ${fmtBytes(built.savedBefore)} → ${fmtBytes(built.savedAfter)})`
-    : `index.html — ${fmtBytes(blob.size)}`;
-  toast(msg, 'success');
+  toast(`index.html — ${fmtBytes(blob.size)}`, 'success');
 }
 
 /* Produces the finished HTML. Shared by the download button and Publish, so
    what you download and what gets committed can never differ. */
-async function buildExport() {
+async function buildExport(opts) {
+  opts = opts || {};
   /* ─── Validation ─── */
   if (!state.projects.length) {
     toast('Add at least one project before generating', 'error');
     return null;
   }
 
-  /* ─── Compress images (unique sources only, sequentially to keep memory flat) ─── */
-  const btn = document.getElementById('generateBtn');
-  const btnHtml = btn.innerHTML;
-  const preset = EXPORT_PRESETS[document.getElementById('exportQuality').value];
-  const imgMap = new Map();
-  let savedBefore = 0, savedAfter = 0;
-
-  if (preset) {
-    const srcs = new Set();
-    state.stream.forEach(s => { if (s.image) srcs.add(s.image); });
-    state.projects.forEach(p => (p.blocks || []).forEach(b => {
-      if (b.image) srcs.add(b.image);
-      (b.images || []).forEach(im => { if (im) srcs.add(im); });
-    }));
-    const list = [...srcs].filter(src => src.slice(0, 11) === 'data:image/' && src.slice(0, 14) !== 'data:image/svg' && !isVideoSrc(src));
-
-    if (list.length) {
-      btn.disabled = true;
-      for (let i = 0; i < list.length; i++) {
-        btn.innerHTML = `<i class="ri-loader-4-line"></i> Compressing ${i + 1}/${list.length}`;
-        /* yield to the browser so the label actually repaints */
-        await new Promise(r => setTimeout(r, 0));
-        const small = await compressDataUri(list[i], preset.maxEdge, preset.quality);
-        imgMap.set(list[i], small);
-        savedBefore += list[i].length;
-        savedAfter  += small.length;
-      }
-      btn.innerHTML = btnHtml;
-      btn.disabled = false;
-    }
-  }
-  const out = src => imgMap.get(src) || src;
-
   /* ─── Content payload ───
      The page renders itself from this object, and content.json in the repo is
      the same shape — so the baked copy and a later fetch share one code path
      and can't drift. */
   const contentObj = publicContent();
-  if (imgMap.size) {
-    /* export-time compression only applies to still-embedded images */
-    (contentObj.stream || []).forEach(sh => { if (sh.image) sh.image = out(sh.image); });
-    (contentObj.projects || []).forEach(pr => (pr.blocks || []).forEach(bl => {
-      if (bl.image) bl.image = out(bl.image);
-      if (Array.isArray(bl.images)) bl.images = bl.images.map(im => im ? out(im) : im);
-    }));
-  }
 
-  const firstShot = (state.stream.find(s => s.image) || {}).image || '';
   const subject = (state.ctaSubject || 'Project Enquiry').trim();
   const html = buildHtml({
     bio: state.bio,
     telegramUrl: state.telegramUrl,
     email: state.email,
     mailto: 'mailto:' + (state.email || '') + '?subject=' + encodeURIComponent(subject),
-    preloadImg: firstShot ? cdnSize(firstShot, 2000) : '',
     contentJs: JSON.stringify(contentObj),
-    contentUrl: rawContentUrl(),
+    /* A preview must show what's in the editor right now. Leaving contentUrl
+       empty stops the page fetching content.json, so it renders purely from the
+       copy baked in — which is the state you're currently editing. */
+    contentUrl: opts.preview ? '' : rawContentUrl(),
     ctaPrimaryLabel: (state.ctaPrimaryLabel || 'Start a project').trim(),
     ctaSecondaryLabel: (state.ctaSecondaryLabel || 'Quick message').trim(),
     socials: state.socials,
     skillsLabel: state.skillsLabel
   });
 
-  return { html, savedBefore, savedAfter };
+  return { html };
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -2991,6 +3037,7 @@ body {
 }
 .bio-cta:hover { background: #2962ff; color: #fff; }
 .bio-cta i { font-size: 15px; line-height: 1; }
+
 /* Primary — filled, reads first. Secondary — outlined, quieter. */
 .bio-ctas { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .bio-cta--primary { background: var(--ink); color: #fff; }
@@ -3262,6 +3309,26 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 .db-text p:last-child { margin-bottom: 0; }
 .db-text { padding-block: 6px; }
 
+/* ── skeletons ──
+   Rendered in the shell so they paint immediately, then replaced wholesale once
+   content arrives. Grey blocks that pulse, sized to the real thing so nothing
+   jumps when the swap happens. */
+@keyframes skel-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+.skel {
+  background: #ececec; border-radius: 6px;
+  animation: skel-pulse 1.4s ease-in-out infinite;
+}
+.skel-line { height: 12px; margin-bottom: 9px; }
+.skel-line:last-child { margin-bottom: 0; }
+.skel-chip { height: 30px; border-radius: 100px; display: inline-block; }
+.skel-shot {
+  width: var(--shot-scale); margin: 0 auto var(--stream-gap, 64px);
+  aspect-ratio: 4 / 3; border-radius: 12px;
+}
+.skel-shot:last-child { margin-bottom: 0; }
+.is-loaded .skel { display: none; }
+@media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
+
 /* ── lightbox: sits above the case-study modal ── */
 .lb {
   position: fixed; inset: 0; z-index: 300;
@@ -3422,17 +3489,24 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
     </div>
 
     <p class="sidebar-bio" id="sbBio"></p>
+    <div class="skel-bio" id="sbBioSkel" aria-hidden="true">
+      <div class="skel skel-line" style="width:96%"></div>
+      <div class="skel skel-line" style="width:92%"></div>
+      <div class="skel skel-line" style="width:78%"></div>
+    </div>
 
     <div class="bio-ctas">
       <a href="#" class="bio-cta bio-cta--primary" id="ctaPrimary">
         <span class="bio-cta-default">
+          <span class="cta-label"></span>
           <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
         </span>
         <i class="ri-mail-send-fill bio-cta-plane" aria-hidden="true"></i>
       </a>
       <a href="#" target="_blank" rel="noopener" class="bio-cta bio-cta--ghost" id="ctaSecondary">
         <span class="bio-cta-default">
-          <i class="ri-telegram-2-line" aria-hidden="true"></i>
+          <span class="cta-label"></span>
+          <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
         </span>
         <i class="ri-telegram-2-fill bio-cta-plane" aria-hidden="true"></i>
       </a>
@@ -3441,6 +3515,12 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
     <div class="skills">
       <p class="skills-label" id="skillsLabel"></p>
       <div class="skills-grid" id="skillsGrid"></div>
+      <div class="skills-grid" id="skillsSkel" aria-hidden="true">
+        <span class="skel skel-chip" style="width:118px"></span>
+        <span class="skel skel-chip" style="width:96px"></span>
+        <span class="skel skel-chip" style="width:132px"></span>
+        <span class="skel skel-chip" style="width:104px"></span>
+      </div>
     </div>
 
     <div class="sb-carousel">
@@ -3471,6 +3551,11 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 
   <main class="main" id="mainScroll">
     <div class="stream" id="stream"></div>
+
+    <div class="stream-skel" id="streamSkel" aria-hidden="true">
+      <div class="skel skel-shot"></div>
+      <div class="skel skel-shot"></div>
+    </div>
   </main>
 
 </div>
@@ -3495,6 +3580,7 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
       <div class="detail-cta-wrap">
         <a href="#" class="bio-cta bio-cta--primary" id="ctaPrimaryModal">
           <span class="bio-cta-default">
+            <span class="cta-label"></span>
             <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
           </span>
           <i class="ri-mail-send-fill bio-cta-plane" aria-hidden="true"></i>
@@ -3795,6 +3881,25 @@ function initObserver() {
   }, { root, threshold: .05 });
   document.querySelectorAll('.shot').forEach(i => shotObserver.observe(i));
 }
+/* ═════════ SCROLL ═════════
+   The sidebar is fixed and the stream is its own scroll container, so a wheel
+   over the sidebar did nothing — which reads as the page being stuck. Forward
+   any wheel that isn't already inside a scrollable area to the stream. */
+(function unifyScroll() {
+  const main = document.getElementById('mainScroll');
+  if (!main) return;
+  const isDesktop = () => window.matchMedia('(min-width: 901px)').matches;
+
+  document.addEventListener('wheel', e => {
+    if (!isDesktop()) return;
+    if (e.ctrlKey) return;                                   /* pinch-zoom */
+    if (main.contains(e.target)) return;                     /* already there */
+    if (e.target.closest('.detail-panel, .lb, .modal')) return;  /* open layers */
+    main.scrollTop += e.deltaY;
+    e.preventDefault();
+  }, { passive: false });
+})();
+
 /* first call happens in loadContent(), once there are shots to observe */
 window.addEventListener('resize', () => {
   document.querySelectorAll('.shot').forEach(p => p.classList.remove('visible'));
@@ -3869,7 +3974,7 @@ function renderSkills(c) {
 function renderWordmarks(c) {
   const one = (c.wordmarks || [])
     .filter(w => w.logo)
-    .map(w => '<span class="sb-wm sb-wm--logo"><img src="' + esc(w.logo) + '" alt="' + esc(w.name || '') + '"></span>')
+    .map(w => '<span class="sb-wm sb-wm--logo"><img src="' + esc(w.logo) + '" alt="' + esc(w.name || '') + '" loading="lazy" decoding="async"></span>')
     .join('');
   /* duplicated so the marquee can loop seamlessly */
   document.getElementById('wmTrack').innerHTML = one + one;
@@ -3950,8 +4055,9 @@ function setHref(id, value) {
 function setCtaLabel(id, label) {
   const el = document.getElementById(id);
   if (!el) return;
-  const span = el.querySelector('.bio-cta-default');
-  if (span && span.firstChild) span.firstChild.nodeValue = ' ' + label + ' ';
+  const slot = el.querySelector('.cta-label');
+  if (slot) slot.textContent = label;
+  el.setAttribute('aria-label', label);
 }
 
 function applyContent(c) {
@@ -3974,6 +4080,9 @@ function applyContent(c) {
   renderSkills(c);
   renderWordmarks(c);
   renderStream(c);
+
+  /* content is in — drop the skeletons */
+  document.body.classList.add('is-loaded');
 }
 
 function isVideoSrc(u) {
