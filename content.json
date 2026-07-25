@@ -37,7 +37,14 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1784976057/rphd1rurewqry7tokvv6.svg": "126x24",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1784976059/sg7wbsnasmzcpdihdh86.svg": "126x24",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1784976060/nowgfsiixzv34ebz0cvz.svg": "126x24",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014321/vt76kbjfhys0a2s9uorj.png": "1x1"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014321/vt76kbjfhys0a2s9uorj.png": "1x1",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014575/rvzhrfjxm86scudlx7np.png": "1x1",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014786/ynypkqafosd7jepwecrh.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014798/v88noww02g5yyvgrabbu.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014802/ucwhdfpnukis1nc5jbyi.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014820/jkgqbeofmzwrs4m6bm5w.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014843/zyxog0ix6b0pzvhulln3.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014877/qbdkmfokoimyjgto1hws.png": "3200x2400"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -231,6 +238,35 @@
           "caption": ""
         }
       ]
+    },
+    {
+      "title": "Bau Match",
+      "client": "Bau Match",
+      "website": "",
+      "desc1": "",
+      "desc2": "",
+      "blocks": [
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014786/ynypkqafosd7jepwecrh.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014798/v88noww02g5yyvgrabbu.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014820/jkgqbeofmzwrs4m6bm5w.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014802/ucwhdfpnukis1nc5jbyi.png",
+          "caption": ""
+        }
+      ]
     }
   ],
   "stream": [
@@ -257,8 +293,14 @@
       "projectIdx": 0,
       "caption": "SmartSolve",
       "metric": "0 → 500k+ users"
+    },
+    {
+      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014877/qbdkmfokoimyjgto1hws.png",
+      "projectIdx": 4,
+      "caption": "Bau Match",
+      "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-07-25T21:21:22.024Z",
-  "savedAt": "2026-07-25T21:21:22.024Z"
+  "publishedAt": "2026-07-25T21:23:02.152Z",
+  "savedAt": "2026-07-25T21:28:06.533Z"
 }
