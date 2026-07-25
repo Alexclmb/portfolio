@@ -116,13 +116,6 @@
   ],
   "testimonials": [
     {
-      "quote": "Honestly can't thank you guys enough. The turnaround time for this project was so quick and the quality was so high. I really appreciate it.",
-      "name": "ItsCuzzo",
-      "handle": "@ItsCuzzo",
-      "avatar": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019455/tfphc8lbfbtzcbn0rkjp.png",
-      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019541/nwf7ayedlhgbltjhnqep.png"
-    },
-    {
       "quote": "The design looks so nice after everything has been put together — probably the cleanest designed site I've seen so far.",
       "name": "Ganz",
       "handle": "Developer",
@@ -433,6 +426,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-07-25T22:44:29.086Z",
-  "savedAt": "2026-07-25T22:45:42.177Z"
+  "publishedAt": "2026-07-25T22:45:55.662Z",
+  "savedAt": "2026-07-25T22:46:27.854Z"
 }
