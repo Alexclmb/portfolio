@@ -128,14 +128,14 @@
     {
       "quote": "Honestly can't thank you enough.\nThe turnaround time for this project was so quick and the quality was so high.\nI really appreciate it.",
       "name": "Cuzzy",
-      "handle": "Founder of Emaily",
+      "handle": "Founder",
       "avatar": null,
       "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785020847/y9o1kpwan8paue8gv97f.png"
     },
     {
       "quote": "The design looks so nice after everything has been put together, probably the cleanest designed site I've seen so far.",
       "name": "Ganz",
-      "handle": "CEO of Bau Match",
+      "handle": "Founder",
       "avatar": null,
       "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785020967/lxaugvljbrnjfwvpsg4d.png"
     },
@@ -436,6 +436,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-07-25T22:51:26.287Z",
-  "savedAt": "2026-07-25T23:16:17.756Z"
+  "publishedAt": "2026-07-25T23:16:30.588Z",
+  "savedAt": "2026-07-25T23:17:42.446Z"
 }
