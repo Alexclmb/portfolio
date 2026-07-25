@@ -323,6 +323,12 @@
       "metric": "0 → 1M+ users"
     },
     {
+      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015618/kir1x0lyxybrwfyspiya.png",
+      "projectIdx": 5,
+      "caption": "Emaily",
+      "metric": "+80% MRR"
+    },
+    {
       "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851713/kkx89vdltv0ojvlgbtkn.webp",
       "projectIdx": 1,
       "caption": "Kodai ",
@@ -339,14 +345,8 @@
       "projectIdx": 4,
       "caption": "Bau Match",
       "metric": "+60% MRR"
-    },
-    {
-      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015618/kir1x0lyxybrwfyspiya.png",
-      "projectIdx": 5,
-      "caption": "Emaily",
-      "metric": "+80% MRR"
     }
   ],
-  "publishedAt": "2026-07-25T21:28:23.703Z",
-  "savedAt": "2026-07-25T21:41:08.864Z"
+  "publishedAt": "2026-07-25T21:41:23.788Z",
+  "savedAt": "2026-07-25T21:41:40.034Z"
 }
