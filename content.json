@@ -323,22 +323,16 @@
       "metric": "+92% satisfaction score"
     },
     {
-      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851713/rwby2xa23thy1keahezt.webp",
-      "projectIdx": 2,
-      "caption": "Raena AI",
-      "metric": "0 → 1M+ users"
-    },
-    {
       "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015618/kir1x0lyxybrwfyspiya.png",
       "projectIdx": 5,
       "caption": "Emaily",
       "metric": "+80% MRR"
     },
     {
-      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851713/kkx89vdltv0ojvlgbtkn.webp",
-      "projectIdx": 1,
-      "caption": "Kodai ",
-      "metric": "0 → 200k+ users"
+      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851713/rwby2xa23thy1keahezt.webp",
+      "projectIdx": 2,
+      "caption": "Raena AI",
+      "metric": "0 → 1M+ users"
     },
     {
       "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851714/ig8ybuzn1uu59qcr1y0q.webp",
@@ -347,12 +341,18 @@
       "metric": "0 → 500k+ users"
     },
     {
+      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851713/kkx89vdltv0ojvlgbtkn.webp",
+      "projectIdx": 1,
+      "caption": "Kodai ",
+      "metric": "0 → 200k+ users"
+    },
+    {
       "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014877/qbdkmfokoimyjgto1hws.png",
       "projectIdx": 4,
       "caption": "Bau Match",
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-07-25T21:42:11.281Z",
-  "savedAt": "2026-07-25T21:48:14.825Z"
+  "publishedAt": "2026-07-25T21:48:29.783Z",
+  "savedAt": "2026-07-25T21:48:43.032Z"
 }
