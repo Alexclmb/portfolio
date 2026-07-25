@@ -64,7 +64,8 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021270/sqy8bakta920xutzj0na.png": "1074x136",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021294/npg14wkbnsl428wippba.png": "624x118",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021338/tawbpam5id4k6bt7l3ck.png": "994x114",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021377/tjyznybdb1g44tap0tol.png": "1832x240"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021377/tjyznybdb1g44tap0tol.png": "1832x240",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785022141/zfk757kc5rqneefvchxo.png": "704x378"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -133,11 +134,11 @@
       "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785020847/y9o1kpwan8paue8gv97f.png"
     },
     {
-      "quote": "The design looks so nice after everything has been put together, probably the cleanest designed site I've seen so far.",
-      "name": "Ganz",
-      "handle": "Founder",
+      "quote": "I would love to work with you more. I love fast turnaround especially from you. Your work has always caught my eye and you've done previous stuff for me which I loved!",
+      "name": "Tarun",
+      "handle": "CEO of jackpot.bet & studio",
       "avatar": null,
-      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785020967/lxaugvljbrnjfwvpsg4d.png"
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785022141/zfk757kc5rqneefvchxo.png"
     },
     {
       "quote": "You continuously amaze me with the creativity in these. I love the way the cities and the dots fade in.",
@@ -159,6 +160,13 @@
       "handle": "Founder",
       "avatar": null,
       "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021208/bqbds3uerrenlpkw1pig.png"
+    },
+    {
+      "quote": "The design looks so nice after everything has been put together, probably the cleanest designed site I've seen so far.",
+      "name": "Ganz",
+      "handle": "Founder",
+      "avatar": null,
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785020967/lxaugvljbrnjfwvpsg4d.png"
     },
     {
       "quote": "11/10. A very cool dude who surprises me every time when we work together.",
@@ -436,6 +444,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-07-25T23:17:57.462Z",
-  "savedAt": "2026-07-25T23:18:03.279Z"
+  "publishedAt": "2026-07-25T23:18:30.179Z",
+  "savedAt": "2026-07-25T23:30:55.894Z"
 }
