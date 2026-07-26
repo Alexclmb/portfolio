@@ -1166,6 +1166,49 @@ textarea {
     </p>
   </div>
 
+  <!-- ════════════ CONTACT FORM ════════════ -->
+  <div class="card">
+    <div class="card-h">
+      <h2>Contact form</h2>
+      <span class="card-h-meta" id="contactStatus">Not configured — falls back to a mailto</span>
+    </div>
+
+    <p class="hint">
+      The primary button opens a form instead of an email client. Submissions are delivered by
+      <strong>Web3Forms</strong>: create a free access key at
+      <strong>web3forms.com</strong> with <strong>alex.colombel@gmail.com</strong> and paste it below —
+      250 messages a month, no account needed. The key is designed to be public; it only routes to
+      your inbox. Leave it blank and the form composes a mailto instead, so nothing is ever lost.
+    </p>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Web3Forms access key</label>
+        <input type="text" id="contactKey" placeholder="paste your access key" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="field">
+        <label>Email subject</label>
+        <input type="text" id="contactSubject" placeholder="Project Enquiry">
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Panel heading</label>
+        <input type="text" id="contactHeading" placeholder="Start a project">
+      </div>
+      <div class="field">
+        <label>Panel subtitle</label>
+        <input type="text" id="contactSub" placeholder="Tell me what you're building.">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Budget options — comma separated</label>
+      <input type="text" id="contactBudgets" placeholder="Under €5k, €5–10k, €10–25k, €25k+, Not sure yet">
+    </div>
+  </div>
+
   <!-- ════════════ TESTIMONIALS ════════════ -->
   <div class="card">
     <div class="card-h">
@@ -1723,6 +1766,7 @@ const DEFAULTS = {
 
 
 
+
 /* ── State ── */
 let state = structuredClone(DEFAULTS); /* replaced by loadState() during boot */
 /* DEFAULTS are only a starting point now — for a browser with nothing saved and
@@ -2064,6 +2108,35 @@ function bindBio() {
   document.getElementById('socialLinkedin').value = state.socials.linkedin;
   document.getElementById('socialDribbble').value = state.socials.dribbble;
   document.getElementById('skillsLabel').value = state.skillsLabel;
+  const contact = state.contact || {};
+  document.getElementById('contactKey').value     = contact.accessKey || '';
+  document.getElementById('contactSubject').value = contact.subject   || state.ctaSubject || 'Project Enquiry';
+  document.getElementById('contactHeading').value = contact.heading   || '';
+  document.getElementById('contactSub').value     = contact.sub       || '';
+  document.getElementById('contactBudgets').value = (contact.budgets || []).join(', ');
+  const cs = document.getElementById('contactStatus');
+  const paintContact = () => {
+    const on = !!(state.contact && state.contact.accessKey);
+    cs.textContent = on ? 'Sending to your inbox via Web3Forms' : 'Not configured — falls back to a mailto';
+    cs.classList.toggle('is-live', on);
+  };
+  paintContact();
+  const contactField = (id, key) => {
+    document.getElementById(id).oninput = e => {
+      state.contact = state.contact || {};
+      state.contact[key] = key === 'budgets'
+        ? e.target.value.split(',').map(v => v.trim()).filter(Boolean)
+        : e.target.value.trim();
+      saveState();
+      paintContact();
+    };
+  };
+  contactField('contactKey', 'accessKey');
+  contactField('contactSubject', 'subject');
+  contactField('contactHeading', 'heading');
+  contactField('contactSub', 'sub');
+  contactField('contactBudgets', 'budgets');
+
   document.getElementById('ctaPrimaryLabel').value   = state.ctaPrimaryLabel   || 'Start a project';
   document.getElementById('ctaSubject').value        = state.ctaSubject        || 'Project Enquiry';
   document.getElementById('ctaSecondaryLabel').value = state.ctaSecondaryLabel || 'Quick message';
@@ -2721,9 +2794,12 @@ async function migrateEmbedded(askFirst) {
 function renderTestimonialsCms() {
   const list = document.getElementById('tmList');
   if (!list) return;
-  state.testimonials = state.testimonials || [];
+  /* Read without writing. Assigning [] here would persist an empty array on the
+     first render, and an explicit [] then overrides the defaults on every later
+     build — a quiet way to lose all the seeded testimonials. */
+  const items = state.testimonials || [];
 
-  list.innerHTML = state.testimonials.map((t, i) => `
+  list.innerHTML = items.map((t, i) => `
     <div class="tm-row" data-i="${i}" draggable="true">
       <div class="tm-row-h">
         <span class="tm-grip" title="Drag to reorder"><i class="ri-draggable"></i></span>
@@ -2762,9 +2838,10 @@ function renderTestimonialsCms() {
     </div>`).join('');
 
   /* text fields */
+  const ensure = () => (state.testimonials = state.testimonials || []);
   list.querySelectorAll('[data-tm]').forEach(el => {
     el.oninput = () => {
-      state.testimonials[+el.dataset.i][el.dataset.tm] = el.value;
+      ensure()[+el.dataset.i][el.dataset.tm] = el.value;
       saveState();
     };
   });
@@ -3809,6 +3886,174 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 .is-loaded .skel { display: none; }
 @media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
 
+/* ── contact ──
+   Split panel: form on the left, work on the right with a testimonial floating
+   over it. The right half is decoration — it collapses away on small screens so
+   the form gets the whole width. */
+.contact {
+  position: fixed; inset: 0; z-index: 260;
+  height: 100vh; height: 100dvh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 32px; pointer-events: none;
+}
+.contact.open { pointer-events: all; }
+.contact-backdrop {
+  position: absolute; inset: 0; background: rgba(12, 12, 14, .34);
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  opacity: 0; transition: opacity .32s ease;
+}
+.contact.open .contact-backdrop { opacity: 1; }
+.contact-panel {
+  position: relative; z-index: 2;
+  width: 100%; max-width: 960px; max-height: calc(100dvh - 64px);
+  background: var(--bg); border-radius: 18px; overflow: hidden;
+  display: grid; grid-template-columns: 1fr 0.82fr;
+  box-shadow: 0 30px 90px rgba(0,0,0,.22);
+  opacity: 0; transform: translateY(14px) scale(.985);
+  transition: opacity .34s ease, transform .42s cubic-bezier(.22,.61,.36,1);
+}
+.contact.open .contact-panel { opacity: 1; transform: none; }
+
+.contact-form { padding: 34px 34px 28px; overflow-y: auto; overscroll-behavior: contain; }
+.contact-title { font-size: 21px; font-weight: 600; letter-spacing: -0.4px; color: var(--ink); }
+.contact-sub { font-size: 13px; line-height: 19px; color: var(--ink-mid); margin: 7px 0 24px; }
+
+.cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cf-field { margin-bottom: 14px; }
+.cf-field label {
+  display: block; font-size: 11px; font-weight: 500; color: var(--ink-mid);
+  margin-bottom: 6px; letter-spacing: .01em;
+}
+.cf-field label .opt { color: var(--ink-soft); font-weight: 400; }
+.cf-field input, .cf-field textarea {
+  width: 100%; font-family: var(--fi); font-size: 14px; color: var(--ink);
+  background: var(--panel); border: 1px solid var(--border-2); border-radius: 9px;
+  padding: 11px 13px; outline: none; resize: vertical;
+  transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+}
+.cf-field input::placeholder, .cf-field textarea::placeholder { color: var(--ink-soft); }
+.cf-field input:focus, .cf-field textarea:focus {
+  background: #fff; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(10,10,10,.06);
+}
+.cf-field.is-bad input, .cf-field.is-bad textarea {
+  border-color: #e5484d; box-shadow: 0 0 0 3px rgba(229,72,77,.09);
+}
+.cf-err { font-size: 11px; color: #e5484d; margin-top: 5px; display: none; }
+.cf-field.is-bad .cf-err { display: block; }
+
+/* budget as pills — one tap instead of a dropdown */
+.cf-budget { display: flex; flex-wrap: wrap; gap: 6px; }
+.cf-chip {
+  font-family: var(--fi); font-size: 12.5px; color: var(--ink-mid);
+  background: var(--panel); border: 1px solid var(--border-2);
+  padding: 8px 13px; border-radius: 100px; cursor: pointer;
+  transition: all .16s ease;
+}
+.cf-chip:hover { border-color: var(--ink-mid); color: var(--ink); }
+.cf-chip.is-on {
+  background: var(--ink); border-color: var(--ink); color: #fff;
+}
+.cf-actions {
+  --cf-gap: 14px;
+  display: flex; align-items: center; gap: var(--cf-gap); margin-top: 22px;
+}
+/* same shape and behaviour as the sidebar primary CTA */
+.cf-submit {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-family: var(--fi); font-size: 13px; font-weight: 500; letter-spacing: -0.1px;
+  text-decoration: none; color: #fff; background: var(--ink);
+  border: none; padding: 12px 22px; border-radius: 100px; cursor: pointer;
+  transition: background .25s ease, color .25s ease;
+}
+.cf-submit:hover { background: #2962ff; }
+.cf-submit i { font-size: 15px; line-height: 1; }
+.cf-submit[disabled] { opacity: .55; cursor: not-allowed; background: var(--ink); }
+
+.cf-note {
+  display: inline-flex; align-items: center; gap: var(--cf-gap);
+  font-size: 12px; color: var(--ink-soft);
+}
+/* not a default browser link — quiet until hovered */
+.cf-note a {
+  color: var(--ink-mid); text-decoration: none; font-weight: 500;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1px; transition: color .2s ease, border-color .2s ease;
+}
+.cf-note a:hover { color: var(--ink); border-color: var(--ink); }
+.cf-spin { display: inline-block; animation: cf-spin 1s linear infinite; }
+@keyframes cf-spin { to { transform: rotate(360deg); } }
+
+/* success replaces the form entirely */
+.cf-done { text-align: center; padding: 46px 20px; }
+.cf-done-mark {
+  width: 46px; height: 46px; margin: 0 auto 16px; border-radius: 50%;
+  background: var(--ink); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+}
+.cf-done-mark i { font-size: 22px; }
+.cf-done h3 { font-size: 17px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; }
+.cf-done p { font-size: 13px; color: var(--ink-mid); margin-top: 8px; line-height: 19px; }
+
+/* right half */
+.contact-visual { position: relative; background: #f1f1f2; overflow: hidden; }
+.cv-shot {
+  position: absolute; inset: 0; opacity: 0;
+  transition: opacity .9s ease, transform 3.4s linear;
+  transform: scale(1.04);
+}
+.cv-shot.is-on { opacity: 1; transform: scale(1.10); }
+.cv-shot img, .cv-shot video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cv-scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(10,10,12,.18) 0%, rgba(10,10,12,0) 34%, rgba(10,10,12,.42) 100%);
+}
+.cv-tm {
+  position: absolute; bottom: 18px; right: 18px; left: 18px;
+  background: rgba(255,255,255,.90);
+  -webkit-backdrop-filter: blur(14px) saturate(160%); backdrop-filter: blur(14px) saturate(160%);
+  border-radius: 12px; padding: 13px 14px;
+  box-shadow: 0 8px 26px rgba(0,0,0,.14);
+}
+.cv-tm-slide {
+  opacity: 0; filter: blur(5px);
+  transition: opacity .5s ease, filter .5s ease;
+  position: absolute; inset: 13px 14px auto 14px;
+}
+.cv-tm-slide.is-on { opacity: 1; filter: blur(0); position: relative; inset: auto; }
+.cv-tm-quote { font-size: 12.5px; line-height: 18px; color: var(--ink); }
+.cv-tm-by { display: flex; align-items: center; gap: 7px; margin-top: 9px; }
+.cv-tm-avatar { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
+.cv-tm-mono {
+  width: 20px; height: 20px; border-radius: 50%; background: var(--ink);
+  color: #fff; font-size: 8px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
+.cv-tm-name { font-size: 11px; font-weight: 600; color: var(--ink); }
+.cv-tm-handle { font-size: 10px; color: var(--ink-soft); }
+
+.contact-close {
+  position: absolute; top: 14px; right: 14px; z-index: 5;
+  width: 32px; height: 32px; border: none; border-radius: 50%; cursor: pointer;
+  background: rgba(255,255,255,.9); color: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  transition: background .18s ease;
+}
+.contact-close:hover { background: #fff; }
+.contact-close i { font-size: 18px; }
+
+@media (max-width: 820px) {
+  .contact { padding: 0; align-items: flex-end; }
+  .contact-panel {
+    grid-template-columns: 1fr; max-width: none; max-height: 92dvh;
+    border-radius: 16px 16px 0 0;
+  }
+  .contact-visual { display: none; }
+  .contact-form { padding: 26px 20px 24px; }
+  .cf-row { grid-template-columns: 1fr; gap: 0; }
+  .cf-field input, .cf-field textarea { font-size: 16px; }  /* no iOS zoom */
+}
+
 /* ── lightbox: sits above the case-study modal ── */
 .lb {
   position: fixed; inset: 0; z-index: 300;
@@ -4073,6 +4318,74 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
   </div>
 </div>
 
+<div class="contact" id="contact" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
+  <div class="contact-backdrop" id="contactBackdrop"></div>
+  <div class="contact-panel">
+    <button class="contact-close" id="contactClose" aria-label="Close"><i class="ri-close-line"></i></button>
+
+    <div class="contact-form">
+      <div id="cfBody">
+        <h2 class="contact-title" id="cfTitle">Start a project</h2>
+        <p class="contact-sub" id="cfSub">Tell me what you're building. I read every message and reply within a day.</p>
+
+        <form id="cfForm" novalidate>
+          <div class="cf-row">
+            <div class="cf-field" data-for="name">
+              <label for="cfName">Your name</label>
+              <input type="text" id="cfName" name="name" autocomplete="name" placeholder="Alex Colombel">
+              <span class="cf-err">Please add your name</span>
+            </div>
+            <div class="cf-field" data-for="email">
+              <label for="cfEmail">Email</label>
+              <input type="email" id="cfEmail" name="email" autocomplete="email" placeholder="you@company.com">
+              <span class="cf-err">Please add a valid email</span>
+            </div>
+          </div>
+
+          <div class="cf-field" data-for="company">
+            <label for="cfCompany">Company <span class="opt">— optional</span></label>
+            <input type="text" id="cfCompany" name="company" autocomplete="organization" placeholder="Where you work">
+          </div>
+
+          <div class="cf-field" data-for="budget">
+            <label>Budget range</label>
+            <div class="cf-budget" id="cfBudget"></div>
+            <input type="hidden" id="cfBudgetValue" name="budget">
+          </div>
+
+          <div class="cf-field" data-for="message">
+            <label for="cfMessage">What are you looking to build?</label>
+            <textarea id="cfMessage" name="message" rows="4" placeholder="A sentence or two is plenty — what it is, roughly when, and what success looks like."></textarea>
+            <span class="cf-err">Please add a few words</span>
+          </div>
+
+          <div class="cf-actions">
+            <button type="submit" class="cf-submit" id="cfSubmit">
+              Send enquiry <i class="ri-arrow-right-line" aria-hidden="true"></i>
+            </button>
+            <span class="cf-note">
+              <span>or</span>
+              <a href="#" id="cfTelegram" target="_blank" rel="noopener">message me directly</a>
+            </span>
+          </div>
+        </form>
+      </div>
+
+      <div class="cf-done" id="cfDone" hidden>
+        <div class="cf-done-mark"><i class="ri-check-line"></i></div>
+        <h3>Message sent</h3>
+        <p id="cfDoneMsg">Thanks — I'll get back to you within a day.</p>
+      </div>
+    </div>
+
+    <div class="contact-visual" id="contactVisual">
+      <div id="cvShots"></div>
+      <div class="cv-scrim"></div>
+      <div class="cv-tm" id="cvTm" hidden></div>
+    </div>
+  </div>
+</div>
+
 <div class="lb" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
   <div class="lb-backdrop" id="lbBackdrop"></div>
   <button class="lb-btn lb-close" id="lbClose" aria-label="Close"><i class="ri-close-line"></i></button>
@@ -4100,6 +4413,211 @@ const CONTENT_FALLBACK = ${d.contentJs};
 
 let CONTENT = CONTENT_FALLBACK;
 let projects = [];
+
+/* ═════════ CONTACT ═════════
+   Submits to Web3Forms, which turns a plain POST into an email. The access key
+   is meant to be public — it only routes to the configured inbox and grants
+   nothing else. With no key set the form falls back to opening a mailto, so the
+   button always does something useful. */
+const CONTACT_ENDPOINT = 'https://api.web3forms.com/submit';
+let cfBudget = '';
+let cvTimer = null, cvIndex = 0, cvTmTimer = null, cvTmIndex = 0;
+
+function contactCfg() { return (CONTENT && CONTENT.contact) || {}; }
+
+function cfFieldEl(name) { return document.querySelector('.cf-field[data-for="' + name + '"]'); }
+function cfMarkBad(name, bad) {
+  const el = cfFieldEl(name);
+  if (el) el.classList.toggle('is-bad', !!bad);
+}
+
+function cfValidate() {
+  const name = document.getElementById('cfName').value.trim();
+  const email = document.getElementById('cfEmail').value.trim();
+  const msg = document.getElementById('cfMessage').value.trim();
+  const okEmail = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email);
+  cfMarkBad('name', !name);
+  cfMarkBad('email', !okEmail);
+  cfMarkBad('message', !msg);
+  return name && okEmail && msg;
+}
+
+function renderBudgets(c) {
+  const wrap = document.getElementById('cfBudget');
+  if (!wrap) return;
+  const opts = (c.contact && c.contact.budgets && c.contact.budgets.length)
+    ? c.contact.budgets
+    : ['Under €5k', '€5–10k', '€10–25k', '€25k+', 'Not sure yet'];
+  wrap.innerHTML = opts.map(o =>
+    '<button type="button" class="cf-chip" data-b="' + esc(o) + '">' + esc(o) + '</button>').join('');
+  cfBudget = '';
+  document.getElementById('cfBudgetValue').value = '';
+}
+
+/* right-hand column: work rotating behind a testimonial */
+function renderContactVisual(c) {
+  const shots = document.getElementById('cvShots');
+  const tm = document.getElementById('cvTm');
+  if (!shots) return;
+
+  const imgs = (c.stream || []).map(sh => sh.image).filter(Boolean).slice(0, 8);
+  shots.innerHTML = imgs.map((src, i) =>
+    '<div class="cv-shot' + (i === 0 ? ' is-on' : '') + '">' +
+      (isVideoSrc(src)
+        ? '<video src="' + cdnAt(src, 900) + '" muted loop autoplay playsinline></video>'
+        : '<img src="' + cdnAt(src, 900) + '" alt="" loading="lazy" decoding="async">') +
+    '</div>').join('');
+
+  const items = (c.testimonials || []).filter(t => (t.quote || '').trim());
+  if (!items.length) { tm.hidden = true; tm.innerHTML = ''; }
+  else {
+    tm.hidden = false;
+    tm.innerHTML = '<div class="cv-tm-slide is-on"></div><div class="cv-tm-slide"></div>';
+    const slides = [...tm.querySelectorAll('.cv-tm-slide')];
+    const fill = (el, t) => {
+      const av = t.avatar
+        ? '<img class="cv-tm-avatar" src="' + esc(t.avatar) + '" alt="">'
+        : '<span class="cv-tm-mono">' + esc(tmInitials(t.name)) + '</span>';
+      el.innerHTML = '<div class="cv-tm-quote">" ' + esc(t.quote) + ' "</div>' +
+        '<div class="cv-tm-by">' + av +
+        '<div><div class="cv-tm-name">' + esc(t.name) + '</div>' +
+        (t.handle ? '<div class="cv-tm-handle">' + esc(t.handle) + '</div>' : '') + '</div></div>';
+    };
+    fill(slides[0], items[0]);
+    cvTmIndex = 0;
+    if (cvTmTimer) clearInterval(cvTmTimer);
+    if (items.length > 1) {
+      cvTmTimer = setInterval(() => {
+        cvTmIndex = (cvTmIndex + 1) % items.length;
+        const incoming = slides.find(x => !x.classList.contains('is-on'));
+        const outgoing = slides.find(x => x.classList.contains('is-on'));
+        fill(incoming, items[cvTmIndex]);
+        incoming.classList.add('is-on');
+        if (outgoing) outgoing.classList.remove('is-on');
+      }, 4600);
+    }
+  }
+
+  if (cvTimer) clearInterval(cvTimer);
+  cvIndex = 0;
+  if (imgs.length > 1) {
+    cvTimer = setInterval(() => {
+      const all = shots.querySelectorAll('.cv-shot');
+      all[cvIndex].classList.remove('is-on');
+      cvIndex = (cvIndex + 1) % all.length;
+      all[cvIndex].classList.add('is-on');
+    }, 3000);
+  }
+}
+
+function openContact() {
+  const el = document.getElementById('contact');
+  if (!el || el.classList.contains('open')) return;
+  document.getElementById('cfBody').hidden = false;
+  document.getElementById('cfDone').hidden = true;
+  renderContactVisual(CONTENT);
+  el.classList.add('open');
+  lockScroll();
+  setTimeout(() => document.getElementById('cfName').focus(), 260);
+}
+
+function closeContact() {
+  const el = document.getElementById('contact');
+  if (!el || !el.classList.contains('open')) return;
+  el.classList.remove('open');
+  unlockScroll();
+  /* stop the timers behind a closed panel */
+  if (cvTimer) { clearInterval(cvTimer); cvTimer = null; }
+  if (cvTmTimer) { clearInterval(cvTmTimer); cvTmTimer = null; }
+}
+
+async function cfSubmit(e) {
+  e.preventDefault();
+  if (!cfValidate()) {
+    const bad = document.querySelector('.cf-field.is-bad input, .cf-field.is-bad textarea');
+    if (bad) bad.focus();
+    return;
+  }
+  const cfg = contactCfg();
+  const btn = document.getElementById('cfSubmit');
+  const payload = {
+    name: document.getElementById('cfName').value.trim(),
+    email: document.getElementById('cfEmail').value.trim(),
+    company: document.getElementById('cfCompany').value.trim(),
+    budget: cfBudget || 'Not specified',
+    message: document.getElementById('cfMessage').value.trim()
+  };
+
+  /* no key configured — hand it to the mail client rather than losing it */
+  if (!cfg.accessKey) {
+    const NL = String.fromCharCode(10);
+    const body = [
+      'Name: ' + payload.name,
+      'Email: ' + payload.email,
+      'Company: ' + payload.company,
+      'Budget: ' + payload.budget,
+      '',
+      payload.message
+    ].join(NL);
+    window.location.href = 'mailto:' + (CONTENT.email || '') +
+      '?subject=' + encodeURIComponent(cfg.subject || 'Project Enquiry') +
+      '&body=' + encodeURIComponent(body);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ri-loader-4-line cf-spin"></i> Sending';
+  try {
+    const res = await fetch(CONTACT_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        access_key: cfg.accessKey,
+        subject: (cfg.subject || 'Project Enquiry') + ' — ' + payload.name,
+        from_name: payload.name,
+        replyto: payload.email,
+        ...payload
+      })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.success === false) throw new Error(data.message || 'Something went wrong');
+    document.getElementById('cfBody').hidden = true;
+    document.getElementById('cfDone').hidden = false;
+  } catch (err) {
+    btn.disabled = false;
+    btn.innerHTML = 'Send enquiry <i class="ri-arrow-right-line" aria-hidden="true"></i>';
+    const note = document.querySelector('.cf-note');
+    if (note) note.innerHTML = '<span style="color:#e5484d">Could not send — try again, or email directly.</span>';
+  }
+}
+
+(function wireContact() {
+  const form = document.getElementById('cfForm');
+  if (!form) return;
+  form.addEventListener('submit', cfSubmit);
+  document.getElementById('contactClose').addEventListener('click', closeContact);
+  document.getElementById('contactBackdrop').addEventListener('click', closeContact);
+
+  document.getElementById('cfBudget').addEventListener('click', e => {
+    const chip = e.target.closest('.cf-chip');
+    if (!chip) return;
+    const on = chip.classList.contains('is-on');
+    document.querySelectorAll('.cf-chip').forEach(c => c.classList.remove('is-on'));
+    if (!on) { chip.classList.add('is-on'); cfBudget = chip.dataset.b; }
+    else cfBudget = '';
+    document.getElementById('cfBudgetValue').value = cfBudget;
+  });
+
+  /* clear the error as soon as they start fixing it */
+  ['name', 'email', 'message'].forEach(k => {
+    const el = document.getElementById('cf' + k[0].toUpperCase() + k.slice(1));
+    if (el) el.addEventListener('input', () => cfMarkBad(k, false));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('contact').classList.contains('open')) closeContact();
+  });
+})();
 
 /* ═════════ TESTIMONIALS ═════════
    Cross-fades one quote at a time. Both layers stay mounted so the outgoing one
@@ -4617,6 +5135,21 @@ function applyContent(c) {
   setHref('ctaPrimary', mailto);
   setHref('ctaPrimaryModal', mailto);
   setHref('ctaSecondary', c.telegramUrl);
+
+  /* the panel is the real path; the mailto href above is the no-JS fallback */
+  ['ctaPrimary', 'ctaPrimaryModal'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el || el.dataset.contactBound) return;
+    el.dataset.contactBound = '1';
+    el.addEventListener('click', e => { e.preventDefault(); openContact(); });
+  });
+
+  const cfg = c.contact || {};
+  setText('cfTitle', (cfg.heading || c.ctaPrimaryLabel || 'Start a project').trim());
+  setText('cfSub', (cfg.sub || "Tell me what you're building. I read every message and reply within a day.").trim());
+  const tg = document.getElementById('cfTelegram');
+  if (tg && c.telegramUrl) tg.href = c.telegramUrl;
+  renderBudgets(c);
   setCtaLabel('ctaPrimary', (c.ctaPrimaryLabel || 'Start a project').trim());
   setCtaLabel('ctaPrimaryModal', (c.ctaPrimaryLabel || 'Start a project').trim());
   setCtaLabel('ctaSecondary', (c.ctaSecondaryLabel || 'Quick message').trim());
