@@ -3531,6 +3531,9 @@ ${d.contentUrl ? `<link rel="preload" as="fetch" crossorigin href="${escAttr(d.c
   /* system faces first so the page has real text before Inter arrives */
   --fi: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --shot-scale: 90%; --db-gap: 10px;
+  /* form fields: a light fill reads as an input on a white page, the way the
+     CMS's white fill reads on its grey one */
+  --field: #f6f6f7; --field-border: #e4e4e6;
 }
 html, body { height: 100%; }
 body {
@@ -3667,7 +3670,7 @@ body {
 .tm-mono {
   width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  background: var(--panel); border: 1px solid var(--border-2);
+  background: var(--field); border: 1px solid var(--field-border);
   font-size: 10px; font-weight: 600; letter-spacing: .02em; color: var(--ink-mid);
 }
 .tm-name { font-size: 12px; font-weight: 600; color: var(--ink); line-height: 1.3; }
@@ -3679,7 +3682,7 @@ body {
   background: none; border: none; padding: 4px; cursor: pointer;
   border-radius: 6px; transition: color .2s ease, background .2s ease;
 }
-.tm-proof:hover { color: var(--ink); background: var(--panel); }
+.tm-proof:hover { color: var(--ink); background: var(--field); }
 .tm-proof i { font-size: 13px; line-height: 1; }
 @media (prefers-reduced-motion: reduce) {
   .tm-slide { transition: opacity .2s ease; filter: none; transform: none; }
@@ -3927,7 +3930,7 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 .cf-field label .opt { color: var(--ink-soft); font-weight: 400; }
 .cf-field input, .cf-field textarea {
   width: 100%; font-family: var(--fi); font-size: 14px; color: var(--ink);
-  background: var(--panel); border: 1px solid var(--border-2); border-radius: 9px;
+  background: var(--field); border: 1px solid var(--field-border); border-radius: 9px;
   padding: 11px 13px; outline: none; resize: vertical;
   transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
 }
@@ -3945,7 +3948,7 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 .cf-budget { display: flex; flex-wrap: wrap; gap: 6px; }
 .cf-chip {
   font-family: var(--fi); font-size: 12.5px; color: var(--ink-mid);
-  background: var(--panel); border: 1px solid var(--border-2);
+  background: var(--field); border: 1px solid var(--field-border);
   padding: 8px 13px; border-radius: 100px; cursor: pointer;
   transition: all .16s ease;
 }
@@ -3959,15 +3962,37 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 }
 /* same shape and behaviour as the sidebar primary CTA */
 .cf-submit {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center;
   font-family: var(--fi); font-size: 13px; font-weight: 500; letter-spacing: -0.1px;
   text-decoration: none; color: #fff; background: var(--ink);
-  border: none; padding: 12px 22px; border-radius: 100px; cursor: pointer;
+  border: none; padding: 12px 26px; border-radius: 100px; cursor: pointer;
   transition: background .25s ease, color .25s ease;
 }
 .cf-submit:hover { background: #2962ff; }
-.cf-submit i { font-size: 15px; line-height: 1; }
 .cf-submit[disabled] { opacity: .55; cursor: not-allowed; background: var(--ink); }
+/* the label steps aside and the icon flies in — same curve as the sidebar CTA */
+.cf-submit-label {
+  display: inline-flex; align-items: center;
+  transition: opacity .22s ease, transform .35s cubic-bezier(.34,1.4,.64,1);
+}
+.cf-submit:hover .cf-submit-label { opacity: 0; transform: translateX(-10px); }
+.cf-submit-icon {
+  position: absolute; inset: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 16px; line-height: 1; color: #fff;
+  opacity: 0; transform: translateX(10px) scale(.8);
+  transition: opacity .22s ease, transform .4s cubic-bezier(.34,1.4,.64,1);
+  pointer-events: none;
+}
+.cf-submit:hover .cf-submit-icon { opacity: 1; transform: translateX(0) scale(1); }
+.cf-submit[disabled]:hover .cf-submit-label { opacity: 1; transform: none; }
+.cf-submit[disabled]:hover .cf-submit-icon { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .cf-submit-label, .cf-submit-icon { transition: opacity .15s ease; }
+  .cf-submit:hover .cf-submit-label { transform: none; }
+  .cf-submit:hover .cf-submit-icon { transform: none; }
+}
 
 .cf-note {
   display: inline-flex; align-items: center; gap: var(--cf-gap);
@@ -3998,11 +4023,22 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 .contact-visual { position: relative; background: #f1f1f2; overflow: hidden; }
 .cv-shot {
   position: absolute; inset: 0; opacity: 0;
-  transition: opacity .9s ease, transform 3.4s linear;
-  transform: scale(1.04);
+  transition: opacity .9s ease;
 }
-.cv-shot.is-on { opacity: 1; transform: scale(1.10); }
-.cv-shot img, .cv-shot video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cv-shot.is-on { opacity: 1; }
+/* the pan runs slightly longer than the 3s slide so it never visibly stops */
+.cv-shot.is-on img, .cv-shot.is-on video { animation: cv-pan 3.9s ease-in-out forwards; }
+@keyframes cv-pan {
+  from { object-position: 0% 50%; }
+  to   { object-position: 100% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cv-shot.is-on img, .cv-shot.is-on video { animation: none; object-position: 50% 50%; }
+}
+.cv-shot img, .cv-shot video {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  object-position: 0% 50%;
+}
 .cv-scrim {
   position: absolute; inset: 0;
   background: linear-gradient(to bottom, rgba(10,10,12,.18) 0%, rgba(10,10,12,0) 34%, rgba(10,10,12,.42) 100%);
@@ -4028,8 +4064,8 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
   color: #fff; font-size: 8px; font-weight: 600;
   display: flex; align-items: center; justify-content: center;
 }
-.cv-tm-name { font-size: 11px; font-weight: 600; color: var(--ink); }
-.cv-tm-handle { font-size: 10px; color: var(--ink-soft); }
+.cv-tm-name { font-size: 11px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+.cv-tm-handle { font-size: 10px; color: var(--ink-soft); line-height: 1.3; }
 
 .contact-close {
   position: absolute; top: 14px; right: 14px; z-index: 5;
@@ -4052,6 +4088,10 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
   .contact-form { padding: 26px 20px 24px; }
   .cf-row { grid-template-columns: 1fr; gap: 0; }
   .cf-field input, .cf-field textarea { font-size: 16px; }  /* no iOS zoom */
+  /* one column, centred: button, then "or", then the link */
+  .cf-actions { flex-direction: column; gap: 14px; }
+  .cf-submit { width: 100%; }
+  .cf-note { flex-direction: column; gap: 12px; }
 }
 
 /* ── lightbox: sits above the case-study modal ── */
@@ -4361,7 +4401,8 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 
           <div class="cf-actions">
             <button type="submit" class="cf-submit" id="cfSubmit">
-              Send enquiry <i class="ri-arrow-right-line" aria-hidden="true"></i>
+              <span class="cf-submit-label">Send enquiry</span>
+              <i class="ri-send-plane-fill cf-submit-icon" aria-hidden="true"></i>
             </button>
             <span class="cf-note">
               <span>or</span>
@@ -4461,12 +4502,13 @@ function renderContactVisual(c) {
   if (!shots) return;
 
   const imgs = (c.stream || []).map(sh => sh.image).filter(Boolean).slice(0, 8);
-  shots.innerHTML = imgs.map((src, i) =>
-    '<div class="cv-shot' + (i === 0 ? ' is-on' : '') + '">' +
-      (isVideoSrc(src)
-        ? '<video src="' + cdnAt(src, 900) + '" muted loop autoplay playsinline></video>'
-        : '<img src="' + cdnAt(src, 900) + '" alt="" loading="lazy" decoding="async">') +
-    '</div>').join('');
+  shots.innerHTML = imgs.map((src, i) => {
+    const url = cdnAt(src, 900);
+    const media = isVideoSrc(src)
+      ? '<video src="' + url + '" muted loop autoplay playsinline></video>'
+      : '<img src="' + url + '" alt="" loading="lazy" decoding="async">';
+    return '<div class="cv-shot' + (i === 0 ? ' is-on' : '') + '">' + media + '</div>';
+  }).join('');
 
   const items = (c.testimonials || []).filter(t => (t.quote || '').trim());
   if (!items.length) { tm.hidden = true; tm.innerHTML = ''; }
@@ -4566,7 +4608,7 @@ async function cfSubmit(e) {
   }
 
   btn.disabled = true;
-  btn.innerHTML = '<i class="ri-loader-4-line cf-spin"></i> Sending';
+  btn.innerHTML = '<span class="cf-submit-label"><i class="ri-loader-4-line cf-spin"></i>&nbsp;Sending</span>';
   try {
     const res = await fetch(CONTACT_ENDPOINT, {
       method: 'POST',
@@ -4585,7 +4627,8 @@ async function cfSubmit(e) {
     document.getElementById('cfDone').hidden = false;
   } catch (err) {
     btn.disabled = false;
-    btn.innerHTML = 'Send enquiry <i class="ri-arrow-right-line" aria-hidden="true"></i>';
+    btn.innerHTML = '<span class="cf-submit-label">Send enquiry</span>' +
+      '<i class="ri-send-plane-fill cf-submit-icon" aria-hidden="true"></i>';
     const note = document.querySelector('.cf-note');
     if (note) note.innerHTML = '<span style="color:#e5484d">Could not send — try again, or email directly.</span>';
   }
