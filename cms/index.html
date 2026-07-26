@@ -4021,23 +4021,29 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 
 /* right half */
 .contact-visual { position: relative; background: #f1f1f2; overflow: hidden; }
+/* Same blur cross-dissolve as the testimonials, so the two rotations on this
+   panel feel like one idea. */
 .cv-shot {
-  position: absolute; inset: 0; opacity: 0;
-  transition: opacity .9s ease;
+  position: absolute; inset: 0;
+  opacity: 0; filter: blur(9px);
+  transition: opacity .85s ease, filter .85s ease;
 }
-.cv-shot.is-on { opacity: 1; }
-/* the pan runs slightly longer than the 3s slide so it never visibly stops */
-.cv-shot.is-on img, .cv-shot.is-on video { animation: cv-pan 3.9s ease-in-out forwards; }
+.cv-shot.is-on { opacity: 1; filter: blur(0); }
+
+/* The pan is on the media itself rather than the active slide, with
+   fill-mode forwards — an outgoing shot holds where it got to instead of
+   snapping back to the left edge while it fades. JS restarts it on entry. */
+.cv-shot img, .cv-shot video {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  object-position: 0% 50%;
+  animation: cv-pan 5s ease-in-out forwards;
+}
 @keyframes cv-pan {
   from { object-position: 0% 50%; }
   to   { object-position: 100% 50%; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .cv-shot.is-on img, .cv-shot.is-on video { animation: none; object-position: 50% 50%; }
-}
-.cv-shot img, .cv-shot video {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  object-position: 0% 50%;
+  .cv-shot img, .cv-shot video { animation: none; object-position: 50% 50%; }
 }
 .cv-scrim {
   position: absolute; inset: 0;
@@ -4542,11 +4548,26 @@ function renderContactVisual(c) {
 
   if (cvTimer) clearInterval(cvTimer);
   cvIndex = 0;
+
+  /* Restart the pan from the left each time a slide comes in. Without this the
+     animation only ever runs once and later views would sit at the end. */
+  const restartPan = el => {
+    const m = el.querySelector('img, video');
+    if (!m) return;
+    m.style.animation = 'none';
+    void m.offsetWidth;        /* force a reflow so the restart takes */
+    m.style.animation = '';
+  };
+  restartPan(shots.querySelector('.cv-shot'));
+
+  /* Deliberately shorter than the 5s pan: the crossfade lands around 60% of the
+     way across, so there is always movement on screen. */
   if (imgs.length > 1) {
     cvTimer = setInterval(() => {
       const all = shots.querySelectorAll('.cv-shot');
       all[cvIndex].classList.remove('is-on');
       cvIndex = (cvIndex + 1) % all.length;
+      restartPan(all[cvIndex]);
       all[cvIndex].classList.add('is-on');
     }, 3000);
   }
