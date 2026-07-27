@@ -414,15 +414,6 @@ textarea {
   font-size: 10px; font-weight: 600; letter-spacing: .1em;
   color: var(--ink-mid); background: #f2f2f2; padding: 3px 8px; border-radius: 5px;
 }
-.tm-pic {
-  width: 54px; height: 54px; flex-shrink: 0; border-radius: 50%;
-  border: 1px dashed var(--border-2); background: #fafafa; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; position: relative; transition: border-color .15s ease;
-}
-.tm-pic:hover { border-color: var(--ink); }
-.tm-pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.tm-pic i { font-size: 16px; color: var(--ink-soft); }
 .tm-body { display: flex; gap: 12px; align-items: flex-start; }
 .tm-fields { flex: 1; min-width: 0; }
 
@@ -2680,7 +2671,6 @@ function embeddedImageRefs() {
     }
   });
   (state.testimonials || []).forEach((t, i) => {
-    if (embedded(t.avatar)) refs.push({ get: () => t.avatar, set: v => { t.avatar = v; }, name: 'avatar-' + i });
     if (embedded(t.proof))  refs.push({ get: () => t.proof,  set: v => { t.proof  = v; }, name: 'proof-' + i });
   });
   (state.stream || []).forEach((s, i) => {
@@ -2808,9 +2798,6 @@ function renderTestimonialsCms() {
         <button class="block-btn is-danger" data-action="tm-del" data-i="${i}" title="Remove"><i class="ri-delete-bin-line"></i></button>
       </div>
       <div class="tm-body">
-        <div class="tm-pic" data-action="tm-pic" data-i="${i}" title="Profile picture">
-          ${t.avatar ? `<img src="${escAttr(t.avatar)}" alt="">` : `<i class="ri-user-line"></i>`}
-        </div>
         <div class="tm-fields">
           <div class="field">
             <textarea rows="3" data-tm="quote" data-i="${i}" placeholder="What they said">${escHtml(t.quote || '')}</textarea>
@@ -2846,7 +2833,7 @@ function renderTestimonialsCms() {
     };
   });
 
-  /* avatar + proof uploads share the same intake as every other image */
+  /* proof screenshots go through the same intake as every other image */
   const pick = async (i, key, msg) => {
     const file = await pickFile('image/*');
     if (!file) return;
@@ -2857,17 +2844,6 @@ function renderTestimonialsCms() {
       if (await saveState()) { renderTestimonialsCms(); toast(msg, 'success'); }
     } catch (err) { toast('Upload failed: ' + err.message, 'error'); }
   };
-
-  list.querySelectorAll('[data-action="tm-pic"]').forEach(el => {
-    const i = +el.dataset.i;
-    el.onclick = () => pick(i, 'avatar', 'Picture added');
-    enableDrop(el, async files => {
-      const uri = await ingestImage(files[0]);
-      if (!uri) return;
-      state.testimonials[i].avatar = uri;
-      if (await saveState()) { renderTestimonialsCms(); toast('Picture added', 'success'); }
-    });
-  });
 
   list.querySelectorAll('[data-action="tm-proof"]').forEach(el => {
     el.onclick = () => pick(+el.dataset.i, 'proof', 'Screenshot attached');
@@ -3432,7 +3408,7 @@ document.addEventListener('keydown', e => {
 
 document.getElementById('addTmBtn').onclick = () => {
   state.testimonials = state.testimonials || [];
-  state.testimonials.push({ quote: '', name: '', handle: '', avatar: null, proof: null });
+  state.testimonials.push({ quote: '', name: '', handle: '', proof: null });
   saveState();
   renderTestimonialsCms();
 };
@@ -3521,7 +3497,7 @@ function buildHtml(d) {
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;600&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css">
 </noscript>
-${d.contentUrl ? `<link rel="preload" as="fetch" crossorigin href="${escAttr(d.contentUrl)}">\n` : ''}<link rel="icon" id="favicon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 50'%3E%3Cpath d='M6 36 C 14 14, 26 14, 28 32 C 29 40, 22 42, 20 36 C 18 30, 28 24, 38 28 C 46 31, 50 38, 56 32 C 62 26, 60 14, 52 14 C 46 14, 44 22, 50 26 C 58 30, 70 24, 76 18 C 82 12, 92 16, 88 26 C 84 36, 70 38, 66 32 C 62 26, 70 22, 78 26 C 86 30, 96 36, 108 30' fill='none' stroke='%230a0a0a' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M104 36 C 108 38, 112 36, 114 34' fill='none' stroke='%230a0a0a' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+${d.contentUrl ? `<link rel="preload" as="fetch" crossorigin href="${escAttr(d.contentUrl)}">\n` : ''}<link rel="icon" id="favicon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 50'%3E%3Cstyle%3Epath{stroke:%230a0a0a}@media(prefers-color-scheme:dark){path{stroke:%23ffffff}}%3C/style%3E%3Cpath d='M6 36 C 14 14, 26 14, 28 32 C 29 40, 22 42, 20 36 C 18 30, 28 24, 38 28 C 46 31, 50 38, 56 32 C 62 26, 60 14, 52 14 C 46 14, 44 22, 50 26 C 58 30, 70 24, 76 18 C 82 12, 92 16, 88 26 C 84 36, 70 38, 66 32 C 62 26, 70 22, 78 26 C 86 30, 96 36, 108 30' fill='none' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M104 36 C 108 38, 112 36, 114 34' fill='none' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -3662,28 +3638,18 @@ body {
   font-size: 14px; line-height: 21px; letter-spacing: -0.1px;
   color: var(--ink); opacity: .88; margin-bottom: 12px;
 }
-.tm-by { display: flex; align-items: center; gap: 9px; }
-.tm-avatar {
-  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-  object-fit: cover; background: #ececec; display: block;
-}
-.tm-mono {
-  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--field); border: 1px solid var(--field-border);
-  font-size: 10px; font-weight: 600; letter-spacing: .02em; color: var(--ink-mid);
-}
+.tm-by { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
 .tm-name { font-size: 12px; font-weight: 600; color: var(--ink); line-height: 1.3; }
 .tm-handle { font-size: 11px; color: var(--ink-soft); line-height: 1.3; }
 .tm-proof {
-  margin-left: auto; flex-shrink: 0;
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 10px; letter-spacing: .04em; color: var(--ink-soft);
-  background: none; border: none; padding: 4px; cursor: pointer;
-  border-radius: 6px; transition: color .2s ease, background .2s ease;
+  flex-shrink: 0;
+  display: inline-flex; align-items: center; gap: 3px;
+  font-family: var(--fi); font-size: 11px; color: var(--ink-soft);
+  background: none; border: none; padding: 0; cursor: pointer;
+  transition: color .2s ease;
 }
-.tm-proof:hover { color: var(--ink); background: var(--field); }
-.tm-proof i { font-size: 13px; line-height: 1; }
+.tm-proof:hover { color: var(--ink-mid); }
+.tm-proof i { font-size: 12px; line-height: 1; color: #2962ff; }
 @media (prefers-reduced-motion: reduce) {
   .tm-slide { transition: opacity .2s ease; filter: none; transform: none; }
   .tm-stage { transition: none; }
@@ -4063,13 +4029,7 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 }
 .cv-tm-slide.is-on { opacity: 1; filter: blur(0); position: relative; inset: auto; }
 .cv-tm-quote { font-size: 12.5px; line-height: 18px; color: var(--ink); }
-.cv-tm-by { display: flex; align-items: center; gap: 7px; margin-top: 9px; }
-.cv-tm-avatar { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
-.cv-tm-mono {
-  width: 20px; height: 20px; border-radius: 50%; background: var(--ink);
-  color: #fff; font-size: 8px; font-weight: 600;
-  display: flex; align-items: center; justify-content: center;
-}
+.cv-tm-by { display: flex; align-items: baseline; gap: 6px; margin-top: 9px; flex-wrap: wrap; }
 .cv-tm-name { font-size: 11px; font-weight: 600; color: var(--ink); line-height: 1.3; }
 .cv-tm-handle { font-size: 10px; color: var(--ink-soft); line-height: 1.3; }
 
@@ -4523,13 +4483,10 @@ function renderContactVisual(c) {
     tm.innerHTML = '<div class="cv-tm-slide is-on"></div><div class="cv-tm-slide"></div>';
     const slides = [...tm.querySelectorAll('.cv-tm-slide')];
     const fill = (el, t) => {
-      const av = t.avatar
-        ? '<img class="cv-tm-avatar" src="' + esc(t.avatar) + '" alt="">'
-        : '<span class="cv-tm-mono">' + esc(tmInitials(t.name)) + '</span>';
       el.innerHTML = '<div class="cv-tm-quote">" ' + esc(t.quote) + ' "</div>' +
-        '<div class="cv-tm-by">' + av +
-        '<div><div class="cv-tm-name">' + esc(t.name) + '</div>' +
-        (t.handle ? '<div class="cv-tm-handle">' + esc(t.handle) + '</div>' : '') + '</div></div>';
+        '<div class="cv-tm-by">' +
+        '<span class="cv-tm-name">' + esc(t.name) + '</span>' +
+        (t.handle ? '<span class="cv-tm-handle">' + esc(t.handle) + '</span>' : '') + '</div>';
     };
     fill(slides[0], items[0]);
     cvTmIndex = 0;
@@ -4690,24 +4647,16 @@ async function cfSubmit(e) {
 let tmItems = [], tmIndex = 0, tmTimer = null, tmSlides = [];
 const TM_INTERVAL = 4200;
 
-function tmInitials(name) {
-  return String(name || '?').trim().split(/\s+/).slice(0, 2)
-    .map(w => w[0]).join('').toUpperCase() || '?';
-}
 
 function tmSlideHtml(t) {
-  const avatar = t.avatar
-    ? '<img class="tm-avatar" src="' + esc(t.avatar) + '" alt="" loading="lazy" decoding="async">'
-    : '<span class="tm-mono" aria-hidden="true">' + esc(tmInitials(t.name)) + '</span>';
-  const handle = t.handle ? '<div class="tm-handle">' + esc(t.handle) + '</div>' : '';
+  const handle = t.handle ? '<span class="tm-handle">' + esc(t.handle) + '</span>' : '';
   const proof = t.proof
-    ? '<button class="tm-proof" data-proof="' + esc(t.proof) + '" title="See the original message">' +
-      '<i class="ri-image-line"></i>original</button>'
+    ? '<button class="tm-proof" data-proof="' + esc(t.proof) + '" title="Click to see the original message">' +
+      '<i class="ri-verified-badge-fill"></i>Verified</button>'
     : '';
   return '<blockquote class="tm-quote">' + esc(t.quote) + '</blockquote>' +
-    '<div class="tm-by">' + avatar +
-      '<div><div class="tm-name">' + esc(t.name) + '</div>' + handle + '</div>' +
-      proof +
+    '<div class="tm-by">' +
+      '<span class="tm-name">' + esc(t.name) + '</span>' + handle + proof +
     '</div>';
 }
 
@@ -4788,8 +4737,9 @@ document.addEventListener('click', e => {
    The static SVG in <head> covers no-JS and stays as the final frame. */
 (function animateFavicon() {
   const link = document.getElementById('favicon');
-  if (!link || !window.Path2D || !window.requestAnimationFrame) return;
+  if (!link || !window.Path2D) return;
   const D1 = 'M6 36 C 14 14, 26 14, 28 32 C 29 40, 22 42, 20 36 C 18 30, 28 24, 38 28 C 46 31, 50 38, 56 32 C 62 26, 60 14, 52 14 C 46 14, 44 22, 50 26 C 58 30, 70 24, 76 18 C 82 12, 92 16, 88 26 C 84 36, 70 38, 66 32 C 62 26, 70 22, 78 26 C 86 30, 96 36, 108 30', D2 = 'M104 36 C 108 38, 112 36, 114 34';
+
   const NS = 'http://www.w3.org/2000/svg';
   const probe = document.createElementNS(NS, 'svg');
   probe.setAttribute('width', '0'); probe.setAttribute('height', '0');
@@ -4805,49 +4755,98 @@ document.addEventListener('click', e => {
   const cv = document.createElement('canvas');
   cv.width = cv.height = SIZE;
   const ctx = cv.getContext('2d');
+  if (!ctx) return;
   const p1 = new Path2D(D1), p2 = new Path2D(D2);
   const scale = SIZE / VW, offY = (SIZE - VH * scale) / 2;
 
-  /* Draw takes ~2s, then the finished signature holds for the rest of the
-     5s cycle before starting over. */
-  const START = 150, MAIN = 1550, TAIL_AT = 1550, TAIL = 450;
-  const CYCLE = 5000;
+  /* Browser chrome, not the page: a dark-themed browser draws the tab strip
+     dark, so the mark has to invert to stay visible. */
+  const darkQ = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  const inkFor = () => (darkQ && darkQ.matches) ? '#ffffff' : '#0a0a0a';
+
+  const CYCLE = 2000, START = 60, MAIN = 1050, TAIL_AT = 1040, TAIL = 300;
   const DRAW_END = START + MAIN + TAIL;
   const ease = x => { x = x < 0 ? 0 : x > 1 ? 1 : x; return x * x * (3 - 2 * x); };
-  const t0 = performance.now();
-  let lastPaint = 0;
-  let wasHolding = false;
+
+  function paint(t, colour) {
+    ctx.clearRect(0, 0, SIZE, SIZE);
+    ctx.save();
+    ctx.translate(0, offY); ctx.scale(scale, scale);
+    ctx.strokeStyle = colour; ctx.lineWidth = 7;
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    const a = ease((t - START) / MAIN);
+    ctx.setLineDash([L1, L1]); ctx.lineDashOffset = L1 * (1 - a);
+    ctx.stroke(p1);
+    const b = ease((t - TAIL_AT) / TAIL);
+    ctx.setLineDash([L2, L2]); ctx.lineDashOffset = L2 * (1 - b);
+    ctx.stroke(p2);
+    ctx.restore();
+    try { link.href = cv.toDataURL('image/png'); } catch (err) {}
+  }
+
+  let raf = null, t0 = performance.now(), lastPaint = 0, holding = false;
 
   function frame(now) {
     const t = (now - t0) % CYCLE;
-    /* While the signature sits complete there is nothing new to draw, so stop
-       re-encoding the PNG — one final paint, then idle until the next cycle. */
-    const holding = t >= DRAW_END;
-    if (holding && wasHolding) { requestAnimationFrame(frame); return; }
-    wasHolding = holding;
-
-    if (now - lastPaint >= 50 || holding) {
+    const nowHolding = t >= DRAW_END;
+    /* nothing new to draw while the finished mark just sits there */
+    if (!(nowHolding && holding) && (now - lastPaint >= 45 || nowHolding !== holding)) {
       lastPaint = now;
-      ctx.clearRect(0, 0, SIZE, SIZE);
-      ctx.save();
-      ctx.translate(0, offY); ctx.scale(scale, scale);
-      ctx.strokeStyle = '#0a0a0a'; ctx.lineWidth = 7;
-      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-      const a = ease((t - START) / MAIN);
-      ctx.setLineDash([L1, L1]); ctx.lineDashOffset = L1 * (1 - a);
-      ctx.stroke(p1);
-      const b = ease((t - TAIL_AT) / TAIL);
-      ctx.setLineDash([L2, L2]); ctx.lineDashOffset = L2 * (1 - b);
-      ctx.stroke(p2);
-      ctx.restore();
-      try { link.href = cv.toDataURL('image/png'); } catch (err) { return; }
+      paint(t, inkFor());
     }
-    requestAnimationFrame(frame);
+    holding = nowHolding;
+    raf = requestAnimationFrame(frame);
   }
-  requestAnimationFrame(frame);
+
+  function start() {
+    if (raf) return;
+    t0 = performance.now(); lastPaint = 0; holding = false;
+    raf = requestAnimationFrame(frame);
+  }
+  function stop() {
+    if (raf) { cancelAnimationFrame(raf); raf = null; }
+  }
+
+  /* ── away state ──
+     requestAnimationFrame is suspended in a background tab, so park on the
+     finished signature rather than leaving a half-drawn one frozen. */
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { stop(); paint(DRAW_END, inkFor()); }
+    else start();
+  });
+
+  /* repaint immediately if the browser theme flips mid-visit */
+  if (darkQ) {
+    const onScheme = () => { if (document.hidden) paint(DRAW_END, inkFor()); };
+    darkQ.addEventListener ? darkQ.addEventListener('change', onScheme)
+                           : darkQ.addListener && darkQ.addListener(onScheme);
+  }
+
+  if (!document.hidden) start();
+  else paint(DRAW_END, inkFor());
 })();
 
-const TZ = 'Europe/Paris';
+/* ═════════ AWAY TITLE ═════════
+   Independent of the favicon: a browser suspends animation in a background tab
+   but still lets the title change, so this is the part that actually reaches
+   someone who has tabbed away. Kept deliberately quiet — no unread-style
+   counters or fake notifications. */
+(function awayTitle() {
+  const AWAY = '\u2190 Still here when you are';
+  let real = document.title;
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (document.title !== AWAY) real = document.title;
+      document.title = AWAY;
+    } else {
+      document.title = real;
+    }
+  });
+})();
+
+/* Alex's local time, so a client can see what o'clock it is at his end.
+   23:00-05:59 night · 06:00-11:59 morning · 12:00-17:59 afternoon · 18:00-22:59 evening. */
+const TZ = 'Europe/Madrid';
 function localHour() {
   const parts = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: 'numeric', hour12: false }).formatToParts(new Date());
   return parseInt(parts.find(p => p.type === 'hour').value, 10);
@@ -4860,10 +4859,11 @@ function updateStatus() {
   const hour = localHour();
   const daytime = hour >= 6 && hour < 20;
   icon.className = 'sf-icon ' + (daytime ? 'ri-sun-line' : 'ri-moon-clear-line');
-  greet.textContent = hour < 6  ? 'Good evening'
+  greet.textContent = hour < 6  ? 'Good night'
                     : hour < 12 ? 'Good morning'
                     : hour < 18 ? 'Good afternoon'
-                    :             'Good evening';
+                    : hour < 23 ? 'Good evening'
+                    :             'Good night';
   time.textContent = new Intl.DateTimeFormat('en-GB', {
     timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: false
   }).format(new Date());
