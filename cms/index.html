@@ -3638,11 +3638,14 @@ body {
   font-size: 14px; line-height: 21px; letter-spacing: -0.1px;
   color: var(--ink); opacity: .88; margin-bottom: 12px;
 }
-.tm-by { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; }
-.tm-name { font-size: 12px; font-weight: 600; color: var(--ink); line-height: 1.3; }
-.tm-handle { font-size: 11px; color: var(--ink-soft); line-height: 1.3; }
+/* name over position on the left; the badge sits right, centred against the
+   pair rather than aligned to either line */
+.tm-by { display: flex; align-items: center; gap: 12px; }
+.tm-who { display: flex; flex-direction: column; min-width: 0; }
+.tm-name { font-size: 12px; font-weight: 600; color: var(--ink); line-height: 1.35; }
+.tm-handle { font-size: 11px; color: var(--ink-soft); line-height: 1.35; }
 .tm-proof {
-  flex-shrink: 0;
+  flex-shrink: 0; margin-left: auto;
   display: inline-flex; align-items: center; gap: 3px;
   font-family: var(--fi); font-size: 11px; color: var(--ink-soft);
   background: none; border: none; padding: 0; cursor: pointer;
@@ -4029,7 +4032,7 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 }
 .cv-tm-slide.is-on { opacity: 1; filter: blur(0); position: relative; inset: auto; }
 .cv-tm-quote { font-size: 12.5px; line-height: 18px; color: var(--ink); }
-.cv-tm-by { display: flex; align-items: baseline; gap: 6px; margin-top: 9px; flex-wrap: wrap; }
+.cv-tm-by { display: flex; flex-direction: column; margin-top: 9px; }
 .cv-tm-name { font-size: 11px; font-weight: 600; color: var(--ink); line-height: 1.3; }
 .cv-tm-handle { font-size: 10px; color: var(--ink-soft); line-height: 1.3; }
 
@@ -4656,7 +4659,8 @@ function tmSlideHtml(t) {
     : '';
   return '<blockquote class="tm-quote">' + esc(t.quote) + '</blockquote>' +
     '<div class="tm-by">' +
-      '<span class="tm-name">' + esc(t.name) + '</span>' + handle + proof +
+      '<span class="tm-who"><span class="tm-name">' + esc(t.name) + '</span>' + handle + '</span>' +
+      proof +
     '</div>';
 }
 
