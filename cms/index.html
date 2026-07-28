@@ -3595,11 +3595,19 @@ body {
   mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
 }
+/* The distance is measured in pixels once the logos have actually loaded.
+   Using -50% meant the browser resolved it against whatever the track happened
+   to measure at that instant — which is zero before JS injects the logos, and
+   still tiny while their images are loading. That's why it crawled on a cold
+   load and lurched after a hover. */
 .sb-carousel-track {
-  display: flex; align-items: center; gap: 10px;
-  width: max-content; animation: sbScroll 28s linear infinite;
+  display: flex; align-items: center; gap: 8px;
+  width: max-content;
+  animation: sbScroll var(--wm-duration, 28s) linear infinite;
+  animation-play-state: paused;
 }
-.sb-carousel-track:hover { animation-play-state: paused; }
+.sb-carousel-track.is-ready { animation-play-state: running; }
+.sb-carousel-track.is-ready:hover { animation-play-state: paused; }
 .sb-wm {
   flex-shrink: 0;
   display: inline-flex; align-items: center;
@@ -3609,7 +3617,7 @@ body {
 .sb-wm--logo img { height: 32px; width: auto; display: block; }
 @keyframes sbScroll {
   from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  to   { transform: translateX(calc(var(--wm-shift, 0px) * -1)); }
 }
 /* ── testimonials ──
    One at a time in the sidebar, cross-fading through a slight blur. Two stacked
@@ -3989,7 +3997,12 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 .cf-done p { font-size: 13px; color: var(--ink-mid); margin-top: 8px; line-height: 19px; }
 
 /* right half */
-.contact-visual { position: relative; background: #f1f1f2; overflow: hidden; }
+.contact-visual {
+  position: relative; background: #f1f1f2; overflow: hidden;
+  /* matching the parent's corners here stops a subpixel seam showing through
+     the panel's own clip */
+  border-radius: 0 18px 18px 0;
+}
 /* Same blur cross-dissolve as the testimonials, so the two rotations on this
    panel feel like one idea. */
 .cv-shot {
@@ -4025,12 +4038,20 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
   border-radius: 12px; padding: 13px 14px;
   box-shadow: 0 8px 26px rgba(0,0,0,.14);
 }
-.cv-tm-slide {
-  opacity: 0; filter: blur(5px);
-  transition: opacity .5s ease, filter .5s ease;
-  position: absolute; inset: 13px 14px auto 14px;
+.cv-tm-stage {
+  position: relative;
+  transition: height .42s cubic-bezier(.22,.61,.36,1);
 }
-.cv-tm-slide.is-on { opacity: 1; filter: blur(0); position: relative; inset: auto; }
+.cv-tm-slide {
+  position: absolute; inset: 0 0 auto 0;
+  opacity: 0; filter: blur(6px); transform: translateY(4px);
+  transition: opacity .5s ease, filter .5s ease, transform .5s cubic-bezier(.22,.61,.36,1);
+}
+.cv-tm-slide.is-on { opacity: 1; filter: blur(0); transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .cv-tm-slide { transition: opacity .2s ease; filter: none; transform: none; }
+  .cv-tm-stage { transition: none; }
+}
 .cv-tm-quote { font-size: 12.5px; line-height: 18px; color: var(--ink); }
 .cv-tm-by { display: flex; flex-direction: column; margin-top: 9px; }
 .cv-tm-name { font-size: 11px; font-weight: 600; color: var(--ink); line-height: 1.3; }
@@ -4053,7 +4074,7 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
     grid-template-columns: 1fr; max-width: none; max-height: 92dvh;
     border-radius: 16px 16px 0 0;
   }
-  .contact-visual { display: none; }
+  .contact-visual { display: none; border-radius: 0; }
   .contact-form { padding: 26px 20px 24px; }
   .cf-row { grid-template-columns: 1fr; gap: 0; }
   .cf-field input, .cf-field textarea { font-size: 16px; }  /* no iOS zoom */
@@ -4483,8 +4504,10 @@ function renderContactVisual(c) {
   if (!items.length) { tm.hidden = true; tm.innerHTML = ''; }
   else {
     tm.hidden = false;
-    tm.innerHTML = '<div class="cv-tm-slide is-on"></div><div class="cv-tm-slide"></div>';
+    tm.innerHTML = '<div class="cv-tm-stage"><div class="cv-tm-slide is-on"></div><div class="cv-tm-slide"></div></div>';
+    const stage = tm.querySelector('.cv-tm-stage');
     const slides = [...tm.querySelectorAll('.cv-tm-slide')];
+    const fit = el => { const h = el.scrollHeight; if (h) stage.style.height = h + 'px'; };
     const fill = (el, t) => {
       el.innerHTML = '<div class="cv-tm-quote">" ' + esc(t.quote) + ' "</div>' +
         '<div class="cv-tm-by">' +
@@ -4493,6 +4516,7 @@ function renderContactVisual(c) {
     };
     fill(slides[0], items[0]);
     cvTmIndex = 0;
+    requestAnimationFrame(() => fit(slides[0]));
     if (cvTmTimer) clearInterval(cvTmTimer);
     if (items.length > 1) {
       cvTmTimer = setInterval(() => {
@@ -4500,6 +4524,7 @@ function renderContactVisual(c) {
         const incoming = slides.find(x => !x.classList.contains('is-on'));
         const outgoing = slides.find(x => x.classList.contains('is-on'));
         fill(incoming, items[cvTmIndex]);
+        fit(incoming);                 /* height first, so the card eases */
         incoming.classList.add('is-on');
         if (outgoing) outgoing.classList.remove('is-on');
       }, 4600);
@@ -4836,7 +4861,7 @@ document.addEventListener('click', e => {
    someone who has tabbed away. Kept deliberately quiet — no unread-style
    counters or fake notifications. */
 (function awayTitle() {
-  const AWAY = '\u2190 Still here when you are';
+  const AWAY = '\u2190 Still designing over here';
   let real = document.title;
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
@@ -5105,13 +5130,66 @@ function renderSkills(c) {
     .join('');
 }
 
+const WM_SPEED = 34;   /* px per second, so more logos means a longer loop, not a faster one */
+
 function renderWordmarks(c) {
-  const one = (c.wordmarks || [])
-    .filter(w => w.logo)
-    .map(w => '<span class="sb-wm sb-wm--logo"><img src="' + esc(w.logo) + '" alt="' + esc(w.name || '') + '" loading="lazy" decoding="async"></span>')
+  const track = document.getElementById('wmTrack');
+  if (!track) return;
+  const logos = (c.wordmarks || []).filter(w => w.logo);
+  const one = logos
+    .map(w => '<span class="sb-wm sb-wm--logo"><img src="' + esc(w.logo) + '" alt="' + esc(w.name || '') + '" decoding="async"></span>')
     .join('');
   /* duplicated so the marquee can loop seamlessly */
-  document.getElementById('wmTrack').innerHTML = one + one;
+  track.classList.remove('is-ready');
+  track.innerHTML = one + one;
+  if (!logos.length) return;
+
+  const measure = () => {
+    const items = track.children;
+    const half = items.length / 2;
+    if (!half) return false;
+    /* exactly one copy's advance, gaps included — no arithmetic to get wrong */
+    const shift = items[half].offsetLeft - items[0].offsetLeft;
+    if (shift <= 0) return false;
+    track.style.setProperty('--wm-shift', shift + 'px');
+    track.style.setProperty('--wm-duration', (shift / WM_SPEED).toFixed(2) + 's');
+    track.classList.add('is-ready');
+    return true;
+  };
+
+  /* If the measurement can't be taken — layout not settled, images blocked —
+     fall back to the percentage form so it still scrolls. Frozen would be
+     worse than approximate. */
+  const measureOrFallback = () => {
+    if (measure()) return;
+    setTimeout(() => {
+      if (measure()) return;
+      track.style.setProperty('--wm-shift', '50%');
+      track.style.setProperty('--wm-duration', '28s');
+      track.classList.add('is-ready');
+    }, 600);
+  };
+
+  /* wait for the logos to have real dimensions, but never hang on a broken one */
+  const imgs = [...track.querySelectorAll('img')];
+  const settled = imgs.map(img => img.complete
+    ? Promise.resolve()
+    : new Promise(res => { img.addEventListener('load', res, { once: true });
+                           img.addEventListener('error', res, { once: true }); }));
+  Promise.race([
+    Promise.all(settled),
+    new Promise(res => setTimeout(res, 2500))
+  ]).then(() => requestAnimationFrame(measureOrFallback));
+
+  /* a resize changes the column width, so the loop distance changes with it */
+  clearTimeout(renderWordmarks._t);
+  if (!renderWordmarks._bound) {
+    renderWordmarks._bound = true;
+    window.addEventListener('resize', () => {
+      clearTimeout(renderWordmarks._t);
+      renderWordmarks._t = setTimeout(measure, 200);
+    });
+  }
 }
 
 function captionHtml(sh) {
