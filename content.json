@@ -544,6 +544,12 @@
       "metric": "+92% satisfaction score"
     },
     {
+      "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963636/e9n4js9cmj9flstniipa.mp4",
+      "projectIdx": 6,
+      "caption": "Jackpot Studio",
+      "metric": "0 → 50k+ users"
+    },
+    {
       "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015618/kir1x0lyxybrwfyspiya.png",
       "projectIdx": 5,
       "caption": "Emaily",
@@ -554,12 +560,6 @@
       "projectIdx": 2,
       "caption": "Raena AI",
       "metric": "0 → 1M+ users"
-    },
-    {
-      "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963636/e9n4js9cmj9flstniipa.mp4",
-      "projectIdx": 6,
-      "caption": "Jackpot Studio",
-      "metric": "0 → 50k+ users"
     },
     {
       "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851714/ig8ybuzn1uu59qcr1y0q.webp",
@@ -580,6 +580,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-05T22:36:35.100Z",
-  "savedAt": "2026-08-05T22:37:02.948Z"
+  "publishedAt": "2026-08-05T22:37:16.761Z",
+  "savedAt": "2026-08-05T22:38:50.172Z"
 }
