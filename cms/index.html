@@ -5995,6 +5995,20 @@ lbImg.addEventListener('wheel', e => {
     return legacyCopy(url);
   };
 
+  /* Desktop Chrome exposes navigator.share but routes it through the OS, where
+     an extension or a blocked dialog can leave the promise unsettled — the
+     await then never returns and the button appears dead. Copying is also just
+     the better desktop behaviour. So the sheet is reserved for touch devices,
+     where it's both reliable and genuinely more useful. */
+  const isTouch = () =>
+    window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
+  const canShare = data => {
+    if (!navigator.share) return false;
+    if (navigator.canShare) { try { return navigator.canShare(data); } catch (e) { return false; } }
+    return true;
+  };
+
   btn.addEventListener('click', async () => {
     if (btn.classList.contains('is-done')) return;
     const p = projects[currentProject];
@@ -6003,16 +6017,18 @@ lbImg.addEventListener('wheel', e => {
       ? location.origin
       : 'https://alexcolombel.com';
     const url = origin + '/' + p.slug;
+    const data = { title: p.title, text: p.client || p.title, url };
 
-    if (navigator.share) {
+    if (isTouch() && canShare(data)) {
       try {
-        await navigator.share({ title: p.title, text: p.client || p.title, url });
-        return;
+        await navigator.share(data);
+        return;                                   /* shared — nothing to say */
       } catch (e) {
-        /* dismissing the sheet rejects too — don't fall through to a copy then */
-        if (e && e.name === 'AbortError') return;
+        if (e && e.name === 'AbortError') return;  /* dismissed on purpose */
+        /* anything else — sheet unavailable, blocked — falls through to copy */
       }
     }
+
     flash(await copy(url) ? 'Link copied' : 'Copy failed');
   });
 })();
