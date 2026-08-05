@@ -71,7 +71,11 @@
     "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963042/mnjoch8ubvcdujanywqx.mp4": "2880x2880",
     "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963636/e9n4js9cmj9flstniipa.mp4": "1600x1200",
     "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963687/lih8w7ms5yjhy3urgfif.mp4": "1600x1200",
-    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963787/dwjb5hnfyu3wicqme4bk.mp4": "1600x1200"
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963787/dwjb5hnfyu3wicqme4bk.mp4": "1600x1200",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785963997/w1buiw138kdcxzrcdlcr.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964074/sn9lvexqopv9wzvvktdy.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964214/r7l8zwvjtbkalq6lu0a0.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964279/e37trpf0a109ncq9ywyd.png": "3200x2400"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -412,7 +416,7 @@
       ]
     },
     {
-      "title": "Jackpot",
+      "title": "Jackpot Studio",
       "client": "Jackpot Studio",
       "website": "",
       "desc1": "",
@@ -424,12 +428,30 @@
             "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963687/lih8w7ms5yjhy3urgfif.mp4",
             "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963787/dwjb5hnfyu3wicqme4bk.mp4"
           ],
-          "caption": ""
+          "caption": "Game animations"
         },
         {
           "type": "image",
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785962962/mq5n11obbbhe9uskrlf7.png",
+          "caption": "Game UI"
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785963997/w1buiw138kdcxzrcdlcr.png",
+          "caption": "Marketing website"
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964074/sn9lvexqopv9wzvvktdy.png",
           "caption": ""
+        },
+        {
+          "type": "duo",
+          "images": [
+            "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964214/r7l8zwvjtbkalq6lu0a0.png",
+            "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964279/e37trpf0a109ncq9ywyd.png"
+          ],
+          "caption": "Craps UI and game assets"
         }
       ]
     }
@@ -478,8 +500,8 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-05T20:51:08.626Z",
-  "savedAt": "2026-08-05T21:03:08.984Z",
+  "publishedAt": "2026-08-05T21:03:25.577Z",
+  "savedAt": "2026-08-05T21:12:17.412Z",
   "contact": {
     "accessKey": "970ccfd7-5da1-4fca-a8d8-3afa477fe725",
     "heading": "Start a project",
