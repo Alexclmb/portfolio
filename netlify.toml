@@ -18,7 +18,6 @@
   for = "/cms"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow, noarchive"
-
 [[headers]]
   for = "/cms/*"
   [headers.values]
@@ -38,3 +37,36 @@
   for = "/index.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# ── project URLs ──
+# Each project has its own path (/vallum, /kodai …) but the site is a single
+# static file, so those paths don't exist on disk. Serve index.html for them
+# with a 200 rather than a redirect: the URL stays as typed, and the page reads
+# it on load to open the right modal.
+#
+# Ordering matters — these run top to bottom, so anything real has to be
+# excluded before the catch-all.
+[[redirects]]
+  from = "/cms"
+  to = "/cms/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/cms/*"
+  to = "/cms/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/content.json"
+  to = "/content.json"
+  status = 200
+
+[[redirects]]
+  from = "/robots.txt"
+  to = "/robots.txt"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

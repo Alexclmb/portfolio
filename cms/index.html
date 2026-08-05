@@ -400,6 +400,22 @@ textarea {
 }
 
 /* ── testimonial rows ── */
+.hint-inline { font-weight: 400; color: var(--ink-soft); }
+.slug-field {
+  display: flex; align-items: center;
+  background: var(--panel); border: 1px solid var(--border-2); border-radius: 8px;
+  transition: border-color .15s ease;
+}
+.slug-field:focus-within { border-color: var(--ink); }
+.slug-prefix {
+  padding: 9px 0 9px 12px; font-size: 14px; color: var(--ink-soft);
+  font-family: var(--fi); user-select: none;
+}
+.slug-field input {
+  border: none; background: none; padding-left: 2px;
+}
+.slug-field input:focus { border: none; box-shadow: none; }
+
 .tm-row {
   border: 1px solid var(--border-2); border-radius: 10px;
   background: var(--panel); padding: 12px; margin-bottom: 10px;
@@ -1322,6 +1338,18 @@ const DEFAULTS = {
   "ctaPrimaryLabel": "Start a project",
   "ctaSubject": "Project Enquiry",
   "ctaSecondaryLabel": "Quick message",
+  "contact": {
+    "accessKey": "970ccfd7-5da1-4fca-a8d8-3afa477fe725",
+    "heading": "Start a project",
+    "sub": "Tell me what you're building.",
+    "budgets": [
+      "Under €5k",
+      "€5–10k",
+      "€10–25k",
+      "€25k+",
+      "Not sure yet"
+    ]
+  },
   "cdn": {
     "cloudName": "pc2jrabx",
     "preset": "portfolio"
@@ -1373,7 +1401,33 @@ const DEFAULTS = {
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015609/jmujrykimopdtod9ewts.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015618/kir1x0lyxybrwfyspiya.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/video/upload/v1785015938/bvsdtrd78sxro4wwlloh.mp4": "1920x1080",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785017506/htzsfjkhxsx6jgynuy2x.png": "3200x2400"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785017506/htzsfjkhxsx6jgynuy2x.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019455/tfphc8lbfbtzcbn0rkjp.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019541/nwf7ayedlhgbltjhnqep.png": "3446x1766",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785019615/pdwuwly8yfpsuaprcfwp.png": "3446x1766",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785020847/y9o1kpwan8paue8gv97f.png": "1200x244",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785020967/lxaugvljbrnjfwvpsg4d.png": "1818x154",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021010/pc7fzo67kjxnt0dsfu1c.png": "1750x150",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021159/aaomilpieixoctnztkpq.png": "1138x194",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021208/bqbds3uerrenlpkw1pig.png": "1064x108",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021270/sqy8bakta920xutzj0na.png": "1074x136",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021294/npg14wkbnsl428wippba.png": "624x118",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021338/tawbpam5id4k6bt7l3ck.png": "994x114",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021377/tjyznybdb1g44tap0tol.png": "1832x240",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785022141/zfk757kc5rqneefvchxo.png": "704x378",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785962900/cfttspkfcwuubucwrsuo.mp4": "2880x2880",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785962962/mq5n11obbbhe9uskrlf7.png": "2400x1438",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963042/mnjoch8ubvcdujanywqx.mp4": "2880x2880",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963636/e9n4js9cmj9flstniipa.mp4": "1600x1200",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963687/lih8w7ms5yjhy3urgfif.mp4": "1600x1200",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963787/dwjb5hnfyu3wicqme4bk.mp4": "1600x1200",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785963997/w1buiw138kdcxzrcdlcr.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964074/sn9lvexqopv9wzvvktdy.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964214/r7l8zwvjtbkalq6lu0a0.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964279/e37trpf0a109ncq9ywyd.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964737/tpkvfbzi1ptfz2atbbkq.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964739/ppqo3dyvq09788qfgnlb.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964740/ifxr6kqfy4sle3jpgdcf.png": "3200x2400"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -1435,74 +1489,74 @@ const DEFAULTS = {
   ],
   "testimonials": [
     {
-      "quote": "Honestly can't thank you guys enough. The turnaround time for this project was so quick and the quality was so high. I really appreciate it.",
-      "name": "ItsCuzzo",
-      "handle": "@ItsCuzzo",
+      "quote": "Honestly can't thank you enough.\nThe turnaround time for this project was so quick and the quality was so high.\nI really appreciate it.",
+      "name": "Cuzzy",
+      "handle": "Founder",
       "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785020847/y9o1kpwan8paue8gv97f.png"
     },
     {
-      "quote": "The design looks so nice after everything has been put together — probably the cleanest designed site I've seen so far.",
-      "name": "Ganz",
-      "handle": "Developer",
+      "quote": "I would love to work with you more. I love fast turnaround especially from you. Your work has always caught my eye and you've done previous stuff for me which I loved!",
+      "name": "Tarun",
+      "handle": "CEO of jackpot.bet & studio",
       "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785022141/zfk757kc5rqneefvchxo.png"
     },
     {
-      "quote": "You guys continuously amaze me with the creativity in these. I love the way the cities and the dots fade in.",
+      "quote": "You continuously amaze me with the creativity in these. I love the way the cities and the dots fade in.",
       "name": "Starry",
-      "handle": "@Starry",
+      "handle": "Founder",
       "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021010/pc7fzo67kjxnt0dsfu1c.png"
     },
     {
-      "quote": "Very different and I love it. I love the built-in captcha solver as part of the UI as well. Extremely well done.",
-      "name": "Pizzathehut",
-      "handle": "@notbzhou",
+      "quote": "This looks awesome, perfect. You are really talented. I can only thank you for these super fast returns, your work is awesome.",
+      "name": "Moritz",
+      "handle": "Founder",
       "avatar": null,
-      "proof": null
-    },
-    {
-      "quote": "This looks awesome, perfect. You are really talented. I can only thank you for these super fast returns — your work is awesome.",
-      "name": "moritz",
-      "handle": "@moritz",
-      "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021159/aaomilpieixoctnztkpq.png"
     },
     {
       "quote": "Very professional and quick to work with, top quality results as well.",
       "name": "Nick",
-      "handle": "@NotFungableNick",
+      "handle": "Founder",
       "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021208/bqbds3uerrenlpkw1pig.png"
+    },
+    {
+      "quote": "The design looks so nice after everything has been put together, probably the cleanest designed site I've seen so far.",
+      "name": "Ganz",
+      "handle": "Founder",
+      "avatar": null,
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785020967/lxaugvljbrnjfwvpsg4d.png"
     },
     {
       "quote": "11/10. A very cool dude who surprises me every time when we work together.",
       "name": "CookLab",
       "handle": "@CookLabIO",
       "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021270/sqy8bakta920xutzj0na.png"
     },
     {
       "quote": "Creative, fast & professional.",
       "name": "sevnth",
       "handle": "@txorigin",
       "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021294/npg14wkbnsl428wippba.png"
     },
     {
       "quote": "Thank you again for the professionalism. The website is live!",
       "name": "PIATEK9",
       "handle": "p9solutions.it",
       "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021377/tjyznybdb1g44tap0tol.png"
     },
     {
       "quote": "Really an awesome job you did Alex on the new website.",
       "name": "Atoms",
       "handle": "@Atoms",
       "avatar": null,
-      "proof": null
+      "proof": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021338/tawbpam5id4k6bt7l3ck.png"
     }
   ],
   "projects": [
@@ -1531,7 +1585,8 @@ const DEFAULTS = {
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851716/odisbufdiaeelguiwfiz.webp",
           "caption": ""
         }
-      ]
+      ],
+      "slug": "smartsolve"
     },
     {
       "title": "Kodai",
@@ -1563,7 +1618,8 @@ const DEFAULTS = {
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785017506/htzsfjkhxsx6jgynuy2x.png",
           "caption": ""
         }
-      ]
+      ],
+      "slug": "kodai"
     },
     {
       "title": "Raena AI",
@@ -1603,7 +1659,8 @@ const DEFAULTS = {
           "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1784932907/hyq3gg9oazqlhx72caf3.mp4",
           "caption": ""
         }
-      ]
+      ],
+      "slug": "raena-ai"
     },
     {
       "title": "Vallum",
@@ -1643,7 +1700,8 @@ const DEFAULTS = {
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784936946/cavxvld8e8gmcom9mrkw.png",
           "caption": ""
         }
-      ]
+      ],
+      "slug": "vallum"
     },
     {
       "title": "Bau Match",
@@ -1677,7 +1735,8 @@ const DEFAULTS = {
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014802/ucwhdfpnukis1nc5jbyi.png",
           "caption": ""
         }
-      ]
+      ],
+      "slug": "bau-match"
     },
     {
       "title": "Emaily",
@@ -1711,7 +1770,62 @@ const DEFAULTS = {
           "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1785015938/bvsdtrd78sxro4wwlloh.mp4",
           "caption": ""
         }
-      ]
+      ],
+      "slug": "emaily"
+    },
+    {
+      "title": "Jackpot Studio",
+      "client": "Jackpot Studio",
+      "website": "",
+      "desc1": "I joined Jackpot Studios at the very beginning as its first designer and built the studio's visual language from the ground up. As Art Director I've shipped 30+ casino titles, slots, table games and originals. Owning game UI, art direction and animation on each one, along with the design systems, operator tools and marketing assets that sit around them.",
+      "desc2": "The job is as much direction as it is design. I set the direction for each title and work with illustrators, 3D artists and other designers to carry it through to the final build, so thirty-odd games still read as one studio. It's paid off where it counts: aggregators have repeatedly singled out the quality of our game design, and the systems behind it let us keep shipping at that bar without slowing down.",
+      "blocks": [
+        {
+          "type": "duo",
+          "images": [
+            "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963687/lih8w7ms5yjhy3urgfif.mp4",
+            "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963787/dwjb5hnfyu3wicqme4bk.mp4"
+          ],
+          "caption": "Game animations"
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785962962/mq5n11obbbhe9uskrlf7.png",
+          "caption": "Game UI"
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785963997/w1buiw138kdcxzrcdlcr.png",
+          "caption": "Marketing website"
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964074/sn9lvexqopv9wzvvktdy.png",
+          "caption": ""
+        },
+        {
+          "type": "duo",
+          "images": [
+            "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964214/r7l8zwvjtbkalq6lu0a0.png",
+            "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964279/e37trpf0a109ncq9ywyd.png"
+          ],
+          "caption": "Craps UI and game assets"
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964740/ifxr6kqfy4sle3jpgdcf.png",
+          "caption": "Plinko UI and game design"
+        },
+        {
+          "type": "duo",
+          "images": [
+            "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964737/tpkvfbzi1ptfz2atbbkq.png",
+            "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964739/ppqo3dyvq09788qfgnlb.png"
+          ],
+          "caption": ""
+        }
+      ],
+      "slug": "jackpot-studio"
     }
   ],
   "stream": [
@@ -1734,6 +1848,12 @@ const DEFAULTS = {
       "metric": "0 → 1M+ users"
     },
     {
+      "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963636/e9n4js9cmj9flstniipa.mp4",
+      "projectIdx": 6,
+      "caption": "Jackpot Studio",
+      "metric": "0 → 50k+ users"
+    },
+    {
       "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851714/ig8ybuzn1uu59qcr1y0q.webp",
       "projectIdx": 0,
       "caption": "SmartSolve",
@@ -1743,7 +1863,7 @@ const DEFAULTS = {
       "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851713/kkx89vdltv0ojvlgbtkn.webp",
       "projectIdx": 1,
       "caption": "Kodai ",
-      "metric": "0 → 200k+ users"
+      "metric": "0 → 50k+ users"
     },
     {
       "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014877/qbdkmfokoimyjgto1hws.png",
@@ -1753,6 +1873,7 @@ const DEFAULTS = {
     }
   ]
 };
+
 
 
 
@@ -1813,9 +1934,18 @@ function normalizeState(parsed) {
     /* v6 migration: ensure each project has a `website` string (added in v6),
        and scrub the legacy `tags` array since the modal no longer renders them. */
     if (Array.isArray(merged.projects)) {
-      merged.projects.forEach(p => {
+      const used = [];
+      merged.projects.forEach((p, i) => {
         if (typeof p.website !== 'string') p.website = '';
         delete p.tags;
+        /* backfill a URL for anything saved before slugs existed */
+        if (!p.slug) {
+          let base = slugify(p.title) || ('project-' + (i + 1));
+          let slug = base, n = 2;
+          while (used.includes(slug)) { slug = base + '-' + n; n++; }
+          p.slug = slug;
+        }
+        used.push(p.slug);
       });
     }
 
@@ -2780,6 +2910,23 @@ async function migrateEmbedded(askFirst) {
         failed ? 'error' : 'success');
 }
 
+/* URL-safe name for a project. Kept in state so a published link never breaks
+   when a title is reworded. */
+function slugify(t) {
+  return String(t || '')
+    .normalize('NFKD').replace(/[^\w\s-]/g, '')
+    .trim().toLowerCase().replace(/[\s_]+/g, '-').replace(/-+/g, '-');
+}
+
+function uniqueSlug(base, skipIdx) {
+  const taken = (state.projects || [])
+    .map((p, i) => (i === skipIdx ? null : p.slug))
+    .filter(Boolean);
+  let slug = base || 'project', n = 2;
+  while (taken.includes(slug)) { slug = base + '-' + n; n++; }
+  return slug;
+}
+
 /* ═════════ RENDER: TESTIMONIALS ═════════ */
 function renderTestimonialsCms() {
   const list = document.getElementById('tmList');
@@ -2962,6 +3109,14 @@ function renderProjects() {
         </div>
       </div>
 
+      <div class="field">
+        <label>Page URL <span class="hint-inline">— generated from the title; changing it breaks any link already shared</span></label>
+        <div class="slug-field">
+          <span class="slug-prefix">/</span>
+          <input type="text" placeholder="project-name" value="${escAttr(p.slug || '')}" data-key="slug" spellcheck="false" autocomplete="off">
+        </div>
+      </div>
+
       <div class="field-row">
         <div class="field">
           <label>Description — paragraph 1</label>
@@ -2995,9 +3150,32 @@ function renderProjects() {
       input.oninput = () => {
         const key = input.dataset.key;
         state.projects[idx][key] = input.value;
+
+        /* An untouched slug follows the title, so a new project gets a sensible
+           URL for free. Once it's been edited by hand it stays put — renaming a
+           project shouldn't silently break a link already sent to a client. */
+        if (key === 'title' && !state.projects[idx].slugLocked) {
+          state.projects[idx].slug = uniqueSlug(slugify(input.value), idx);
+          const slugInput = row.querySelector('input[data-key="slug"]');
+          if (slugInput) slugInput.value = state.projects[idx].slug;
+        }
+        if (key === 'slug') state.projects[idx].slugLocked = true;
         saveState();
       };
     });
+
+    /* tidy the slug when they leave the field, rather than fighting them mid-type */
+    const slugInput = row.querySelector('input[data-key="slug"]');
+    if (slugInput) {
+      slugInput.onblur = () => {
+        const clean = uniqueSlug(slugify(slugInput.value) || slugify(state.projects[idx].title) || 'project', idx);
+        if (clean !== slugInput.value) {
+          slugInput.value = clean;
+          state.projects[idx].slug = clean;
+          saveState();
+        }
+      };
+    }
 
     row.querySelector('[data-action="del-proj"]').onclick = () => {
       if (!confirm('Remove this project? Stream tiles pointing to it will reset to project 1.')) return;
@@ -3109,6 +3287,7 @@ document.getElementById('addProjBtn').onclick = () => {
     website: '',
     desc1: '',
     desc2: '',
+    slug: uniqueSlug('project', -1),
     blocks: []
   });
   saveState();
@@ -3503,10 +3682,10 @@ ${d.contentUrl ? `<link rel="preload" as="fetch" crossorigin href="${escAttr(d.c
 :root {
   --bg: #ffffff; --ink: #0a0a0a; --ink-mid: #888888; --ink-soft: #b5b5b5;
   --border: #ececec; --radius: 14px; --pad: 44px; --col-gap: 68px;
-  --sb-w: 376px;
+  --sb-w: 376px; --max-w: 1500px;
   /* system faces first so the page has real text before Inter arrives */
   --fi: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --shot-scale: 90%; --db-gap: 10px;
+  --shot-scale: 100%; --db-gap: 10px;
   /* form fields: a light fill reads as an input on a white page, the way the
      CMS's white fill reads on its grey one */
   --field: #f6f6f7; --field-border: #e4e4e6;
@@ -3518,9 +3697,19 @@ body {
   overflow: hidden;
   -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
 }
+/* Without a cap the sidebar stays 376px while the main column takes everything
+   else, so on a 5K display the shots reached ~1825px and dwarfed the text. The
+   layout now stops growing and centres, which keeps the two columns in
+   proportion and puts equal air on both sides. */
 .page {
   height: 100vh; display: flex; align-items: stretch;
   padding: 0 var(--pad); gap: var(--col-gap);
+  max-width: var(--max-w); margin-inline: auto;
+}
+
+/* a little more room for the sidebar once there's space to spare */
+@media (min-width: 1600px) {
+  :root { --sb-w: 404px; --pad: 52px; --col-gap: 76px; }
 }
 .sidebar {
   width: var(--sb-w); flex-shrink: 0;
@@ -3798,6 +3987,11 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
   background: rgba(255, 255, 255, .68);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
   backdrop-filter: blur(16px) saturate(160%);
+  /* backdrop-filter makes this its own containing block, so the panel's
+     border-radius no longer clips it and its square top corners painted over
+     the rounded ones. Matching the radius here restores them. Scoped to this
+     header only — nothing else in the panel touches an edge. */
+  border-radius: 16px 16px 0 0;
 }
 .detail-title-row {
   display: flex; align-items: center; justify-content: space-between;
@@ -3885,7 +4079,7 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 .contact.open .contact-backdrop { opacity: 1; }
 .contact-panel {
   position: relative; z-index: 2;
-  width: 100%; max-width: 960px; max-height: calc(100dvh - 64px);
+  width: 100%; max-width: 1080px; max-height: calc(100dvh - 64px);
   background: var(--bg); border-radius: 18px; overflow: hidden;
   display: grid; grid-template-columns: 1fr 0.82fr;
   box-shadow: 0 30px 90px rgba(0,0,0,.22);
@@ -4156,6 +4350,13 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 }
 .detail-cta-wrap > * { pointer-events: auto; }
 .detail-cta-wrap .bio-cta--primary { box-shadow: 0 6px 20px rgba(10, 10, 10, .22); }
+/* it's a <button>, so it needs the anchor's reset to match the CTAs beside it */
+.detail-share {
+  font-family: var(--fi); border: none; cursor: pointer;
+  background: transparent; box-shadow: inset 0 0 0 1px var(--border);
+}
+.detail-share.is-done .bio-cta-default { opacity: 1; transform: none; }
+.detail-share.is-done .bio-cta-plane { opacity: 0; }
 .detail-cta-secondary {
   display: inline-flex; align-items: center; gap: 6px;
   font-family: var(--fi); font-size: 13px; font-weight: 500; letter-spacing: -0.1px; line-height: 1;
@@ -4332,6 +4533,13 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
       <div class="detail-blocks" id="dBlocks"></div>
 
       <div class="detail-cta-wrap">
+        <button type="button" class="bio-cta bio-cta--ghost detail-share" id="dShare">
+          <span class="bio-cta-default">
+            <span class="detail-share-label">Share</span>
+            <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+          </span>
+          <i class="ri-links-line bio-cta-plane" aria-hidden="true"></i>
+        </button>
         <a href="#" class="bio-cta bio-cta--primary" id="ctaPrimaryModal">
           <span class="bio-cta-default">
             <span class="cta-label"></span>
@@ -4987,6 +5195,7 @@ function loadContent() {
   const shown = withFallbackDims(cachedContent() || CONTENT_FALLBACK);
   paint(shown, false);
   warmModalImages();
+  openFromUrl();   /* a shared link lands straight on its project */
   if (CONTENT_URL) refreshContent(shown);
 }
 
@@ -5231,8 +5440,17 @@ function renderStream(c) {
   document.getElementById('stream').innerHTML = html;
 }
 
+/* Falls back to deriving one from the title, so a project added before slugs
+   existed still gets a working URL. */
+function slugify(t) {
+  return String(t || '')
+    .normalize('NFKD').replace(/[^\\w\\s-]/g, '')
+    .trim().toLowerCase().replace(/[\\s_]+/g, '-').replace(/-+/g, '-');
+}
+
 function projectsFrom(c) {
-  return (c.projects || []).map(p => ({
+  return (c.projects || []).map((p, i) => ({
+    slug: (p.slug || slugify(p.title) || ('project-' + (i + 1))),
     client: p.client || '',
     title: p.title || '',
     website: p.website || '',
@@ -5369,9 +5587,52 @@ function blocksHtml(p) {
   }).join('');
 }
 
-function openProject(idx) {
+/* ═════════ PROJECT URLS ═════════
+   Each project gets its own path so it can be linked and shared. The server
+   serves index.html for any unknown path (see netlify.toml), and this reads the
+   path on load to open the matching modal. History is used rather than a hash
+   so the URL looks like a real page and back/forward behave normally. */
+const BASE_TITLE = document.title;
+
+function projectBySlug(slug) {
+  if (!slug) return -1;
+  const want = String(slug).toLowerCase();
+  return projects.findIndex(p => p.slug === want);
+}
+
+function currentSlug() {
+  const parts = location.pathname.split('/').filter(Boolean);
+  return parts.length ? parts[parts.length - 1].toLowerCase() : '';
+}
+
+function setProjectUrl(p, replace) {
+  if (!p || !window.history || !history.pushState) return;
+  const url = '/' + p.slug;
+  if (location.pathname === url && !replace) return;
+  try {
+    history[replace ? 'replaceState' : 'pushState']({ slug: p.slug }, '', url);
+    document.title = p.title + ' — ' + BASE_TITLE;
+  } catch (e) { /* file:// and the like — the modal still works */ }
+}
+
+function clearProjectUrl() {
+  if (!window.history || !history.pushState) return;
+  if (location.pathname === '/' ) { document.title = BASE_TITLE; return; }
+  try {
+    history.pushState({}, '', '/');
+    document.title = BASE_TITLE;
+  } catch (e) {}
+}
+
+let currentProject = -1;
+
+function openProject(idx, opts) {
+  opts = opts || {};
   const p = projects[idx];
   if (!p) return;
+  currentProject = idx;
+  if (opts.fromUrl) document.title = p.title + ' — ' + BASE_TITLE;
+  else setProjectUrl(p, opts.replace);
   document.getElementById('dTitle').textContent  = p.title;
   document.getElementById('dDesc1').textContent  = p.desc1;
   document.getElementById('dDesc2').textContent  = p.desc2;
@@ -5404,11 +5665,24 @@ function openProject(idx) {
   if ('requestIdleCallback' in window) requestIdleCallback(warmZoom, { timeout: 2000 });
   else setTimeout(warmZoom, 600);
 }
-function closeOverlay() {
+function closeOverlay(opts) {
   if (!overlay.classList.contains('open')) return;
   closeLb();
   overlay.classList.remove('open');
   unlockScroll();
+  if (!(opts && opts.fromUrl)) clearProjectUrl();
+}
+
+/* back/forward, and the deep link on first load */
+window.addEventListener('popstate', () => {
+  const i = projectBySlug(currentSlug());
+  if (i >= 0) openProject(i, { fromUrl: true });
+  else closeOverlay({ fromUrl: true });
+});
+
+function openFromUrl() {
+  const i = projectBySlug(currentSlug());
+  if (i >= 0) openProject(i, { fromUrl: true });
 }
 
 document.getElementById('stream').addEventListener('click', e => {
@@ -5639,6 +5913,58 @@ lbImg.addEventListener('wheel', e => {
 }, { passive: false });
 
 /* delegated so it keeps working after the modal re-renders */
+/* Native share sheet where there is one — that's the good path on a phone,
+   since it offers Messages, Mail, AirDrop and so on. Falls back to copying the
+   link, and to a hidden input where the clipboard API is unavailable. */
+(function wireShare() {
+  const btn = document.getElementById('dShare');
+  if (!btn) return;
+  const label = btn.querySelector('.detail-share-label');
+
+  const flash = text => {
+    const was = label.textContent;
+    label.textContent = text;
+    btn.classList.add('is-done');
+    setTimeout(() => { label.textContent = was; btn.classList.remove('is-done'); }, 1900);
+  };
+
+  const copy = async url => {
+    try {
+      await navigator.clipboard.writeText(url);
+      return true;
+    } catch (e) {
+      try {
+        const t = document.createElement('textarea');
+        t.value = url;
+        t.setAttribute('readonly', '');
+        t.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+        document.body.appendChild(t);
+        t.select();
+        const ok = document.execCommand('copy');
+        t.remove();
+        return ok;
+      } catch (err) { return false; }
+    }
+  };
+
+  btn.addEventListener('click', async () => {
+    const p = projects[currentProject];
+    if (!p) return;
+    const url = location.origin + '/' + p.slug;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: p.title, text: p.client || p.title, url });
+        return;
+      } catch (e) {
+        /* dismissing the sheet rejects too — don't fall through to a copy then */
+        if (e && e.name === 'AbortError') return;
+      }
+    }
+    flash(await copy(url) ? 'Link copied' : 'Copy failed');
+  });
+})();
+
 /* mark images ready as they decode, so the fade only applies to cold loads */
 document.getElementById('dBlocks').addEventListener('load', e => {
   if (e.target.tagName === 'IMG') e.target.setAttribute('data-ready', '');
