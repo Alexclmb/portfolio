@@ -5,6 +5,18 @@
   "ctaPrimaryLabel": "Start a project",
   "ctaSubject": "Project Enquiry",
   "ctaSecondaryLabel": "Quick message",
+  "contact": {
+    "accessKey": "970ccfd7-5da1-4fca-a8d8-3afa477fe725",
+    "heading": "Start a project",
+    "sub": "Tell me what you're building.",
+    "budgets": [
+      "Under €5k",
+      "€5–10k",
+      "€10–25k",
+      "€25k+",
+      "Not sure yet"
+    ]
+  },
   "dims": {
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851712/xch9sacwhrpw04lb6oi6.webp": "2400x1800",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851713/kkx89vdltv0ojvlgbtkn.webp": "2400x1800",
@@ -236,7 +248,8 @@
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851716/odisbufdiaeelguiwfiz.webp",
           "caption": ""
         }
-      ]
+      ],
+      "slug": "smartsolve"
     },
     {
       "title": "Kodai",
@@ -268,7 +281,8 @@
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785017506/htzsfjkhxsx6jgynuy2x.png",
           "caption": ""
         }
-      ]
+      ],
+      "slug": "kodai"
     },
     {
       "title": "Raena AI",
@@ -308,7 +322,8 @@
           "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1784932907/hyq3gg9oazqlhx72caf3.mp4",
           "caption": ""
         }
-      ]
+      ],
+      "slug": "raena-ai"
     },
     {
       "title": "Vallum",
@@ -348,7 +363,8 @@
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784936946/cavxvld8e8gmcom9mrkw.png",
           "caption": ""
         }
-      ]
+      ],
+      "slug": "vallum"
     },
     {
       "title": "Bau Match",
@@ -382,7 +398,8 @@
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014802/ucwhdfpnukis1nc5jbyi.png",
           "caption": ""
         }
-      ]
+      ],
+      "slug": "bau-match"
     },
     {
       "title": "Emaily",
@@ -416,7 +433,8 @@
           "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1785015938/bvsdtrd78sxro4wwlloh.mp4",
           "caption": ""
         }
-      ]
+      ],
+      "slug": "emaily"
     },
     {
       "title": "Jackpot Studio",
@@ -469,7 +487,8 @@
           ],
           "caption": ""
         }
-      ]
+      ],
+      "slug": "jackpot-studio"
     }
   ],
   "stream": [
@@ -516,18 +535,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-05T21:21:26.548Z",
-  "savedAt": "2026-08-05T21:29:46.261Z",
-  "contact": {
-    "accessKey": "970ccfd7-5da1-4fca-a8d8-3afa477fe725",
-    "heading": "Start a project",
-    "sub": "Tell me what you're building.",
-    "budgets": [
-      "Under €5k",
-      "€5–10k",
-      "€10–25k",
-      "€25k+",
-      "Not sure yet"
-    ]
-  }
+  "publishedAt": "2026-08-05T21:30:13.082Z",
+  "savedAt": "2026-08-05T21:30:13.082Z"
 }
