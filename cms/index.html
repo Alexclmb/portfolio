@@ -3682,10 +3682,10 @@ ${d.contentUrl ? `<link rel="preload" as="fetch" crossorigin href="${escAttr(d.c
 :root {
   --bg: #ffffff; --ink: #0a0a0a; --ink-mid: #888888; --ink-soft: #b5b5b5;
   --border: #ececec; --radius: 14px; --pad: 44px; --col-gap: 68px;
-  --sb-w: 376px; --max-w: 1500px;
+  --sb-w: 376px;
   /* system faces first so the page has real text before Inter arrives */
   --fi: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --shot-scale: 100%; --db-gap: 10px;
+  --shot-scale: 90%; --db-gap: 10px;
   /* form fields: a light fill reads as an input on a white page, the way the
      CMS's white fill reads on its grey one */
   --field: #f6f6f7; --field-border: #e4e4e6;
@@ -3697,19 +3697,9 @@ body {
   overflow: hidden;
   -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
 }
-/* Without a cap the sidebar stays 376px while the main column takes everything
-   else, so on a 5K display the shots reached ~1825px and dwarfed the text. The
-   layout now stops growing and centres, which keeps the two columns in
-   proportion and puts equal air on both sides. */
 .page {
   height: 100vh; display: flex; align-items: stretch;
   padding: 0 var(--pad); gap: var(--col-gap);
-  max-width: var(--max-w); margin-inline: auto;
-}
-
-/* a little more room for the sidebar once there's space to spare */
-@media (min-width: 1600px) {
-  :root { --sb-w: 404px; --pad: 52px; --col-gap: 76px; }
 }
 .sidebar {
   width: var(--sb-w); flex-shrink: 0;
@@ -4079,7 +4069,7 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 .contact.open .contact-backdrop { opacity: 1; }
 .contact-panel {
   position: relative; z-index: 2;
-  width: 100%; max-width: 1080px; max-height: calc(100dvh - 64px);
+  width: 100%; max-width: 960px; max-height: calc(100dvh - 64px);
   background: var(--bg); border-radius: 18px; overflow: hidden;
   display: grid; grid-template-columns: 1fr 0.82fr;
   box-shadow: 0 30px 90px rgba(0,0,0,.22);
@@ -4350,13 +4340,36 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 }
 .detail-cta-wrap > * { pointer-events: auto; }
 .detail-cta-wrap .bio-cta--primary { box-shadow: 0 6px 20px rgba(10, 10, 10, .22); }
-/* it's a <button>, so it needs the anchor's reset to match the CTAs beside it */
+/* It's a <button>, so it needs the anchor's reset to match the CTAs beside it.
+   Unlike "Quick message" — which sits on the white sidebar and can afford to be
+   transparent — this one floats over the case study as it scrolls past, so it
+   needs a solid fill of its own. Same ring, same hover, same padding. */
 .detail-share {
   font-family: var(--fi); border: none; cursor: pointer;
-  background: transparent; box-shadow: inset 0 0 0 1px var(--border);
+  background: var(--bg); color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--border);
+  padding: 7px 16px;
+}
+.detail-share:hover { background: #f0f0f0; box-shadow: inset 0 0 0 1px #e2e2e2; }
+.detail-share .bio-cta-plane { color: #1a1a1a; font-size: 17px; }
+
+/* confirmed state — holds the label still and swaps the ring for a tick */
+.detail-share.is-done,
+.detail-share.is-done:hover {
+  background: var(--bg);
+  box-shadow: inset 0 0 0 1px #cfe0ff;
+  color: #2962ff;
+  cursor: default;
 }
 .detail-share.is-done .bio-cta-default { opacity: 1; transform: none; }
+.detail-share.is-done .detail-share-chevron { display: none; }
+.detail-share:not(.is-done) .detail-share-icon { display: none; }
 .detail-share.is-done .bio-cta-plane { opacity: 0; }
+.detail-share.is-done .detail-share-icon { transform: scale(1); opacity: 1; }
+.detail-share-icon {
+  transform: scale(.6); opacity: 0;
+  transition: transform .28s cubic-bezier(.34,1.4,.64,1), opacity .18s ease;
+}
 .detail-cta-secondary {
   display: inline-flex; align-items: center; gap: 6px;
   font-family: var(--fi); font-size: 13px; font-weight: 500; letter-spacing: -0.1px; line-height: 1;
@@ -4536,7 +4549,8 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
         <button type="button" class="bio-cta bio-cta--ghost detail-share" id="dShare">
           <span class="bio-cta-default">
             <span class="detail-share-label">Share</span>
-            <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+            <i class="ri-arrow-right-s-line detail-share-chevron" aria-hidden="true"></i>
+            <i class="ri-check-line detail-share-icon" aria-hidden="true"></i>
           </span>
           <i class="ri-links-line bio-cta-plane" aria-hidden="true"></i>
         </button>
@@ -5921,11 +5935,15 @@ lbImg.addEventListener('wheel', e => {
   if (!btn) return;
   const label = btn.querySelector('.detail-share-label');
 
+  let resetTimer = null;
   const flash = text => {
-    const was = label.textContent;
     label.textContent = text;
     btn.classList.add('is-done');
-    setTimeout(() => { label.textContent = was; btn.classList.remove('is-done'); }, 1900);
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => {
+      label.textContent = 'Share';
+      btn.classList.remove('is-done');
+    }, 2200);
   };
 
   const copy = async url => {
@@ -5948,6 +5966,7 @@ lbImg.addEventListener('wheel', e => {
   };
 
   btn.addEventListener('click', async () => {
+    if (btn.classList.contains('is-done')) return;
     const p = projects[currentProject];
     if (!p) return;
     const url = location.origin + '/' + p.slug;
