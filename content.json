@@ -97,7 +97,10 @@
     "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968682/xmwqdpbpm9g01zfvbslw.mp4": "3552x2160",
     "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968695/omgpmnmmak988yc2abbm.mp4": "1920x1080",
     "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968746/l6exun01wx7clmwof7qg.mp4": "2834x2160",
-    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968774/abxsnolx70z7mm6qhx0z.mp4": "3524x2352"
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968774/abxsnolx70z7mm6qhx0z.mp4": "3524x2352",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969271/rwhxyhrcp1uobpvu3khu.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969282/henv6etuzi3urlsyx6qh.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969284/qtt6f0rjttgbrtzfhfce.png": "3200x2400"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -495,6 +498,11 @@
           "caption": ""
         },
         {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969271/rwhxyhrcp1uobpvu3khu.png",
+          "caption": "Mobile UI"
+        },
+        {
           "type": "duo",
           "images": [
             "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968593/zk8xtgepkqikvjoe5mgb.mp4",
@@ -519,9 +527,12 @@
           "caption": ""
         },
         {
-          "type": "image",
-          "image": null,
-          "caption": ""
+          "type": "duo",
+          "images": [
+            "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969282/henv6etuzi3urlsyx6qh.png",
+            "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969284/qtt6f0rjttgbrtzfhfce.png"
+          ],
+          "caption": "Thumbnails"
         }
       ],
       "slug": "jackpot-studio"
@@ -571,6 +582,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-05T22:27:06.092Z",
-  "savedAt": "2026-08-05T22:27:06.092Z"
+  "publishedAt": "2026-08-05T22:27:57.389Z",
+  "savedAt": "2026-08-05T22:35:00.098Z"
 }
