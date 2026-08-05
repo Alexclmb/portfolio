@@ -65,7 +65,9 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021294/npg14wkbnsl428wippba.png": "624x118",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021338/tawbpam5id4k6bt7l3ck.png": "994x114",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785021377/tjyznybdb1g44tap0tol.png": "1832x240",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785022141/zfk757kc5rqneefvchxo.png": "704x378"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785022141/zfk757kc5rqneefvchxo.png": "704x378",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785962900/cfttspkfcwuubucwrsuo.mp4": "2880x2880",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785962962/mq5n11obbbhe9uskrlf7.png": "2400x1438"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -404,6 +406,25 @@
           "caption": ""
         }
       ]
+    },
+    {
+      "title": "New project",
+      "client": "Jackpot",
+      "website": "",
+      "desc1": "",
+      "desc2": "",
+      "blocks": [
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1785962900/cfttspkfcwuubucwrsuo.mp4",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785962962/mq5n11obbbhe9uskrlf7.png",
+          "caption": ""
+        }
+      ]
     }
   ],
   "stream": [
@@ -444,8 +465,8 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-07-27T23:02:10.491Z",
-  "savedAt": "2026-07-27T23:02:10.491Z",
+  "publishedAt": "2026-07-28T09:45:47.163Z",
+  "savedAt": "2026-08-05T20:49:22.950Z",
   "contact": {
     "accessKey": "970ccfd7-5da1-4fca-a8d8-3afa477fe725",
     "heading": "Start a project",
