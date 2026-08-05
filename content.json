@@ -100,7 +100,8 @@
     "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968774/abxsnolx70z7mm6qhx0z.mp4": "3524x2352",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969271/rwhxyhrcp1uobpvu3khu.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969282/henv6etuzi3urlsyx6qh.png": "3200x2400",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969284/qtt6f0rjttgbrtzfhfce.png": "3200x2400"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969284/qtt6f0rjttgbrtzfhfce.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969369/juep6uqiuf5otzdhpuh8.png": "3200x2400"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -486,16 +487,13 @@
         },
         {
           "type": "image",
-          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964740/ifxr6kqfy4sle3jpgdcf.png",
-          "caption": "Plinko UI and game design"
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969369/juep6uqiuf5otzdhpuh8.png",
+          "caption": ""
         },
         {
-          "type": "duo",
-          "images": [
-            "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964737/tpkvfbzi1ptfz2atbbkq.png",
-            "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964739/ppqo3dyvq09788qfgnlb.png"
-          ],
-          "caption": ""
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964740/ifxr6kqfy4sle3jpgdcf.png",
+          "caption": "Plinko UI and game design"
         },
         {
           "type": "image",
@@ -582,6 +580,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-05T22:27:57.389Z",
-  "savedAt": "2026-08-05T22:35:00.098Z"
+  "publishedAt": "2026-08-05T22:35:10.960Z",
+  "savedAt": "2026-08-05T22:36:23.047Z"
 }
