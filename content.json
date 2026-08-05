@@ -90,7 +90,14 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964279/e37trpf0a109ncq9ywyd.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964737/tpkvfbzi1ptfz2atbbkq.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964739/ppqo3dyvq09788qfgnlb.png": "3200x2400",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964740/ifxr6kqfy4sle3jpgdcf.png": "3200x2400"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964740/ifxr6kqfy4sle3jpgdcf.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968557/zmpbqmw12qkpbqp3bsuw.mp4": "1920x1080",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968593/zk8xtgepkqikvjoe5mgb.mp4": "1440x1440",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968618/bghajlrfe40tye5o60bi.mp4": "1440x1440",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968682/xmwqdpbpm9g01zfvbslw.mp4": "3552x2160",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968695/omgpmnmmak988yc2abbm.mp4": "1920x1080",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968746/l6exun01wx7clmwof7qg.mp4": "2834x2160",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968774/abxsnolx70z7mm6qhx0z.mp4": "3524x2352"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -486,6 +493,35 @@
             "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964739/ppqo3dyvq09788qfgnlb.png"
           ],
           "caption": ""
+        },
+        {
+          "type": "duo",
+          "images": [
+            "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968593/zk8xtgepkqikvjoe5mgb.mp4",
+            "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968618/bghajlrfe40tye5o60bi.mp4"
+          ],
+          "caption": "Slots symbols"
+        },
+        {
+          "type": "duo",
+          "images": [
+            "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968682/xmwqdpbpm9g01zfvbslw.mp4",
+            "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968695/omgpmnmmak988yc2abbm.mp4"
+          ],
+          "caption": ""
+        },
+        {
+          "type": "duo",
+          "images": [
+            "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968746/l6exun01wx7clmwof7qg.mp4",
+            "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968774/abxsnolx70z7mm6qhx0z.mp4"
+          ],
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": null,
+          "caption": ""
         }
       ],
       "slug": "jackpot-studio"
@@ -535,6 +571,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-05T22:07:37.372Z",
-  "savedAt": "2026-08-05T22:07:37.372Z"
+  "publishedAt": "2026-08-05T22:19:39.104Z",
+  "savedAt": "2026-08-05T22:26:22.023Z"
 }
