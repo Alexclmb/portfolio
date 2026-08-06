@@ -165,24 +165,6 @@
     {
       "name": "Canvas",
       "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784976060/nowgfsiixzv34ebz0cvz.svg"
-    },
-    {
-      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054953/ymyfvk6snlzi39se9mot.svg"
-    },
-    {
-      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054961/gmjlaecrsb34u1pao7o0.svg"
-    },
-    {
-      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054986/vcvcmvlbzgrpf3e3gki4.svg"
-    },
-    {
-      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054990/fxgtvrvoa26nkdz5i4t6.svg"
-    },
-    {
-      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054995/cjvaumq53c4cfccpxbcf.svg"
-    },
-    {
-      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055000/jrfw405orx1fjchfhlrp.svg"
     }
   ],
   "testimonials": [
@@ -604,6 +586,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-06T22:18:35.075Z",
-  "savedAt": "2026-08-06T22:23:21.901Z"
+  "publishedAt": "2026-08-06T22:23:35.786Z",
+  "savedAt": "2026-08-06T22:25:38.442Z"
 }
