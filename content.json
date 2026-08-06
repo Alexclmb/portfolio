@@ -595,6 +595,12 @@
       "metric": "0 → 1M+ users"
     },
     {
+      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057841/vz0mg42rfqjzznhqe7ph.png",
+      "projectIdx": 1,
+      "caption": "Kodai",
+      "metric": "0 → 30k+ users"
+    },
+    {
       "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851714/ig8ybuzn1uu59qcr1y0q.webp",
       "projectIdx": 0,
       "caption": "SmartSolve",
@@ -605,14 +611,8 @@
       "projectIdx": 4,
       "caption": "Bau Match",
       "metric": "+60% MRR"
-    },
-    {
-      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057841/vz0mg42rfqjzznhqe7ph.png",
-      "projectIdx": 1,
-      "caption": "Kodai",
-      "metric": "0 → 30k+ users"
     }
   ],
-  "publishedAt": "2026-08-06T23:04:22.527Z",
-  "savedAt": "2026-08-06T23:11:17.642Z"
+  "publishedAt": "2026-08-06T23:11:29.555Z",
+  "savedAt": "2026-08-06T23:11:53.220Z"
 }
