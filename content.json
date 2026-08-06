@@ -368,13 +368,13 @@
         },
         {
           "type": "image",
-          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057321/nqksaefivkkg0d5o2buq.png",
-          "caption": ""
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057328/mtn53ebrd2ivwgowpn7x.png",
+          "caption": "Mobile app UI"
         },
         {
           "type": "image",
-          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057328/mtn53ebrd2ivwgowpn7x.png",
-          "caption": "Mobile app UI"
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057321/nqksaefivkkg0d5o2buq.png",
+          "caption": ""
         },
         {
           "type": "image",
@@ -631,6 +631,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-06T23:13:30.027Z",
-  "savedAt": "2026-08-06T23:21:22.997Z"
+  "publishedAt": "2026-08-06T23:21:36.170Z",
+  "savedAt": "2026-08-06T23:23:16.022Z"
 }
