@@ -101,7 +101,13 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969271/rwhxyhrcp1uobpvu3khu.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969282/henv6etuzi3urlsyx6qh.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969284/qtt6f0rjttgbrtzfhfce.png": "3200x2400",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969369/juep6uqiuf5otzdhpuh8.png": "3200x2400"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969369/juep6uqiuf5otzdhpuh8.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054953/ymyfvk6snlzi39se9mot.svg": "148x46",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054961/gmjlaecrsb34u1pao7o0.svg": "284x61",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054986/vcvcmvlbzgrpf3e3gki4.svg": "196x48",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054990/fxgtvrvoa26nkdz5i4t6.svg": "288x52",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054995/cjvaumq53c4cfccpxbcf.svg": "195x53",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055000/jrfw405orx1fjchfhlrp.svg": "190x62"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -159,6 +165,24 @@
     {
       "name": "Canvas",
       "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784976060/nowgfsiixzv34ebz0cvz.svg"
+    },
+    {
+      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054953/ymyfvk6snlzi39se9mot.svg"
+    },
+    {
+      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054961/gmjlaecrsb34u1pao7o0.svg"
+    },
+    {
+      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054986/vcvcmvlbzgrpf3e3gki4.svg"
+    },
+    {
+      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054990/fxgtvrvoa26nkdz5i4t6.svg"
+    },
+    {
+      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054995/cjvaumq53c4cfccpxbcf.svg"
+    },
+    {
+      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055000/jrfw405orx1fjchfhlrp.svg"
     }
   ],
   "testimonials": [
@@ -580,6 +604,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-06T22:10:30.093Z",
-  "savedAt": "2026-08-06T22:10:30.093Z"
+  "publishedAt": "2026-08-06T22:18:35.075Z",
+  "savedAt": "2026-08-06T22:23:21.901Z"
 }
