@@ -128,7 +128,10 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057788/ouafyhz8rym4zupyqqds.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057790/imyyeie8fuebkl9bfzau.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057795/blga3yjio9qq6j8slytv.png": "3200x2400",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057841/vz0mg42rfqjzznhqe7ph.png": "3200x2400"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057841/vz0mg42rfqjzznhqe7ph.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786058472/iydati2qz0beuwlaodgy.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786058474/ut3pms62dhzmnxoyellg.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786058476/eecpaexxp87twslo7fdt.png": "3200x2400"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -461,7 +464,22 @@
         },
         {
           "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786058472/iydati2qz0beuwlaodgy.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786058474/ut3pms62dhzmnxoyellg.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014802/ucwhdfpnukis1nc5jbyi.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786058476/eecpaexxp87twslo7fdt.png",
           "caption": ""
         }
       ],
@@ -613,6 +631,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-06T23:12:05.792Z",
-  "savedAt": "2026-08-06T23:12:05.792Z"
+  "publishedAt": "2026-08-06T23:13:30.027Z",
+  "savedAt": "2026-08-06T23:21:22.997Z"
 }
