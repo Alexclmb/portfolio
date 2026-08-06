@@ -123,7 +123,12 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057328/mtn53ebrd2ivwgowpn7x.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057333/incns8dejdpzo5uhjszi.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057342/nwrl2njawpawqssrqfvw.png": "3200x2400",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057347/ur15ibtmknambzblwlwu.png": "3200x2400"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057347/ur15ibtmknambzblwlwu.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057785/xdyguusdtaijempzzbt3.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057788/ouafyhz8rym4zupyqqds.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057790/imyyeie8fuebkl9bfzau.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057795/blga3yjio9qq6j8slytv.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057841/vz0mg42rfqjzznhqe7ph.png": "3200x2400"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -282,9 +287,14 @@
       "title": "Kodai",
       "client": "Kodai",
       "website": "",
-      "desc1": "A full software experience redesign for a software with over 50k users. The brief was to modernize the visual language while reducing friction in the core user flows: onboarding, navigation, and content discovery.",
+      "desc1": "A full software experience redesign for a software with over 30k users. The brief was to modernize the visual language while reducing friction in the core user flows: onboarding, navigation, and content discovery.",
       "desc2": "Through extensive user interviews and A/B testing, we simplified the navigation, introduced a new interaction model, and built a motion design system to bring the software to life with purposeful micro-animations.",
       "blocks": [
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057795/blga3yjio9qq6j8slytv.png",
+          "caption": ""
+        },
         {
           "type": "image",
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851713/kkx89vdltv0ojvlgbtkn.webp",
@@ -305,7 +315,22 @@
         },
         {
           "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057788/ouafyhz8rym4zupyqqds.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785017506/htzsfjkhxsx6jgynuy2x.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057790/imyyeie8fuebkl9bfzau.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057785/xdyguusdtaijempzzbt3.png",
           "caption": ""
         }
       ],
@@ -576,18 +601,18 @@
       "metric": "0 → 500k+ users"
     },
     {
-      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851713/kkx89vdltv0ojvlgbtkn.webp",
-      "projectIdx": 1,
-      "caption": "Kodai ",
-      "metric": "0 → 50k+ users"
-    },
-    {
       "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014877/qbdkmfokoimyjgto1hws.png",
       "projectIdx": 4,
       "caption": "Bau Match",
       "metric": "+60% MRR"
+    },
+    {
+      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057841/vz0mg42rfqjzznhqe7ph.png",
+      "projectIdx": 1,
+      "caption": "Kodai",
+      "metric": "0 → 30k+ users"
     }
   ],
-  "publishedAt": "2026-08-06T23:03:23.456Z",
-  "savedAt": "2026-08-06T23:04:10.939Z"
+  "publishedAt": "2026-08-06T23:04:22.527Z",
+  "savedAt": "2026-08-06T23:11:17.642Z"
 }
