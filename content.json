@@ -134,7 +134,14 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786058476/eecpaexxp87twslo7fdt.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/video/upload/v1786058744/bsjzwwilwib3rkmc2w9t.mov": "2596x1168",
     "https://res.cloudinary.com/pc2jrabx/video/upload/v1786058750/qywnpriucees5j6yjpjd.mov": "2596x1168",
-    "https://res.cloudinary.com/pc2jrabx/video/upload/v1786058763/aat7xcoc9haurqvzesmh.mov": "3424x1788"
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1786058763/aat7xcoc9haurqvzesmh.mov": "3424x1788",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786058890/gobs4hu5mqoxwobsb57k.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786059060/ukf1wirckrhq2yys6f8i.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786059063/js5faq90mxukxleay08z.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786059136/irmiyhonpofhrmrm5wv9.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786059200/frxdjsl8obbcjymoa5bh.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786059364/ldf5yhlzxzqpctawrfy3.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786059402/w9ovnkpzly1uweejsjr7.png": "3200x2400"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -299,6 +306,39 @@
         {
           "type": "image",
           "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1786058750/qywnpriucees5j6yjpjd.mov",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786058890/gobs4hu5mqoxwobsb57k.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786059060/ukf1wirckrhq2yys6f8i.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786059063/js5faq90mxukxleay08z.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786059136/irmiyhonpofhrmrm5wv9.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786059200/frxdjsl8obbcjymoa5bh.png",
+          "caption": ""
+        },
+        {
+          "type": "duo",
+          "images": [
+            "https://res.cloudinary.com/pc2jrabx/image/upload/v1786059364/ldf5yhlzxzqpctawrfy3.png",
+            "https://res.cloudinary.com/pc2jrabx/image/upload/v1786059402/w9ovnkpzly1uweejsjr7.png"
+          ],
           "caption": ""
         }
       ],
@@ -649,6 +689,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-06T23:23:27.312Z",
-  "savedAt": "2026-08-06T23:26:04.998Z"
+  "publishedAt": "2026-08-06T23:26:22.359Z",
+  "savedAt": "2026-08-06T23:36:42.794Z"
 }
