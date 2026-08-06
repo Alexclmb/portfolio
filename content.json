@@ -113,7 +113,11 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055495/caj0j89cbdwfdey4pogw.svg": "264x69",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055500/w30kbl16kx63lkvjkngt.svg": "189x69",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055505/ftl2zsdk4npzwghf0rls.svg": "182x69",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055558/sqirxq0abgqixckq1vpr.svg": "283x69"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055558/sqirxq0abgqixckq1vpr.svg": "283x69",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055949/napg9egsotrgiobdkfqx.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786056014/yickaqrabwh3iiejplns.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1786056055/uwrcf2fpkuyefxrpqo2d.mp4": "3188x2160",
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1786056071/bc7hsjrfylxnuzvnrdau.mp4": "1440x1440"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -493,11 +497,6 @@
         },
         {
           "type": "image",
-          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969369/juep6uqiuf5otzdhpuh8.png",
-          "caption": ""
-        },
-        {
-          "type": "image",
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785964740/ifxr6kqfy4sle3jpgdcf.png",
           "caption": "Plinko UI and game design"
         },
@@ -507,36 +506,19 @@
           "caption": "Mobile UI"
         },
         {
-          "type": "duo",
-          "images": [
-            "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968593/zk8xtgepkqikvjoe5mgb.mp4",
-            "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968618/bghajlrfe40tye5o60bi.mp4"
-          ],
-          "caption": "Slots symbols"
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786056014/yickaqrabwh3iiejplns.png",
+          "caption": "Thumbnails"
         },
         {
-          "type": "duo",
-          "images": [
-            "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968682/xmwqdpbpm9g01zfvbslw.mp4",
-            "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968695/omgpmnmmak988yc2abbm.mp4"
-          ],
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1786056055/uwrcf2fpkuyefxrpqo2d.mp4",
           "caption": ""
         },
         {
-          "type": "duo",
-          "images": [
-            "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968746/l6exun01wx7clmwof7qg.mp4",
-            "https://res.cloudinary.com/pc2jrabx/video/upload/v1785968774/abxsnolx70z7mm6qhx0z.mp4"
-          ],
-          "caption": "Backgrounds animated"
-        },
-        {
-          "type": "duo",
-          "images": [
-            "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969282/henv6etuzi3urlsyx6qh.png",
-            "https://res.cloudinary.com/pc2jrabx/image/upload/v1785969284/qtt6f0rjttgbrtzfhfce.png"
-          ],
-          "caption": "Thumbnails"
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1786056071/bc7hsjrfylxnuzvnrdau.mp4",
+          "caption": "Slot symbol animation"
         }
       ],
       "slug": "jackpot-studio"
@@ -586,6 +568,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-06T22:32:56.155Z",
-  "savedAt": "2026-08-06T22:32:56.155Z"
+  "publishedAt": "2026-08-06T22:36:23.867Z",
+  "savedAt": "2026-08-06T22:41:16.734Z"
 }
