@@ -3988,17 +3988,66 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 .detail-body { padding: 28px 36px 0; }
 /* Title + close stay pinned while the case study scrolls under them —
    frosted rather than a solid bar, so the content reads through it. */
+/* ── sticky header ──
+   The blur and the white tint both ramp out downward instead of stopping on a
+   hard line. A single masked blur layer would fade its *opacity*, which still
+   reads as an edge; three layers at decreasing radii, each masked to end
+   earlier than the last, ramp the actual blur radius from 20px to nothing.
+   The header itself carries no background — the layers do — so the title and
+   close button stay perfectly sharp on top. */
 .detail-header {
   position: sticky; top: 0; z-index: 5;
   margin: -28px -36px 24px; padding: 22px 36px 16px;
-  background: rgba(255, 255, 255, .68);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  backdrop-filter: blur(16px) saturate(160%);
-  /* backdrop-filter makes this its own containing block, so the panel's
-     border-radius no longer clips it and its square top corners painted over
-     the rounded ones. Matching the radius here restores them. Scoped to this
-     header only — nothing else in the panel touches an edge. */
+  background: none;
+}
+.dh-veil {
+  position: absolute; left: 0; right: 0; top: 0;
+  bottom: -46px;              /* the ramp continues past the header box */
+  pointer-events: none;
   border-radius: 16px 16px 0 0;
+  overflow: hidden;           /* keeps the layers inside the panel's corners */
+}
+.dh-veil span {
+  position: absolute; inset: 0;
+  display: block;
+}
+/* strongest blur, ends soonest */
+.dh-veil .dh-b1 {
+  -webkit-backdrop-filter: blur(20px) saturate(165%);
+  backdrop-filter: blur(20px) saturate(165%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 34%, transparent 62%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 34%, transparent 62%);
+}
+.dh-veil .dh-b2 {
+  -webkit-backdrop-filter: blur(9px) saturate(150%);
+  backdrop-filter: blur(9px) saturate(150%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 52%, transparent 80%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 52%, transparent 80%);
+}
+/* faintest blur, carries furthest — this is what removes the visible edge */
+.dh-veil .dh-b3 {
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 100%);
+}
+/* the white wash, fading on its own curve so the colour doesn't stop abruptly */
+.dh-veil .dh-tint {
+  background: linear-gradient(to bottom,
+    rgba(255,255,255,.94) 0%,
+    rgba(255,255,255,.88) 38%,
+    rgba(255,255,255,.55) 66%,
+    rgba(255,255,255,0) 100%);
+}
+/* content above the veil */
+.detail-title-row { position: relative; z-index: 1; }
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  /* no backdrop-filter — the tint alone still separates the title from the art */
+  .dh-veil .dh-tint {
+    background: linear-gradient(to bottom,
+      var(--bg) 0%, var(--bg) 55%, rgba(255,255,255,0) 100%);
+  }
 }
 .detail-title-row {
   display: flex; align-items: center; justify-content: space-between;
@@ -4011,7 +4060,9 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
 /* ── case-study body: full-width shots, two-ups and prose, in author order.
    One --db-gap drives both the vertical rhythm and the two-up gutter, so the
    space above and below a row matches the space between a pair. ── */
-.detail-blocks { margin-top: var(--db-gap); display: flex; flex-direction: column; gap: var(--db-gap); }
+/* The gap between blocks stays tight; the step down from the overview copy is
+   a section break and needs more room than that. */
+.detail-blocks { margin-top: 40px; display: flex; flex-direction: column; gap: var(--db-gap); }
 .db-figure { margin: 0; }
 /* Consecutive screenshots often both end and begin in near-white, so without a
    boundary they read as one overlapping mess. The hairline ring defines where
@@ -4443,6 +4494,7 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
   .detail-body { padding: 24px 20px 0; }
   .detail-title { font-size: 22px; }
   .detail-header { margin: -24px -20px 20px; padding: 18px 20px 14px; }
+  .detail-blocks { margin-top: 30px; }
   .detail-cta-wrap { margin: 22px 0 0; padding-bottom: 22px; }
   :root { --shot-scale: 100%; --db-gap: 18px; }
   .db-duo { grid-template-columns: 1fr; }
@@ -4564,6 +4616,9 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
   <div class="detail-panel" id="detailPanel">
     <div class="detail-body">
       <div class="detail-header">
+        <div class="dh-veil" aria-hidden="true">
+          <span class="dh-b1"></span><span class="dh-b2"></span><span class="dh-b3"></span><span class="dh-tint"></span>
+        </div>
         <div class="detail-title-row">
           <h2 class="detail-title" id="dTitle"></h2>
           <button class="close-btn" id="detailClose" aria-label="Close"><i class="ri-close-line"></i></button>
