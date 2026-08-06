@@ -107,7 +107,13 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054986/vcvcmvlbzgrpf3e3gki4.svg": "196x48",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054990/fxgtvrvoa26nkdz5i4t6.svg": "288x52",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786054995/cjvaumq53c4cfccpxbcf.svg": "195x53",
-    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055000/jrfw405orx1fjchfhlrp.svg": "190x62"
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055000/jrfw405orx1fjchfhlrp.svg": "190x62",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055487/d3pdd1ayh3luqrylbslu.svg": "142x69",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055491/x9ghvibyddfxgbdybi2h.svg": "197x69",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055495/caj0j89cbdwfdey4pogw.svg": "264x69",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055500/w30kbl16kx63lkvjkngt.svg": "189x69",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055505/ftl2zsdk4npzwghf0rls.svg": "182x69",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055558/sqirxq0abgqixckq1vpr.svg": "283x69"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -143,28 +149,22 @@
   ],
   "wordmarks": [
     {
-      "name": "N3xt",
-      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784976053/zvcblx5qobolyocrcpeb.svg"
+      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055487/d3pdd1ayh3luqrylbslu.svg"
     },
     {
-      "name": "Polyester",
-      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784976054/ibjjghoabyw73x7zsyti.svg"
+      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055491/x9ghvibyddfxgbdybi2h.svg"
     },
     {
-      "name": "Antimetal",
-      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784976056/rnunmbmagctletbulwgv.svg"
+      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055495/caj0j89cbdwfdey4pogw.svg"
     },
     {
-      "name": "Bitget",
-      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784976057/rphd1rurewqry7tokvv6.svg"
+      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055500/w30kbl16kx63lkvjkngt.svg"
     },
     {
-      "name": "Paddle",
-      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784976059/sg7wbsnasmzcpdihdh86.svg"
+      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055505/ftl2zsdk4npzwghf0rls.svg"
     },
     {
-      "name": "Canvas",
-      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784976060/nowgfsiixzv34ebz0cvz.svg"
+      "logo": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055558/sqirxq0abgqixckq1vpr.svg"
     }
   ],
   "testimonials": [
@@ -586,6 +586,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-06T22:23:35.786Z",
-  "savedAt": "2026-08-06T22:25:38.442Z"
+  "publishedAt": "2026-08-06T22:25:48.487Z",
+  "savedAt": "2026-08-06T22:32:46.131Z"
 }
