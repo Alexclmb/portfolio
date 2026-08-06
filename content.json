@@ -266,8 +266,8 @@
       "title": "Kodai",
       "client": "Kodai",
       "website": "",
-      "desc1": "A full mobile experience redesign for a software with over 200k users. The brief was to modernize the visual language while reducing friction in the core user flows: onboarding, navigation, and content discovery.",
-      "desc2": "Through extensive user interviews and A/B testing, we simplified the navigation from 6 tabs to 3, introduced a new gesture-based interaction model, and built a motion design system to bring the app to life with purposeful micro-animations.",
+      "desc1": "A full software experience redesign for a software with over 50k users. The brief was to modernize the visual language while reducing friction in the core user flows: onboarding, navigation, and content discovery.",
+      "desc2": "Through extensive user interviews and A/B testing, we simplified the navigation, introduced a new interaction model, and built a motion design system to bring the software to life with purposeful micro-animations.",
       "blocks": [
         {
           "type": "image",
@@ -299,8 +299,8 @@
       "title": "Raena AI",
       "client": "Raena AI",
       "website": "",
-      "desc1": "A brand identity and creative strategy project for a B2B SaaS company entering a new market. Starting from a brand audit and competitive analysis, we defined a new visual language, messaging framework, and design direction to resonate with enterprise buyers.",
-      "desc2": "Deliverables included a full brand identity system: logo, typography, color palette, illustration style alongside a digital brand guide, marketing site redesign, and a suite of campaign assets.",
+      "desc1": "A brand identity and creative strategy project for a SaaS company entering a new market. Starting from a brand audit and competitive analysis, we defined a new visual language, messaging framework, and design direction to resonate with users.",
+      "desc2": "Deliverables included a full brand identity system: logo, typography, color palette, illustration style alongside a digital brand guide, full mobile app design, marketing site design, and a suite of campaign assets.",
       "blocks": [
         {
           "type": "image",
@@ -381,8 +381,8 @@
       "title": "Bau Match",
       "client": "Bau Match",
       "website": "",
-      "desc1": "",
-      "desc2": "",
+      "desc1": "I came onto Bau Match early and a first round of screens already existed. Rather than iterate on what was there, I rebuilt the foundation: a new design system, type scale, colour, components, motion that actually matched the product the team wanted to build, then took it through the full app.",
+      "desc2": "The rework paid for itself quickly. The app saw a significant lift in MRR and a large wave of new users after the redesign shipped, and the system made everything after it faster to build and easier to keep consistent as the product grew.",
       "blocks": [
         {
           "type": "image",
@@ -416,8 +416,8 @@
       "title": "Emaily",
       "client": "Emaily",
       "website": "",
-      "desc1": "",
-      "desc2": "",
+      "desc1": "Emaily is an email SaaS in one of the most crowded categories on the market, the product already existed and worked, so the job wasn't to invent it, it was to give it a reason to be chosen. I reworked the interface end to end and pushed the product somewhere none of its competitors had gone: a full prototype for Apple Vision Pro, reimagining what an inbox looks like in spatial computing.",
+      "desc2": "The redesign moved the numbers: a substantial jump in MRR (+80% MRR in 2 months) and a big influx of new users, and the Vision Pro concept gave the team a story to tell that nobody else in the category had at that time.",
       "blocks": [
         {
           "type": "image",
@@ -580,6 +580,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-05T22:40:21.780Z",
-  "savedAt": "2026-08-05T22:40:21.780Z"
+  "publishedAt": "2026-08-06T10:46:26.224Z",
+  "savedAt": "2026-08-06T22:09:21.984Z"
 }
