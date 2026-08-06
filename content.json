@@ -513,7 +513,7 @@
         {
           "type": "image",
           "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1786056055/uwrcf2fpkuyefxrpqo2d.mp4",
-          "caption": ""
+          "caption": "Game background animation"
         },
         {
           "type": "image",
@@ -568,6 +568,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-06T22:36:23.867Z",
-  "savedAt": "2026-08-06T22:41:16.734Z"
+  "publishedAt": "2026-08-06T22:41:30.818Z",
+  "savedAt": "2026-08-06T22:42:36.607Z"
 }
