@@ -117,7 +117,13 @@
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786055949/napg9egsotrgiobdkfqx.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/image/upload/v1786056014/yickaqrabwh3iiejplns.png": "3200x2400",
     "https://res.cloudinary.com/pc2jrabx/video/upload/v1786056055/uwrcf2fpkuyefxrpqo2d.mp4": "3188x2160",
-    "https://res.cloudinary.com/pc2jrabx/video/upload/v1786056071/bc7hsjrfylxnuzvnrdau.mp4": "1440x1440"
+    "https://res.cloudinary.com/pc2jrabx/video/upload/v1786056071/bc7hsjrfylxnuzvnrdau.mp4": "1440x1440",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057315/s0s6stm1wghj8pnhh0ub.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057321/nqksaefivkkg0d5o2buq.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057328/mtn53ebrd2ivwgowpn7x.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057333/incns8dejdpzo5uhjszi.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057342/nwrl2njawpawqssrqfvw.png": "3200x2400",
+    "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057347/ur15ibtmknambzblwlwu.png": "3200x2400"
   },
   "socials": {
     "x": "https://x.com/Alexclmb",
@@ -315,22 +321,11 @@
         {
           "type": "image",
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851713/rwby2xa23thy1keahezt.webp",
-          "caption": ""
+          "caption": "Platform UI"
         },
         {
-          "type": "duo",
-          "images": [
-            "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851719/clw7rkt5uui2aye7di1o.webp",
-            "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851719/uvudvhehlvrevejzffxk.webp"
-          ],
-          "caption": ""
-        },
-        {
-          "type": "duo",
-          "images": [
-            "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851720/upyaxxg7x0wbgw9lslso.webp",
-            "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851720/j5o7i9kgc84rwuzibhu5.webp"
-          ],
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057333/incns8dejdpzo5uhjszi.png",
           "caption": ""
         },
         {
@@ -340,8 +335,33 @@
         },
         {
           "type": "image",
-          "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1784932907/hyq3gg9oazqlhx72caf3.mp4",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057315/s0s6stm1wghj8pnhh0ub.png",
+          "caption": "Plans"
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057321/nqksaefivkkg0d5o2buq.png",
           "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057328/mtn53ebrd2ivwgowpn7x.png",
+          "caption": "Mobile app UI"
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057342/nwrl2njawpawqssrqfvw.png",
+          "caption": "Referral LP"
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057347/ur15ibtmknambzblwlwu.png",
+          "caption": ""
+        },
+        {
+          "type": "image",
+          "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1784932907/hyq3gg9oazqlhx72caf3.mp4",
+          "caption": "Hero video"
         }
       ],
       "slug": "raena-ai"
@@ -568,6 +588,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-06T22:42:48.192Z",
-  "savedAt": "2026-08-06T22:42:48.192Z"
+  "publishedAt": "2026-08-06T22:43:37.762Z",
+  "savedAt": "2026-08-06T23:03:10.735Z"
 }
