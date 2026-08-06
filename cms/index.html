@@ -3886,6 +3886,19 @@ body {
 .shot.visible { opacity: 1; transform: translateY(0); }
 /* Shots keep their natural aspect — --shot-scale just trims a little width off
    the column so they breathe. Set it to 100% for edge-to-edge. */
+/* iOS draws its own play button over any <video> that isn't playing — which is
+   what happens whenever autoplay is refused, most often in Low Power Mode.
+   These pseudo-elements are the only handle on that shadow-DOM control. */
+video::-webkit-media-controls,
+video::-webkit-media-controls-panel,
+video::-webkit-media-controls-start-playback-button,
+video::-webkit-media-controls-play-button,
+video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+  opacity: 0 !important;
+}
+
 .shot img, .shot video { width: 100%; height: auto; display: block; }
 .shot-caption {
   position: absolute; left: 14px; bottom: 14px; z-index: 2;
@@ -4737,10 +4750,12 @@ function renderContactVisual(c) {
   shots.innerHTML = imgs.map((src, i) => {
     const url = cdnAt(src, 900);
     const media = isVideoSrc(src)
-      ? '<video src="' + url + '" muted loop autoplay playsinline></video>'
+      ? '<video src="' + url + '" poster="' + cdnPoster(src, 900) + '"' +
+        ' muted loop autoplay playsinline preload="metadata" disablepictureinpicture></video>'
       : '<img src="' + url + '" alt="" loading="lazy" decoding="async">';
     return '<div class="cv-shot' + (i === 0 ? ' is-on' : '') + '">' + media + '</div>';
   }).join('');
+  primeVideos(shots);
 
   const items = (c.testimonials || []).filter(t => (t.quote || '').trim());
   if (!items.length) { tm.hidden = true; tm.innerHTML = ''; }
@@ -5141,6 +5156,38 @@ function updateStatus() {
 }
 updateStatus();
 setInterval(updateStatus, 15000);
+
+/* ═════════ VIDEO AUTOPLAY ═════════
+   Inline autoplay needs muted + playsinline, and the attributes alone aren't
+   always enough — Safari wants the properties set too. Even then a refusal is
+   possible (Low Power Mode, data saver), so the poster stands in and the play
+   is retried on the first user gesture, which lifts the restriction. */
+function primeVideos(root) {
+  (root || document).querySelectorAll('video').forEach(v => {
+    v.muted = true;
+    v.defaultMuted = true;
+    v.playsInline = true;
+    v.setAttribute('webkit-playsinline', '');   /* older iOS */
+    v.disableRemotePlayback = true;
+    const p = v.play();
+    if (p && p.catch) p.catch(() => { /* poster stays up; retried on gesture */ });
+  });
+}
+
+(function retryVideosOnGesture() {
+  const once = () => {
+    primeVideos(document);
+    ['touchstart', 'pointerdown', 'keydown'].forEach(e =>
+      window.removeEventListener(e, once, true));
+  };
+  ['touchstart', 'pointerdown', 'keydown'].forEach(e =>
+    window.addEventListener(e, once, { capture: true, passive: true }));
+
+  /* a tab returning to the foreground gets another go */
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) primeVideos(document);
+  });
+})();
 
 /* ═════════ LOAD CONTENT ═════════
    The page never waits on the network to render. It paints straight away from
@@ -5560,6 +5607,7 @@ function applyContent(c) {
   renderSkills(c);
   renderWordmarks(c);
   renderStream(c);
+  primeVideos(document.getElementById('stream'));
 
   /* content is in — drop the skeletons */
   document.body.classList.add('is-loaded');
@@ -5672,6 +5720,7 @@ function openProject(idx, opts) {
   document.getElementById('dDesc2').textContent  = p.desc2;
   const blocksEl = document.getElementById('dBlocks');
   blocksEl.innerHTML = blocksHtml(p);
+  primeVideos(blocksEl);
   blocksEl.querySelectorAll('img').forEach(img => {
     if (img.complete && img.naturalWidth) img.setAttribute('data-ready', '');
   });
@@ -5793,6 +5842,8 @@ function showLb(i) {
     lbImg.removeAttribute('src');
     lbVideo.src = src;
     lbVideo.poster = cdnPoster(src, 1600);
+    lbVideo.muted = true;
+    lbVideo.playsInline = true;
     lbVideo.play().catch(() => {});
   } else {
     lbVideo.pause();
