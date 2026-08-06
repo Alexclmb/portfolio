@@ -336,7 +336,7 @@
         {
           "type": "image",
           "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057315/s0s6stm1wghj8pnhh0ub.png",
-          "caption": "Plans"
+          "caption": ""
         },
         {
           "type": "image",
@@ -588,6 +588,6 @@
       "metric": "+60% MRR"
     }
   ],
-  "publishedAt": "2026-08-06T22:43:37.762Z",
-  "savedAt": "2026-08-06T23:03:10.735Z"
+  "publishedAt": "2026-08-06T23:03:23.456Z",
+  "savedAt": "2026-08-06T23:04:10.939Z"
 }
