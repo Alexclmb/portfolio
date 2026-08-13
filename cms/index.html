@@ -4481,10 +4481,11 @@ body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidd
   .detail-overlay { padding: 0; align-items: flex-end; justify-content: stretch; }
   .detail-panel {
     max-width: none; width: 100%;
-    /* dvh tracks the URL bar; vh doesn't, which made the drawer overshoot
-       the screen and appear to resize while scrolling */
-    max-height: 66vh;
-    max-height: 66dvh;
+    /* dvh tracks the URL bar; vh doesn't, which made the drawer overshoot the
+       screen and appear to resize while scrolling. 88 leaves a strip of the
+       page visible above the sheet, which is what you tap to dismiss it. */
+    max-height: 88vh;
+    max-height: 88dvh;
     border-radius: 16px 16px 0 0;
     transform: translateY(100%); opacity: 1;
     transition: transform .42s cubic-bezier(.32,.72,0,1);
