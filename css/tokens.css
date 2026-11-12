@@ -1,0 +1,138 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Tokens: Alex's own design system, taken from the CSS of the live
+   alexcolombel.com (index.html, Aug 2026). Every value below is his; the
+   comment after each says where in that source it comes from. The only
+   changes: the family is Intern (his choice, metrically an Inter variant),
+   and a dark theme derived by inverting his tokens conservatively.
+   ───────────────────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Intern';
+  src: url('/fonts/Intern.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* colour */
+  --bg: #ffffff;                       /* :root --bg */
+  --ink: #0a0a0a;                      /* :root --ink */
+  --ink-mid: #888888;                  /* :root --ink-mid (secondary text, icons) */
+  --ink-soft: #b5b5b5;                 /* :root --ink-soft (handles, placeholders) */
+  --border: #ececec;                   /* :root --border (hairlines, ghost ring, skeletons) */
+  --surface: #f5f5f5;                  /* .bio-cta / .shot / .db-media background */
+  --surface-hover: #f0f0f0;            /* .bio-cta--ghost:hover */
+  --ring-hover: #e2e2e2;               /* .bio-cta--ghost:hover ring */
+  --field: #f6f6f7;                    /* :root --field */
+  --field-border: #e4e4e6;             /* :root --field-border */
+  --blue: #2962ff;                     /* accent: hovers, metrics, the Verified tick */
+  --blue-ring: #cfe0ff;                /* .detail-share.is-done ring */
+  --error: #e5484d;                    /* .cf-err (always paired with text + an icon) */
+  --on-ink: #ffffff;                   /* text on ink buttons */
+  --media-ring: rgba(10, 10, 10, .08); /* .db-media inset ring */
+  --scrim: rgba(10, 10, 10, .30);      /* .detail-backdrop */
+  --scrim-lb: rgba(10, 10, 10, .86);   /* .lb-backdrop */
+  --pill-glass: rgba(255, 255, 255, .92); /* .shot-caption */
+  --lb-btn: rgba(255, 255, 255, .10);  /* .lb-btn */
+  --lb-btn-hover: rgba(255, 255, 255, .22);
+  --lb-ink: #ffffff;                   /* lightbox controls and caption */
+  --surface-window: #ffffff;           /* .detail-panel background: var(--bg) */
+  --veil-0: rgba(255, 255, 255, .94);  /* .dh-veil .dh-tint stops 0 / 38 / 66 % */
+  --veil-38: rgba(255, 255, 255, .88);
+  --veil-66: rgba(255, 255, 255, .55);
+  --db-gap: 10px;                      /* :root --db-gap (rhythm between case blocks) */
+
+  /* type (family swapped to Intern; sizes, weights, tracking are his) */
+  --font: 'Intern', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --t-body: 15px; --lh-body: 22px; --tr-body: -0.15px;   /* body */
+  --t-read: 15px; --lh-read: 24px; --tr-read: -0.1px;    /* .detail-desc-text */
+  --t-ui: 13px;   --tr-ui: -0.1px;                       /* buttons, captions, footer status */
+  --t-small: 14px; --lh-small: 21px;                     /* .tm-quote, .skill */
+  --t-meta: 12px; --lh-meta: 18px;                       /* .db-caption, .tm-name, .lb-count */
+  --t-tiny: 11px;                                        /* labels, handles, Verified */
+  --t-label: 10px; --tr-label: .14em;                    /* .detail-desc-label (uppercase) */
+  --t-title: 26px; --tr-title: -0.4px;                   /* .detail-title */
+  --t-title-s: 21px;                                     /* .contact-title */
+  --t-metric: 44px; --tr-metric: -1.2px;                 /* the case metric (new), on his title tracking ratio */
+  --w-regular: 400; --w-medium: 500; --w-semi: 600;
+
+  /* radius */
+  --r-shot: 14px;      /* :root --radius (stream shots) → strip tiles */
+  --r-modal: 16px;     /* .detail-panel → windows */
+  --r-panel: 18px;     /* .contact-panel */
+  --r-card: 12px;      /* .cv-tm (floating testimonial card) → proof bubble */
+  --r-media: 10px;     /* .db-media (pictures inside the modal) */
+  --r-input: 9px;      /* .cf-field input */
+  --r-caption: 8px;    /* .shot-caption, .lb-img */
+  --r-skel: 6px;       /* .skel → folder prints */
+  --r-pill: 100px;     /* .bio-cta, .cf-chip, .cf-submit */
+
+  /* elevation (his shadows, exactly) */
+  --sh-modal: 0 24px 60px rgba(10, 10, 10, .18);       /* .detail-panel */
+  --sh-panel: 0 30px 90px rgba(0, 0, 0, .22);          /* .contact-panel */
+  --sh-card: 0 8px 26px rgba(0, 0, 0, .14);            /* .cv-tm */
+  --sh-caption: 0 1px 3px rgba(10, 10, 10, .06);       /* .shot-caption */
+  --sh-float: 0 6px 20px rgba(10, 10, 10, .22);        /* .detail-cta-wrap .bio-cta--primary */
+  --sh-lb: 0 30px 80px rgba(0, 0, 0, .5);              /* .lb-img */
+  --sh-sheet: 0 -10px 30px rgba(10, 10, 10, .16);      /* .detail-panel as the phone drawer */
+  --ring-focus: 0 0 0 3px rgba(10, 10, 10, .06);       /* .cf-field input:focus */
+  --ring-error: 0 0 0 3px rgba(229, 72, 77, .09);      /* .cf-field.is-bad */
+  --blur-scrim: 4px;   /* .detail-backdrop */
+  --blur-glass: 10px;  /* .shot-caption */
+  --blur-lb-btn: 6px;  /* .lb-btn */
+
+  /* space (his paddings and gaps) */
+  --s-1: 4px; --s-2: 6px; --s-3: 8px; --s-4: 12px; --s-5: 14px; --s-6: 16px; --s-7: 24px;
+  --s-8: 28px; --s-9: 36px; --s-10: 44px;   /* :root --pad 44, .detail-body 28/36 */
+  --gx: 64px;
+  --bar: 30px;
+
+  /* motion (his curves and durations) */
+  --ease: cubic-bezier(.22, .61, .36, 1);        /* .shot-btn, .detail-panel, .tm-stage */
+  --ease-spring: cubic-bezier(.34, 1.4, .64, 1); /* the label → icon swap */
+  --ease-out: var(--ease);
+  --ease-in: cubic-bezier(.55, 0, .75, .25);
+  --dur-fast: 180ms;   /* .close-btn, .sf-socials a, .lb-btn */
+  --dur-base: 250ms;   /* .bio-cta background */
+  --dur-pop: 350ms;    /* .detail-panel, label swap */
+  --dur-slow: 500ms;   /* .shot fade-up, .tm-slide */
+
+  /* stacking: the only z-index values in the site */
+  --z-strip: 1; --z-edge: 2; --z-walker: 3; --z-ui: 4; --z-label: 6;
+  --z-window: 20; --z-dock: 25; --z-bubble: 30; --z-lightbox: 40; --z-wave: 50; --z-intro: 100;
+
+  color-scheme: light;
+}
+
+/* dark: his tokens inverted conservatively (same hairline logic, same radii) */
+:root[data-theme="dark"], [data-theme="dark"] {
+  --bg: #0a0a0a;
+  --ink: #f5f5f5;
+  --ink-mid: #8c8c8c;
+  --ink-soft: #5c5c5c;
+  --border: #1f1f1f;
+  --surface: #161616;
+  --surface-hover: #1b1b1b;
+  --ring-hover: #2a2a2a;
+  --field: #131314;
+  --field-border: #262628;
+  --on-ink: #0a0a0a;
+  --media-ring: rgba(255, 255, 255, .08);
+  --scrim: rgba(0, 0, 0, .55);
+  --pill-glass: rgba(24, 24, 24, .9);
+  --sh-modal: 0 24px 60px rgba(0, 0, 0, .55);
+  --sh-panel: 0 30px 90px rgba(0, 0, 0, .6);
+  --sh-card: 0 8px 26px rgba(0, 0, 0, .5);
+  --sh-caption: 0 1px 3px rgba(0, 0, 0, .4);
+  --ring-focus: 0 0 0 3px rgba(255, 255, 255, .08);
+  --surface-window: #141414;
+  --veil-0: rgba(20, 20, 20, .94);
+  --veil-38: rgba(20, 20, 20, .88);
+  --veil-66: rgba(20, 20, 20, .55);
+  --sh-sheet: 0 0 0 1px rgba(255, 255, 255, .08);
+  --sh-float: 0 6px 20px rgba(0, 0, 0, .5);
+  color-scheme: dark;
+}
+@media (max-width: 768px) {
+  :root { --gx: 20px; --r-shot: 10px; }
+}

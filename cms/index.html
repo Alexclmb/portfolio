@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- v2: the new repo has no netlify.toml X-Robots-Tag for /cms, so say it here too -->
+<meta name="robots" content="noindex, nofollow, noarchive">
 <title>Portfolio CMS — Alex Colombel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -718,6 +720,62 @@ textarea {
   .preview-stage { padding: 10px; }
 }
 
+/* ════════════ V2 SITE FIELDS ════════════
+   Built from the existing pieces (eng-item rows, block-btn, stream tiles);
+   only the glue is new. */
+.v2-inline { display: flex; gap: 8px; align-items: center; }
+.v2-inline input { flex: 1; min-width: 0; }
+.v2-grid-4 { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.2fr; gap: 12px; }
+.v2-row { margin-bottom: 0; }
+.v2-row + .add-row, .eng-list + .add-row { margin-top: 10px; }
+.v2-row-btns { display: flex; gap: 4px; }
+.v2-folder { grid-template-columns: auto 1fr 110px 1fr auto; padding: 4px 2px; }
+.v2-folder.is-off { opacity: .55; }
+.v2-folder.is-off .drag-handle { cursor: default; }
+.v2-folder.is-missing .v2-check span { color: var(--danger); }
+.v2-check { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 13px; color: var(--ink); font-weight: 500; letter-spacing: 0; cursor: pointer; }
+.v2-check input { width: 15px; height: 15px; accent-color: var(--ink); }
+.v2-sticker { font-size: 12px; color: #2962ff; font-weight: 600; }
+.v2-slug { font-size: 12px; color: var(--ink-mid); font-family: ui-monospace, Menlo, monospace; }
+.v2-cap { font-size: 11px; color: var(--ink-mid); padding: 2px 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.v2-cap b { color: #2962ff; font-weight: 600; }
+.stream-tile.v2-bad .stream-tile-image { outline: 2px solid var(--danger); outline-offset: -2px; }
+.v2-flag {
+  position: absolute; left: 6px; bottom: 6px;
+  background: var(--danger); color: #fff;
+  font-size: 10px; font-weight: 600; letter-spacing: .04em;
+  padding: 2px 6px; border-radius: 4px;
+}
+.btn.is-on { background: var(--ink); color: #fff; border-color: var(--ink); }
+.v2-upload-for { width: auto; padding: 6px 10px; font-size: 12px; }
+[data-v2-if][hidden] { display: none !important; }
+.v2-picker {
+  border: 1px solid var(--border); border-radius: 10px; background: #fafafa;
+  padding: 14px; margin-bottom: 14px; max-height: 420px; overflow: auto;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.v2-picker[hidden] { display: none; }
+.v2-pick-h { font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+.v2-pick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.v2-pick {
+  position: relative; aspect-ratio: 4 / 3; border: 1px solid var(--border-2); border-radius: 6px;
+  overflow: hidden; background: #fff; cursor: pointer; padding: 0;
+}
+.v2-pick:hover:not([disabled]) { border-color: var(--ink); }
+.v2-pick img, .v2-pick video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.v2-pick.is-used { cursor: not-allowed; }
+.v2-pick.is-used img, .v2-pick.is-used video { opacity: .35; }
+.v2-pick span {
+  position: absolute; inset: auto 4px 4px auto; font-size: 10px; font-weight: 600;
+  background: var(--ink); color: #fff; padding: 1px 5px; border-radius: 4px;
+}
+@media (max-width: 760px) {
+  .v2-grid-4 { grid-template-columns: 1fr 1fr; }
+  .v2-row { grid-template-columns: auto 1fr !important; }
+  .v2-row > input, .v2-row > select, .v2-row > .v2-sticker, .v2-row > .v2-slug { grid-column: 2; }
+  .v2-row .v2-row-btns { grid-column: 2; justify-content: flex-end; }
+}
+
 /* ════════════ MOBILE ════════════
    The topbar packs a title plus six controls, which overflows on a phone.
    Below 760px it becomes two rows: title + the one action you actually press,
@@ -1001,6 +1059,59 @@ textarea {
 
 <div class="app">
 
+  <!-- ════════════ IDENTITY + STATUS (v2) ════════════ -->
+  <div class="card">
+    <div class="card-h">
+      <h2>Identity &amp; status</h2>
+      <span class="card-h-meta">Info row at the top of the page · footer</span>
+    </div>
+
+    <div class="field-row-3">
+      <div class="field">
+        <label>Name</label>
+        <input type="text" id="v2Name" placeholder="Alex Colombel">
+      </div>
+      <div class="field">
+        <label>Role</label>
+        <input type="text" id="v2Role" placeholder="Product Designer">
+      </div>
+      <div class="field">
+        <label>Updated <span class="hint-inline">— footer, MM.YYYY</span></label>
+        <div class="v2-inline">
+          <input type="text" id="v2Updated" placeholder="11.2026">
+          <button class="btn btn--ghost btn--sm" id="v2UpdatedNow" title="Set to this month"><i class="ri-calendar-check-line"></i> Now</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Availability</label>
+        <input type="text" id="v2Availability" placeholder="Open for new projects">
+      </div>
+      <div class="field" data-v2-if="status.label">
+        <label>Status label</label>
+        <input type="text" id="v2StatusLabel" placeholder="Working on">
+      </div>
+    </div>
+
+    <div class="field" data-v2-if="status.items">
+      <label>Status lines — label, note, optional link</label>
+      <div class="eng-list" id="v2StatusItems"></div>
+      <button class="add-row" id="v2AddStatusItem"><i class="ri-add-line"></i> Add status line</button>
+    </div>
+
+    <div class="field">
+      <label>Location — city, the time zone the footer clock uses, and the coordinates if the page shows them</label>
+      <div class="v2-grid-4">
+        <input type="text" id="v2City" placeholder="Barcelona, Spain" title="City">
+        <input type="text" id="v2Tz" placeholder="Europe/Madrid" spellcheck="false" title="IANA time zone">
+        <input type="text" id="v2Lat" placeholder="41.3874" spellcheck="false" title="Latitude" data-v2-if="location.lat">
+        <input type="text" id="v2Lon" placeholder="2.1686" spellcheck="false" title="Longitude" data-v2-if="location.lon">
+      </div>
+    </div>
+  </div>
+
   <!-- ════════════ BIO + CONTACT ════════════ -->
   <div class="card">
     <div class="card-h"><h2>Bio &amp; contact</h2></div>
@@ -1055,6 +1166,12 @@ textarea {
         <input type="url" id="socialDribbble" placeholder="https://dribbble.com/handle">
       </div>
     </div>
+
+    <div class="field" style="margin-top: 16px;">
+      <label>Info-row codes — short code, name, and either one of the URLs above or its own link. Order = order on the page.</label>
+      <div class="eng-list" id="v2SocialCodes"></div>
+      <button class="add-row" id="v2AddSocialCode"><i class="ri-add-line"></i> Add code</button>
+    </div>
   </div>
 
   <!-- ════════════ CONTENT REPO ════════════ -->
@@ -1068,8 +1185,9 @@ textarea {
       <strong>content.json</strong> in your GitHub repo is the single source of truth. This editor
       loads it on open and writes it back when you publish, so the site and the CMS can't drift
       apart — and you can edit from any browser or device.
-      Publishing commits <strong>index.html</strong> and <strong>content.json</strong> together in
-      one commit, so your host deploys once.
+      Publishing commits <strong>content.json</strong> only. The v2 site's index.html, js/ and css/
+      are never touched from here, and the site reads content.json from its own host, so each
+      publish shows up after Netlify's deploy.
       Use a <strong>fine-grained token</strong> scoped to this one repo with
       <strong>Contents: Read and write</strong>. It's stored only in this browser and is never
       written into content.json or any export.
@@ -1100,7 +1218,7 @@ textarea {
       <button class="btn btn--ghost btn--sm" id="repoPullBtn"><i class="ri-download-cloud-2-line"></i> Load from repo</button>
       <button class="btn btn--primary btn--sm" id="repoPublishBtn"><i class="ri-rocket-line"></i> Publish</button>
       <button class="btn btn--ghost btn--sm" id="generateBtn" title="Only needed if publishing fails and you want to upload the file by hand">
-        <i class="ri-download-line"></i> Download index.html
+        <i class="ri-download-line"></i> Download content.json
       </button>
       <span class="cdn-count" id="repoLast"></span>
     </div>
@@ -1220,7 +1338,12 @@ textarea {
   <div class="card">
     <div class="card-h">
       <h2>Testimonials</h2>
-      <span class="card-h-meta">Rotating in the sidebar · drag to reorder</span>
+      <span class="card-h-meta">Kind words · drag to reorder</span>
+    </div>
+
+    <div class="field">
+      <label>Kind words heading</label>
+      <input type="text" id="v2TmLabel" placeholder="What clients say">
     </div>
 
     <div id="tmList"></div>
@@ -1231,18 +1354,60 @@ textarea {
   <div class="card">
     <div class="card-h">
       <h2>Projects</h2>
-      <span class="card-h-meta">Detail modals · used to populate the stream below</span>
+      <span class="card-h-meta">Case windows · folder stickers · strip captions</span>
     </div>
 
     <div id="projList"></div>
     <button class="add-row" id="addProjBtn"><i class="ri-add-line"></i> Add project</button>
   </div>
 
-  <!-- ════════════ IMAGE STREAM (right column) ════════════ -->
+  <!-- ════════════ FOLDERS (v2) ════════════ -->
   <div class="card">
     <div class="card-h">
-      <h2>Image stream</h2>
-      <span class="card-h-meta">Right column · drag to reorder · hover a tile for controls</span>
+      <h2>Folders</h2>
+      <span class="card-h-meta">The folder row · drag to reorder · untick to hide a project</span>
+    </div>
+
+    <div class="eng-list" id="v2FolderList"></div>
+
+    <div class="field" style="margin-top: 18px;" data-v2-if="extraFolders">
+      <label>Extra folders after the divider — page id (the URL), label, sticker</label>
+      <div class="eng-list" id="v2ExtraFolders"></div>
+      <button class="add-row" id="v2AddExtraFolder"><i class="ri-add-line"></i> Add extra folder</button>
+    </div>
+  </div>
+
+  <!-- ════════════ STRIP (v2) ════════════ -->
+  <div class="card">
+    <div class="card-h">
+      <h2>Strip</h2>
+      <span class="card-h-meta" id="v2StripMeta">The looping media strip · drag to reorder</span>
+    </div>
+
+    <p class="hint">
+      Same rules as the site's own check: a picture is in the strip <strong>once</strong> (look-alikes
+      listed in <code>sameImage</code> count as the same picture), and two neighbours never show the same
+      picture or the same project. The strip loops, so the last tile also sits next to the first.
+      A repeat is refused; a new tile goes into the first gap where it breaks no rule. Anything that
+      breaks a rule is marked red and blocks Publish.
+    </p>
+
+    <div class="cdn-actions" style="margin-bottom: 14px;">
+      <button class="btn btn--ghost btn--sm" id="v2StripFromProject"><i class="ri-folder-image-line"></i> Add from a project</button>
+      <select id="v2StripUploadFor" class="v2-upload-for" title="Project that uploaded tiles open"></select>
+      <button class="btn btn--ghost btn--sm" id="v2StripDedupe" hidden><i class="ri-eraser-line"></i> Remove duplicates</button>
+      <span class="cdn-count" id="v2StripCount"></span>
+    </div>
+    <div class="v2-picker" id="v2StripPicker" hidden></div>
+
+    <div class="stream-grid" id="v2StripGrid"></div>
+  </div>
+
+  <!-- ════════════ IMAGE STREAM (v1, legacy) ════════════ -->
+  <div class="card" id="streamCard">
+    <div class="card-h">
+      <h2>Image stream <span class="hint-inline">· v1 only</span></h2>
+      <span class="card-h-meta">Not shown by the v2 site, which uses the Strip above · kept so nothing is lost</span>
     </div>
 
     <div class="stream-grid" id="streamGrid"></div>
@@ -1287,13 +1452,20 @@ textarea {
 /* ═══════════════════════════════════════════════════════════════
    CMS — Portfolio Content Editor
    ─────────────────────────────────────────────────────────────
-   Stores all data in IndexedDB (db "portfolio-cms", key "portfolio-cms-v6").
+   Stores all data in IndexedDB (db "portfolio-cms", key "portfolio-cms-v7";
+   token and repo settings stay under the v6 keys).
+   v2 site: Publish commits content.json only — see cms/README.md.
    Images are read as base64 data URIs and embedded directly into
    the generated HTML (no CDN). Final HTML can be 10-30MB if
    images are high-res — recommend uploading to a CDN later.
 ═══════════════════════════════════════════════════════════════ */
 
-const STORAGE_KEY = 'portfolio-cms-v6';
+/* v2 site: content lives under a new key so a browser that still holds a v1
+   draft (same origin, alexcolombel.com/cms) can't resurrect the old shape and
+   publish it over the new fields. Token and repo settings keep their v6 keys,
+   so nobody has to paste the token again. */
+const STORAGE_KEY = 'portfolio-cms-v7';
+const LEGACY_KEY  = 'portfolio-cms-v6';
 const STORAGE_LIMIT_MB = 500; /* IndexedDB — meter reference only, not a hard cap */
 
 /* ═════════ STORAGE: IndexedDB ═════════
@@ -1301,8 +1473,8 @@ const STORAGE_LIMIT_MB = 500; /* IndexedDB — meter reference only, not a hard 
    ~33%, so HQ uploads died almost immediately. IndexedDB has no fixed cap —
    Chrome/Edge allow up to ~60% of free disk, Firefox ~10%, Safari ~1GB+.
    Same value shape as before (one JSON string), so nothing downstream changes. */
-const REPO_KEY  = STORAGE_KEY + '-repo';   /* owner/repo/branch — per browser */
-const TOKEN_KEY = STORAGE_KEY + '-token';  /* never leaves this browser */
+const REPO_KEY  = LEGACY_KEY + '-repo';   /* owner/repo/branch — per browser */
+const TOKEN_KEY = LEGACY_KEY + '-token';  /* never leaves this browser */
 const CONTENT_PATH = 'content.json';
 const SITE_PATH    = 'index.html';
 
@@ -1893,12 +2065,24 @@ async function loadState() {
     let raw = await idbGet(STORAGE_KEY);
     /* one-time migration: pull anything still sitting in the old localStorage store */
     if (raw == null) raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return freshDefaults();
+    if (!raw) return (await siteContent()) || freshDefaults();
     return normalizeState(JSON.parse(raw));
   } catch (e) {
     console.warn('Failed to load state, using defaults', e);
     return freshDefaults();
   }
+}
+
+/* v2: with nothing saved in this browser, start from the content.json the site
+   itself serves (same host) rather than the v1 DEFAULTS baked in below, which
+   predate name/status/strip/etc. The repo pull at boot still wins after this. */
+async function siteContent() {
+  try {
+    const res = await fetch(SITE_CONTENT_URL, { cache: 'no-store' });
+    if (!res.ok) return null;
+    const parsed = await res.json();
+    return parsed && Array.isArray(parsed.projects) ? normalizeState(parsed) : null;
+  } catch (e) { return null; }
 }
 
 /* Brings any saved or fetched content up to the current shape. Applied to
@@ -1912,10 +2096,19 @@ function normalizeState(parsed) {
        which is handled by returning DEFAULTS above. */
     const merged = { ...structuredClone(DEFAULTS), ...parsed };
 
+    /* v2 content (it has a `strip`) is never padded with v1-only keys: the site
+       doesn't read `stream`, so don't invent one. Every key in `parsed` — known
+       to this editor or not — is kept as-is by the spread above. */
+    const isV2 = Array.isArray(parsed.strip);
+    if (isV2 && !('stream' in parsed)) delete merged.stream;
+    if (isV2) {
+      if (!merged.socials || typeof merged.socials !== 'object') merged.socials = {};
+    }
+
     /* Migration only: if a saved state predates the stream feature (no stream
        array at all), seed it from project images so the right column isn't
        empty. Empty arrays from the user's own edits are respected. */
-    if (!Array.isArray(parsed.stream)) {
+    if (!isV2 && !Array.isArray(parsed.stream)) {
       merged.stream = [];
       (merged.projects || []).forEach((p, i) => {
         if (p.cover) merged.stream.push({ image: p.cover, projectIdx: i, caption: '', metric: '' });
@@ -2111,6 +2304,9 @@ function allRemoteImages() {
   const urls = new Set();
   const add = u => { if (typeof u === 'string' && /^https?:/.test(u)) urls.add(u); };
   (state.stream || []).forEach(s => add(s.image));
+  /* v2: the strip sizes every tile from dims, and Kind words sizes the proofs */
+  (state.strip || []).forEach(s => s && add(s.image));
+  (state.testimonials || []).forEach(t => add(t.proof));
   (state.projects || []).forEach(p => (p.blocks || []).forEach(b => {
     add(b.image);
     (b.images || []).forEach(add);
@@ -2223,13 +2419,14 @@ function escJs(s) {
 
 /* ═════════ RENDER: BIO ═════════ */
 function bindBio() {
-  document.getElementById('bio').value = state.bio;
-  document.getElementById('telegramUrl').value = state.telegramUrl;
-  document.getElementById('email').value = state.email;
-  document.getElementById('socialX').value = state.socials.x;
-  document.getElementById('socialLinkedin').value = state.socials.linkedin;
-  document.getElementById('socialDribbble').value = state.socials.dribbble;
-  document.getElementById('skillsLabel').value = state.skillsLabel;
+  document.getElementById('bio').value = state.bio || '';
+  document.getElementById('telegramUrl').value = state.telegramUrl || '';
+  document.getElementById('email').value = state.email || '';
+  state.socials = state.socials || {};
+  document.getElementById('socialX').value = state.socials.x || '';
+  document.getElementById('socialLinkedin').value = state.socials.linkedin || '';
+  document.getElementById('socialDribbble').value = state.socials.dribbble || '';
+  document.getElementById('skillsLabel').value = state.skillsLabel || '';
   const contact = state.contact || {};
   document.getElementById('contactKey').value     = contact.accessKey || '';
   document.getElementById('contactSubject').value = contact.subject   || state.ctaSubject || 'Project Enquiry';
@@ -2429,7 +2626,637 @@ document.getElementById('addWmBtn').onclick = () => {
   renderWordmarks();
 };
 
+/* ═════════════════════════════════════════════════════════════════
+   V2 SITE FIELDS
+   ─────────────────────────────────────────────────────────────────
+   The v2 site (index.html + js/) reads keys the v1 page never had:
+   name, role, status, location, updated, socialCodes, folderOrder,
+   extraFolders, strip, testimonialsLabel, and metric / sticker on each
+   project. Everything below edits those IN PLACE on `state`, so any key
+   this editor doesn't know about rides along untouched. A missing key is
+   only created when you actually type into its field.
+═════════════════════════════════════════════════════════════════ */
+
+/* Per-project fields the v2 site reads besides the v1 ones. `metric` is always
+   shown; the others appear only when some project already has that key, so the
+   editor follows whichever shape content.json is in (sticker → metricValue /
+   metricUnit happened mid-build) instead of adding keys the site ignores. */
+const V2_PROJECT_FIELDS = [
+  { k: 'metric',      label: 'Metric',       hint: 'case window hero, strip caption', ph: '0 → 500k+ users', always: true },
+  { k: 'metricValue', label: 'Folder sticker', hint: 'short; blank uses the metric', ph: '0→500k+' },
+  { k: 'metricUnit',  label: 'Unit under the folder', hint: '', ph: 'users' },
+  { k: 'sticker',     label: 'Folder sticker', hint: 'short; blank uses the metric', ph: '0→500k' }
+];
+function v2ProjectKeysInUse() {
+  const ps = state.projects || [];
+  return V2_PROJECT_FIELDS.filter(f => f.always || ps.some(p => p && f.k in p));
+}
+function v2ProjectFields(p) {
+  const fs = v2ProjectKeysInUse();
+  return `<div class="${fs.length >= 3 ? 'field-row-3' : 'field-row'}">` + fs.map(f => `
+        <div class="field">
+          <label>${escHtml(f.label)}${f.hint ? ` <span class="hint-inline">— ${escHtml(f.hint)}</span>` : ''}</label>
+          <input type="text" placeholder="${escAttr(f.ph)}" value="${escAttr(p[f.k] || '')}" data-key="${f.k}">
+        </div>`).join('') + `</div>`;
+}
+function v2ProjectBlanks() {
+  const o = {};
+  v2ProjectKeysInUse().forEach(f => { o[f.k] = ''; });
+  return o;
+}
+function v2StickerOf(p) { return (p && (p.metricValue || p.sticker || p.metric)) || ''; }
+
+/* Writes a value at a dotted path, creating parent objects only on write.
+   Blank + `dropBlank` deletes the key instead of saving "". */
+function v2Set(path, value, dropBlank) {
+  const keys = path.split('.');
+  let o = state;
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (!o[keys[i]] || typeof o[keys[i]] !== 'object') o[keys[i]] = {};
+    o = o[keys[i]];
+  }
+  const last = keys[keys.length - 1];
+  if (dropBlank && value === '') delete o[last];
+  else o[last] = value;
+}
+function v2GetPath(path) {
+  return path.split('.').reduce((o, k) => (o && typeof o === 'object') ? o[k] : undefined, state);
+}
+
+function v2BindField(id, path, dropBlank) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const v = v2GetPath(path);
+  el.value = v == null ? '' : String(v);
+  el.oninput = () => { v2Set(path, el.value, dropBlank); saveState(); };
+}
+
+function v2MonthStamp(d) {
+  d = d || new Date();
+  return String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear();
+}
+
+/* Fields for keys the site has dropped stay hidden unless the content still has
+   them, so the editor follows the schema instead of re-creating old keys. */
+function v2ShowIfPresent() {
+  document.querySelectorAll('[data-v2-if]').forEach(el => {
+    el.hidden = v2GetPath(el.dataset.v2If) === undefined;
+  });
+}
+
+function v2BindIdentity() {
+  v2ShowIfPresent();
+  v2BindField('v2Name', 'name');
+  v2BindField('v2Role', 'role');
+  v2BindField('v2Updated', 'updated');
+  v2BindField('v2StatusLabel', 'status.label');
+  v2BindField('v2Availability', 'status.availability');
+  v2BindField('v2City', 'location.city');
+  v2BindField('v2Lat', 'location.lat');
+  v2BindField('v2Lon', 'location.lon');
+  v2BindField('v2Tz', 'location.tz');
+  v2BindField('v2TmLabel', 'testimonialsLabel', true);
+  document.getElementById('v2UpdatedNow').onclick = () => {
+    state.updated = v2MonthStamp();
+    document.getElementById('v2Updated').value = state.updated;
+    saveState();
+  };
+}
+
+/* ── generic reorderable row list ──
+   Same look and drag pattern as the Skills list (eng-item + drag-handle), plus
+   up/down buttons so it also works without a mouse. `getArr` returns the live
+   array or undefined; `ensureArr` creates it on first add. */
+const v2Drag = { list: null, from: null };
+
+function v2List(el, { getArr, ensureArr, fields, fresh, onChange }) {
+  if (!el) return;
+  const arr = getArr() || [];
+  const cols = 'auto ' + fields.map(f => f.w || '1fr').join(' ') + ' auto';
+  el.innerHTML = arr.map((it, i) => `
+    <div class="eng-item v2-row" data-i="${i}" draggable="true" style="grid-template-columns:${cols}">
+      <div class="drag-handle" title="Drag to reorder"><i class="ri-drag-move-2-line"></i></div>
+      ${fields.map(f => f.type === 'select'
+        ? `<select data-k="${f.k}" title="${escAttr(f.ph || '')}">${f.options().map(o =>
+            `<option value="${escAttr(o.value)}" ${String((it || {})[f.k] ?? '') === o.value ? 'selected' : ''}>${escHtml(o.label)}</option>`).join('')}</select>`
+        : `<input type="text" data-k="${f.k}" value="${escAttr((it || {})[f.k] ?? '')}" placeholder="${escAttr(f.ph || '')}" spellcheck="${f.mono ? 'false' : 'true'}">`
+      ).join('')}
+      <div class="v2-row-btns">
+        <button class="block-btn" data-act="up" ${i === 0 ? 'disabled' : ''} title="Move up"><i class="ri-arrow-up-s-line"></i></button>
+        <button class="block-btn" data-act="down" ${i === arr.length - 1 ? 'disabled' : ''} title="Move down"><i class="ri-arrow-down-s-line"></i></button>
+        <button class="block-btn is-danger" data-act="del" title="Remove"><i class="ri-delete-bin-line"></i></button>
+      </div>
+    </div>`).join('');
+
+  const rerender = () => { v2List(el, { getArr, ensureArr, fields, fresh, onChange }); if (onChange) onChange(); };
+  const move = (from, to) => {
+    const a = getArr();
+    if (!a || to < 0 || to >= a.length || from === to) return;
+    const [m] = a.splice(from, 1);
+    a.splice(to, 0, m);
+    saveState(); rerender();
+  };
+
+  el.querySelectorAll('.v2-row').forEach(row => {
+    const i = +row.dataset.i;
+    row.querySelectorAll('[data-k]').forEach(input => {
+      const f = fields.find(x => x.k === input.dataset.k);
+      const write = () => {
+        const it = getArr()[i];
+        const v = input.value.trim() === '' ? '' : input.value;
+        if (f.dropBlank && v === '') delete it[f.k];
+        else it[f.k] = v;
+        saveState();
+        if (onChange) onChange();
+      };
+      if (input.tagName === 'SELECT') input.onchange = write; else input.oninput = write;
+      input.addEventListener('mousedown', ev => ev.stopPropagation());
+    });
+    row.querySelector('[data-act="up"]').onclick = () => move(i, i - 1);
+    row.querySelector('[data-act="down"]').onclick = () => move(i, i + 1);
+    row.querySelector('[data-act="del"]').onclick = () => { getArr().splice(i, 1); saveState(); rerender(); };
+
+    row.addEventListener('dragstart', ev => {
+      v2Drag.list = el; v2Drag.from = i;
+      ev.dataTransfer.effectAllowed = 'move';
+      try { ev.dataTransfer.setData('text/plain', String(i)); } catch (e) {}
+      setTimeout(() => row.classList.add('dragging'), 0);
+    });
+    row.addEventListener('dragend', () => { row.classList.remove('dragging'); clearDropIndicators(); v2Drag.list = null; v2Drag.from = null; });
+    row.addEventListener('dragover', ev => {
+      if (v2Drag.list !== el || v2Drag.from === i) return;
+      ev.preventDefault();
+      const r = row.getBoundingClientRect();
+      clearDropIndicators();
+      row.classList.add((ev.clientY - r.top) < r.height / 2 ? 'drop-above' : 'drop-below');
+    });
+    row.addEventListener('dragleave', () => row.classList.remove('drop-above', 'drop-below'));
+    row.addEventListener('drop', ev => {
+      if (v2Drag.list !== el) return;
+      ev.preventDefault();
+      const r = row.getBoundingClientRect();
+      let to = (ev.clientY - r.top) < r.height / 2 ? i : i + 1;
+      if (v2Drag.from < to) to -= 1;
+      move(v2Drag.from, to);
+    });
+  });
+}
+
+function v2AddRow(btnId, ensureArr, fresh, render) {
+  const b = document.getElementById(btnId);
+  if (b) b.onclick = () => { ensureArr().push(fresh()); saveState(); render(); };
+}
+
+function v2RenderStatusItems() {
+  const ensure = () => {
+    if (!state.status || typeof state.status !== 'object') state.status = {};
+    if (!Array.isArray(state.status.items)) state.status.items = [];
+    return state.status.items;
+  };
+  v2List(document.getElementById('v2StatusItems'), {
+    getArr: () => state.status && state.status.items,
+    fields: [
+      { k: 'label', ph: 'Jackpot Studios' },
+      { k: 'note', ph: 'Art director' },
+      { k: 'url', ph: 'https:// (optional)', mono: true }
+    ]
+  });
+  v2AddRow('v2AddStatusItem', ensure, () => ({ label: '', note: '', url: '' }), v2RenderStatusItems);
+}
+
+function v2RenderSocialCodes() {
+  const ensure = () => (Array.isArray(state.socialCodes) ? state.socialCodes : (state.socialCodes = []));
+  const keyOptions = () => {
+    const keys = Object.keys(state.socials || {});
+    ['x', 'linkedin', 'dribbble'].forEach(k => { if (!keys.includes(k)) keys.push(k); });
+    return [{ value: '', label: 'Own link →' }].concat(keys.map(k => ({ value: k, label: 'Social: ' + k })));
+  };
+  v2List(document.getElementById('v2SocialCodes'), {
+    getArr: () => state.socialCodes,
+    fields: [
+      { k: 'code', ph: 'X', w: '70px' },
+      { k: 'label', ph: 'X / Twitter' },
+      { k: 'key', type: 'select', options: keyOptions, dropBlank: true, ph: 'Which URL above, or its own link' },
+      { k: 'url', ph: 'https://t.me/… (own link)', mono: true, dropBlank: true }
+    ]
+  });
+  v2AddRow('v2AddSocialCode', ensure, () => ({ code: '', label: '' }), v2RenderSocialCodes);
+}
+
+function v2RenderExtraFolders() {
+  const ensure = () => (Array.isArray(state.extraFolders) ? state.extraFolders : (state.extraFolders = []));
+  v2List(document.getElementById('v2ExtraFolders'), {
+    getArr: () => state.extraFolders,
+    fields: [
+      { k: 'id', ph: 'kind-words', mono: true },
+      { k: 'label', ph: 'Kind words' },
+      { k: 'sticker', ph: '×10', w: '110px' }
+    ]
+  });
+  v2AddRow('v2AddExtraFolder', ensure, () => ({ id: '', label: '', sticker: '' }), v2RenderExtraFolders);
+}
+
+/* ── folders: the project row, in folderOrder ──
+   folderOrder is a list of slugs. Ticked rows are in it (in this order);
+   unticked projects are hidden from the row but still open by URL. */
+function v2RenameSlug(prev, next) {
+  if (!prev || prev === next || !Array.isArray(state.folderOrder)) return;
+  state.folderOrder = state.folderOrder.map(s => (s === prev ? next : s));
+}
+
+function v2ProjectRemoved(idx, slug) {
+  if (Array.isArray(state.strip)) {
+    state.strip = state.strip
+      .filter(s => !s || s.projectIdx !== idx)
+      .map(s => { if (s && s.projectIdx > idx) s.projectIdx -= 1; return s; });
+  }
+  if (Array.isArray(state.folderOrder) && slug) {
+    state.folderOrder = state.folderOrder.filter(s => s !== slug);
+  }
+}
+
+function v2RenderFolders() {
+  const el = document.getElementById('v2FolderList');
+  if (!el) return;
+  const projects = state.projects || [];
+  if (!Array.isArray(state.folderOrder)) {
+    el.innerHTML = `<p class="help">This content.json has no <code>folderOrder</code>. ` +
+      `<button class="btn btn--ghost btn--sm" id="v2StartOrder"><i class="ri-list-ordered"></i> Start one from the projects</button></p>`;
+    document.getElementById('v2StartOrder').onclick = () => {
+      state.folderOrder = projects.map(p => p.slug).filter(Boolean);
+      saveState(); v2RenderFolders();
+    };
+    return;
+  }
+  const order = state.folderOrder;
+  const rows = order.map(slug => ({ slug, on: true, p: projects.find(p => p.slug === slug) }))
+    .concat(projects.filter(p => p.slug && !order.includes(p.slug)).map(p => ({ slug: p.slug, on: false, p })));
+
+  el.innerHTML = rows.map((r, i) => `
+    <div class="eng-item v2-row v2-folder ${r.on ? '' : 'is-off'} ${r.p ? '' : 'is-missing'}" data-i="${i}" draggable="${r.on}">
+      <div class="drag-handle" title="${r.on ? 'Drag to reorder' : 'Tick to show'}"><i class="ri-drag-move-2-line"></i></div>
+      <label class="v2-check"><input type="checkbox" data-act="on" ${r.on ? 'checked' : ''}> <span>${r.p ? escHtml(r.p.title || r.slug) : 'No project has this URL'}</span></label>
+      <span class="v2-sticker">${r.p ? escHtml(v2StickerOf(r.p) || '—') : ''}</span>
+      <span class="v2-slug">/${escHtml(r.slug)}</span>
+      <div class="v2-row-btns">
+        <button class="block-btn" data-act="up" ${!r.on || i === 0 ? 'disabled' : ''} title="Move left"><i class="ri-arrow-up-s-line"></i></button>
+        <button class="block-btn" data-act="down" ${!r.on || i >= order.length - 1 ? 'disabled' : ''} title="Move right"><i class="ri-arrow-down-s-line"></i></button>
+      </div>
+    </div>`).join('');
+
+  const commit = list => {
+    state.folderOrder = list.filter(r => r.on).map(r => r.slug);
+    saveState(); v2RenderFolders();
+  };
+  const move = (from, to) => {
+    const list = rows.slice();
+    if (to < 0 || to >= order.length || from === to) return;
+    const [m] = list.splice(from, 1);
+    list.splice(to, 0, m);
+    commit(list);
+  };
+
+  el.querySelectorAll('.v2-folder').forEach(row => {
+    const i = +row.dataset.i;
+    row.querySelector('[data-act="on"]').onchange = ev => {
+      const list = rows.slice();
+      const [r] = list.splice(i, 1);
+      r.on = ev.target.checked;
+      /* a ticked project joins the end of the visible row (it was hidden, so
+         `order` still counts exactly the visible rows left in `list`); an
+         unticked one drops to the hidden tail */
+      list.splice(r.on ? order.length : list.length, 0, r);
+      commit(list);
+    };
+    row.querySelector('[data-act="up"]').onclick = () => move(i, i - 1);
+    row.querySelector('[data-act="down"]').onclick = () => move(i, i + 1);
+    if (!rows[i].on) return;
+    row.addEventListener('dragstart', ev => {
+      v2Drag.list = el; v2Drag.from = i;
+      ev.dataTransfer.effectAllowed = 'move';
+      try { ev.dataTransfer.setData('text/plain', String(i)); } catch (e) {}
+      setTimeout(() => row.classList.add('dragging'), 0);
+    });
+    row.addEventListener('dragend', () => { row.classList.remove('dragging'); clearDropIndicators(); v2Drag.list = null; v2Drag.from = null; });
+    row.addEventListener('dragover', ev => {
+      if (v2Drag.list !== el || v2Drag.from === i) return;
+      ev.preventDefault();
+      const r = row.getBoundingClientRect();
+      clearDropIndicators();
+      row.classList.add((ev.clientY - r.top) < r.height / 2 ? 'drop-above' : 'drop-below');
+    });
+    row.addEventListener('dragleave', () => row.classList.remove('drop-above', 'drop-below'));
+    row.addEventListener('drop', ev => {
+      if (v2Drag.list !== el) return;
+      ev.preventDefault();
+      const r = row.getBoundingClientRect();
+      let to = (ev.clientY - r.top) < r.height / 2 ? i : i + 1;
+      if (v2Drag.from < to) to -= 1;
+      move(v2Drag.from, Math.min(to, order.length - 1));
+    });
+  });
+}
+
+/* ── strip ──
+   state.strip = [{ image, projectIdx }, …]. The caption on the site is the
+   project's title · metric, so a tile only needs its picture and its project.
+
+   Rules — the same ones js/strip.js checks on localhost (checkStrip):
+     · one picture, one tile. A picture is its Cloudinary asset id (last path
+       segment, no extension), and ids grouped in content.sameImage are one
+       picture (look-alike crops / the video and its poster);
+     · two neighbours never show the same picture or the same project, and the
+       strip loops, so the last tile's neighbour is the first. */
+function v2AssetId(u) { return String(u || '').split('#')[0].split('?')[0].split('/').pop().replace(/\.[^.]+$/, ''); }
+function v2PicKey(u) {
+  if (typeof u !== 'string' || !u) return '';
+  if (u.startsWith('data:')) return 'data:' + u.length + ':' + u.slice(-64);
+  const id = v2AssetId(u);
+  for (const g of (Array.isArray(state.sameImage) ? state.sameImage : [])) {
+    if (Array.isArray(g) && g.includes(id)) return String(g[0]);
+  }
+  return id;
+}
+/* kept for the picker and older callers */
+const v2MediaKey = v2PicKey;
+
+/* { dupes: Set of tiles repeating an earlier picture,
+     clash: Map tile → reason it can't sit next to the following tile } */
+function stripProblems() {
+  const list = Array.isArray(state.strip) ? state.strip : [];
+  const n = list.length, seen = new Set(), dupes = new Set(), clash = new Map();
+  list.forEach((s, i) => {
+    const k = v2PicKey(s && s.image);
+    if (k && seen.has(k)) dupes.add(i); else if (k) seen.add(k);
+    if (n < 2) return;
+    const j = (i + 1) % n, t = list[j];
+    if (!s || !t) return;
+    if (k && v2PicKey(t.image) === k) { clash.set(i, 'Same picture next door'); clash.set(j, 'Same picture next door'); }
+    else if (s.projectIdx === t.projectIdx) {
+      if (!clash.has(i)) clash.set(i, 'Same project next door');
+      if (!clash.has(j)) clash.set(j, 'Same project next door');
+    }
+  });
+  return { dupes, clash };
+}
+function stripDuplicates() {
+  const { dupes, clash } = stripProblems();
+  return new Set([...dupes, ...clash.keys()]);
+}
+
+function v2InStrip(url) {
+  const k = v2PicKey(url);
+  return !!k && (state.strip || []).some(s => s && v2PicKey(s.image) === k);
+}
+
+/* The one way in: refuses a repeat, then puts the tile in the first gap whose
+   neighbours are neither the same picture nor the same project — the end of
+   the strip first, then from the front. Returns false when no gap works. */
+function v2StripAdd(image, projectIdx) {
+  if (!image) return false;
+  const projects = state.projects || [];
+  const name = (projects[projectIdx] || {}).title || 'that project';
+  if (v2InStrip(image)) { toast('That picture is already in the strip', 'error'); return false; }
+  if (!Array.isArray(state.strip)) state.strip = [];
+  const list = state.strip, n = list.length;
+  const tile = { image, projectIdx: Number.isInteger(projectIdx) ? projectIdx : 0 };
+  if (n === 0) { list.push(tile); return true; }
+  const ok = gap => {
+    const a = list[(gap - 1 + n) % n], b = list[gap % n];
+    return [a, b].every(x => !x || x.projectIdx !== tile.projectIdx);
+  };
+  const gaps = [n].concat([...Array(n).keys()]);
+  const at = gaps.find(ok);
+  if (at === undefined) {
+    toast('No gap in the strip that isn\'t next to another ' + name + ' tile', 'error');
+    return false;
+  }
+  list.splice(at, 0, tile);
+  if (at !== n) toast('Placed at #' + (at + 1) + ' so it doesn\'t sit next to another ' + name + ' tile');
+  return true;
+}
+
+const v2StripDrag = { from: null };
+
+function v2RenderStrip() {
+  const grid = document.getElementById('v2StripGrid');
+  if (!grid) return;
+  const strip = Array.isArray(state.strip) ? state.strip : [];
+  const projects = state.projects || [];
+  const { dupes, clash } = stripProblems();
+  const n = projects.length;
+
+  grid.innerHTML = strip.map((s, i) => {
+    const valid = s && Number.isInteger(s.projectIdx) && s.projectIdx >= 0 && s.projectIdx < n;
+    const p = valid ? projects[s.projectIdx] : null;
+    const opts = (valid ? '' : `<option value="" selected>— missing project —</option>`) +
+      projects.map((q, pi) => `<option value="${pi}" ${valid && pi === s.projectIdx ? 'selected' : ''}>${escHtml(q.title || 'Project ' + (pi + 1))}</option>`).join('');
+    return `
+    <div class="stream-tile ${dupes.has(i) || clash.has(i) || !valid ? 'v2-bad' : ''}" data-idx="${i}" draggable="true">
+      <div class="stream-tile-image">
+        ${s && s.image ? mediaPreview(s.image, '') : `<div class="stream-tile-empty"><i class="ri-image-line"></i></div>`}
+        <div class="stream-tile-badge">${i + 1}</div>
+        ${dupes.has(i) ? `<div class="v2-flag">Already in the strip</div>` : clash.has(i) ? `<div class="v2-flag">${clash.get(i)}</div>` : ''}
+        <button class="stream-tile-del" data-action="del" title="Remove from strip"><i class="ri-delete-bin-line"></i></button>
+      </div>
+      <div class="stream-tile-fields">
+        <select data-key="projectIdx" title="Project this tile opens">${opts}</select>
+        <div class="v2-cap">${p ? escHtml(p.title || '') + ' · <b>' + escHtml(p.metric || '') + '</b>' : 'Pick a project'}</div>
+      </div>
+    </div>`;
+  }).join('') + `
+    <div class="stream-add" id="v2StripAddTile" title="Upload image(s) or video(s) to the end of the strip">
+      <i class="ri-image-add-line"></i>
+      <span>Upload</span>
+    </div>`;
+
+  const count = document.getElementById('v2StripCount');
+  if (count) count.textContent = strip.length + ' tile' + (strip.length === 1 ? '' : 's') +
+    (dupes.size ? ' · ' + dupes.size + ' repeat' + (dupes.size === 1 ? '' : 's') : '') +
+    (clash.size ? ' · ' + clash.size + ' tile' + (clash.size === 1 ? '' : 's') + ' next to a twin' : '');
+  const uf = document.getElementById('v2StripUploadFor');
+  if (uf) {
+    const keep = uf.value;
+    uf.innerHTML = '<option value="">Upload for…</option>' + projects.map((q, pi) =>
+      `<option value="${pi}">${escHtml(q.title || 'Project ' + (pi + 1))}</option>`).join('');
+    uf.value = keep;
+  }
+  const dd = document.getElementById('v2StripDedupe');
+  if (dd) {
+    dd.hidden = !dupes.size;
+    dd.onclick = () => {
+      state.strip = strip.filter((_, i) => !dupes.has(i));
+      saveState(); v2RenderStrip();
+      toast('Removed ' + dupes.size + ' duplicate' + (dupes.size === 1 ? '' : 's'), 'success');
+    };
+  }
+
+  grid.querySelectorAll('.stream-tile').forEach(tile => {
+    const idx = +tile.dataset.idx;
+    const sel = tile.querySelector('select');
+    sel.onchange = () => {
+      if (sel.value === '') return;
+      state.strip[idx].projectIdx = +sel.value;
+      saveState(); v2RenderStrip();
+    };
+    sel.addEventListener('mousedown', ev => ev.stopPropagation());
+    tile.querySelector('[data-action="del"]').onclick = ev => {
+      ev.stopPropagation();
+      state.strip.splice(idx, 1);
+      saveState(); v2RenderStrip(); v2RenderPicker();
+    };
+    tile.addEventListener('dragstart', ev => {
+      v2StripDrag.from = idx;
+      ev.dataTransfer.effectAllowed = 'move';
+      try { ev.dataTransfer.setData('text/plain', String(idx)); } catch (e) {}
+      setTimeout(() => tile.classList.add('dragging'), 0);
+    });
+    tile.addEventListener('dragend', () => {
+      tile.classList.remove('dragging');
+      clearStreamDropIndicators();
+      v2StripDrag.from = null;
+    });
+    tile.addEventListener('dragover', ev => {
+      if (v2StripDrag.from === null) return;
+      ev.preventDefault();
+      if (v2StripDrag.from === idx) return;
+      const r = tile.getBoundingClientRect();
+      clearStreamDropIndicators();
+      tile.classList.add((ev.clientX - r.left) < r.width / 2 ? 'drop-before' : 'drop-after');
+    });
+    tile.addEventListener('dragleave', () => tile.classList.remove('drop-before', 'drop-after'));
+    tile.addEventListener('drop', ev => {
+      const from = v2StripDrag.from;
+      if (from === null) return;
+      ev.preventDefault();
+      if (from === idx) return;
+      const r = tile.getBoundingClientRect();
+      let to = (ev.clientX - r.left) < r.width / 2 ? idx : idx + 1;
+      if (from < to) to -= 1;
+      const [m] = state.strip.splice(from, 1);
+      state.strip.splice(to, 0, m);
+      saveState(); v2RenderStrip();
+    });
+  });
+
+  const add = document.getElementById('v2StripAddTile');
+  const ingest = async files => {
+    const uf = document.getElementById('v2StripUploadFor');
+    if (!uf || uf.value === '') { toast('Pick the project these tiles open first', 'error'); if (uf) uf.focus(); return; }
+    const pi = +uf.value;
+    let added = 0;
+    for (const file of files) {
+      try {
+        const src = await ingestImage(file);
+        if (src && v2StripAdd(src, pi)) added++;
+      } catch (err) { toast('Upload failed: ' + err.message, 'error'); break; }
+    }
+    if (added) { await saveState(); toast('Added ' + added + ' to the strip', 'success'); }
+    v2RenderStrip(); v2RenderPicker();
+  };
+  add.onclick = async () => {
+    const files = await pickFiles('image/*,video/*');
+    if (files && files.length) await ingest(files);
+  };
+  add.addEventListener('dragover', ev => {
+    if (v2StripDrag.from !== null) return;
+    ev.preventDefault();
+    add.classList.add('drag-target');
+  });
+  add.addEventListener('dragleave', () => add.classList.remove('drag-target'));
+  add.addEventListener('drop', async ev => {
+    if (v2StripDrag.from !== null) return;
+    ev.preventDefault();
+    add.classList.remove('drag-target');
+    const files = Array.from(ev.dataTransfer.files || []).filter(f => /^(image|video)\//.test(f.type));
+    if (files.length) await ingest(files);
+  });
+}
+
+/* "Add from a project": every picture already used in a case study, grouped by
+   project. Pictures already in the strip are shown but can't be picked. */
+function v2RenderPicker() {
+  const el = document.getElementById('v2StripPicker');
+  if (!el || el.hidden) return;
+  const groups = (state.projects || []).map((p, pi) => {
+    const media = [];
+    (p.blocks || []).forEach(b => {
+      if (b.image) media.push(b.image);
+      (b.images || []).forEach(im => { if (im) media.push(im); });
+    });
+    const seen = new Set();
+    const uniq = media.filter(u => { const k = v2MediaKey(u); if (seen.has(k)) return false; seen.add(k); return true; });
+    return { p, pi, media: uniq };
+  }).filter(g => g.media.length);
+
+  el.innerHTML = groups.map(g => `
+    <div class="v2-pick-group">
+      <div class="v2-pick-h">${escHtml(g.p.title || 'Project ' + (g.pi + 1))}</div>
+      <div class="v2-pick-grid">
+        ${g.media.map(u => {
+          const used = v2InStrip(u);
+          return `<button class="v2-pick ${used ? 'is-used' : ''}" data-pi="${g.pi}" data-src="${escAttr(u)}" ${used ? 'disabled title="Already in the strip"' : 'title="Add to the end of the strip"'}>
+            ${mediaPreview(u, '')}${used ? '<span>In strip</span>' : ''}
+          </button>`;
+        }).join('')}
+      </div>
+    </div>`).join('') || '<p class="help">No case-study pictures yet.</p>';
+
+  el.querySelectorAll('.v2-pick:not([disabled])').forEach(b => {
+    b.onclick = async () => {
+      if (v2StripAdd(b.dataset.src, +b.dataset.pi)) {
+        await saveState();
+        v2RenderStrip(); v2RenderPicker();
+        toast('Added to the strip', 'success');
+      }
+    };
+  });
+}
+
+function v2BindPicker() {
+  const btn = document.getElementById('v2StripFromProject');
+  const el = document.getElementById('v2StripPicker');
+  if (!btn || !el) return;
+  btn.onclick = () => {
+    el.hidden = !el.hidden;
+    btn.classList.toggle('is-on', !el.hidden);
+    v2RenderPicker();
+  };
+}
+
+/* Keys present in the repo's content.json that the new one would drop.
+   Top level, and per project (matched by slug). Removed projects aren't listed:
+   deleting one is a deliberate edit. */
+function droppedKeys(remote, next) {
+  const out = [];
+  const ignore = ['savedAt', 'publishedAt'];
+  Object.keys(remote || {}).forEach(k => { if (!ignore.includes(k) && !(k in next)) out.push(k); });
+  const bySlug = new Map((next.projects || []).map(p => [p && p.slug, p]));
+  (remote.projects || []).forEach(p => {
+    const q = p && p.slug && bySlug.get(p.slug);
+    if (!q) return;
+    Object.keys(p).forEach(k => { if (!(k in q)) out.push('projects › ' + p.slug + ' › ' + k); });
+  });
+  return out;
+}
+
+function v2Refresh() {
+  v2RenderFolders();
+  v2RenderStrip();
+  v2RenderPicker();
+}
+
+function v2RenderAll() {
+  v2BindIdentity();
+  v2RenderStatusItems();
+  v2RenderSocialCodes();
+  v2RenderExtraFolders();
+  v2BindPicker();
+  v2Refresh();
+}
+
 function renderAll() {
+  v2RenderAll();
   bindBio();
   renderTestimonialsCms();
   renderRepoPanel();
@@ -2452,7 +3279,12 @@ function renderAll() {
    public repo, and GitHub's secret scanning finds and revokes any token
    committed there — which is why a baked one kept dying. It's entered once per
    browser instead and kept in IndexedDB, which never leaves the device. */
+/* ── CONFIG (v2) ── where Publish commits, and the page Preview loads. Publish
+   writes CONTENT_PATH only. A device that has typed its own owner/repo/branch
+   into the Content repo card keeps those (stored per browser). */
 const REPO_DEFAULTS = { owner: 'alexclmb', repo: 'portfolio', branch: 'main' };
+const SITE_PREVIEW_URL = '/index.html';
+const SITE_CONTENT_URL = '/content.json';   /* first-run seed when nothing is saved */
 
 let repoCfg = { ...REPO_DEFAULTS };
 let repoToken = '';
@@ -2597,9 +3429,9 @@ async function publishToRepo() {
   btn.disabled = true;
 
   try {
-    step('Building');
-    const built = await buildExport();
-    if (!built) { btn.innerHTML = label; btn.disabled = false; return; }
+    step('Checking');
+    const problem = contentProblems();
+    if (problem) { toast(problem, 'error'); btn.innerHTML = label; btn.disabled = false; return; }
 
     const branch = repoCfg.branch || 'main';
     const base = repoBase();
@@ -2619,24 +3451,34 @@ async function publishToRepo() {
     ((treeNow && treeNow.tree) || []).forEach(e => { existing[e.path] = e.sha; });
 
     const newContent = contentJson();
+
+    /* v2 guard: never silently drop a field the repo's content.json has. The site
+       grows new keys faster than this editor learns them; they ride along
+       untouched, and if one would vanish (old draft, bad import) you're asked. */
+    if (existing[CONTENT_PATH]) {
+      try {
+        const blob = await ghApi(base + '/git/blobs/' + existing[CONTENT_PATH]);
+        const remote = blob && blob.content ? JSON.parse(fromBase64(blob.content)) : null;
+        const lost = remote ? droppedKeys(remote, JSON.parse(newContent)) : [];
+        if (lost.length && !confirm('Publishing would REMOVE these fields from content.json:\n\n' +
+            lost.slice(0, 20).join('\n') + (lost.length > 20 ? '\n…and ' + (lost.length - 20) + ' more' : '') +
+            '\n\nUsually this means this browser holds an old draft — Cancel, then "Load from repo". Publish anyway?')) {
+          btn.innerHTML = label; btn.disabled = false;
+          return;
+        }
+      } catch (e) { /* unreadable remote — the byte compare below still runs */ }
+    }
+
     const contentShaNew = await gitBlobSha(newContent);
     if (!contentShaNew || existing[CONTENT_PATH] !== contentShaNew) {
       changed.push({ path: CONTENT_PATH, content: newContent });
     }
 
-    /* index.html — compare only the template, so a text or image edit leaves it
-       alone and the host skips the build. Needs the current file's bytes, which
-       the tree listing doesn't carry. */
-    let siteChanged = true;
-    if (existing[SITE_PATH]) {
-      try {
-        const blob = await ghApi(base + '/git/blobs/' + existing[SITE_PATH]);
-        if (blob && blob.content) {
-          siteChanged = templateOnly(fromBase64(blob.content)) !== templateOnly(built.html);
-        }
-      } catch (e) { /* unreadable — republish rather than risk a stale page */ }
-    }
-    if (siteChanged) changed.push({ path: SITE_PATH, content: built.html });
+    /* v2: index.html is NOT written any more. The site is index.html + js/ + css/
+       committed by hand, and it reads /content.json from its own host. The old
+       editor rebuilt index.html from a template baked into this file, which would
+       now overwrite the v2 site with the v1 page. */
+    const siteChanged = false;
 
     if (!changed.length) {
       /* Reached when a previous attempt actually landed the commit even though
@@ -2698,8 +3540,8 @@ async function publishToRepo() {
     state.publishedAt = new Date().toISOString();
     await saveState();
     renderRepoPanel();
-    toast('Published ' + commit.sha.slice(0, 7) + ' · ' +
-          (onlyContent ? 'content only, no deploy' : 'site rebuilt'), 'success');
+    /* v2 serves content.json from Netlify, so this commit has to deploy to show. */
+    toast('Published ' + commit.sha.slice(0, 7) + ' · content.json · live after the deploy', 'success');
 
   } catch (err) {
     toast('Publish failed: ' + err.message, 'error');
@@ -2804,6 +3646,11 @@ function embeddedImageRefs() {
   (state.testimonials || []).forEach((t, i) => {
     if (embedded(t.proof))  refs.push({ get: () => t.proof,  set: v => { t.proof  = v; }, name: 'proof-' + i });
   });
+  (state.strip || []).forEach((s, i) => {
+    if (s && embedded(s.image)) {
+      refs.push({ get: () => s.image, set: v => { s.image = v; }, name: 'strip-' + i });
+    }
+  });
   (state.stream || []).forEach((s, i) => {
     if (embedded(s.image)) {
       refs.push({ get: () => s.image, set: v => { s.image = v; }, name: 'stream-' + i });
@@ -2904,6 +3751,7 @@ async function migrateEmbedded(askFirst) {
   await saveState();
   renderProjects();
   renderStream();
+  v2Refresh();
   renderCdnPanel();
   updateStorageMeter(JSON.stringify(state).length);
   toast(failed ? (ok + ' uploaded, ' + failed + ' failed — retry from Image hosting')
@@ -3118,6 +3966,8 @@ function renderProjects() {
         </div>
       </div>
 
+      ${v2ProjectFields(p)}
+
       <div class="field-row">
         <div class="field">
           <label>Description — paragraph 1</label>
@@ -3150,6 +4000,7 @@ function renderProjects() {
     row.querySelectorAll('input[data-key], textarea[data-key]').forEach(input => {
       input.oninput = () => {
         const key = input.dataset.key;
+        const prevSlug = state.projects[idx].slug;
         state.projects[idx][key] = input.value;
 
         /* An untouched slug follows the title, so a new project gets a sensible
@@ -3161,8 +4012,12 @@ function renderProjects() {
           if (slugInput) slugInput.value = state.projects[idx].slug;
         }
         if (key === 'slug') state.projects[idx].slugLocked = true;
+        /* v2: folderOrder lists slugs, so a renamed slug must follow or the folder vanishes */
+        if (state.projects[idx].slug !== prevSlug) v2RenameSlug(prevSlug, state.projects[idx].slug);
         saveState();
       };
+      /* labels in the folder list and strip follow the title / metric once you leave the field */
+      input.addEventListener('change', v2Refresh);
     });
 
     /* tidy the slug when they leave the field, rather than fighting them mid-type */
@@ -3171,23 +4026,32 @@ function renderProjects() {
       slugInput.onblur = () => {
         const clean = uniqueSlug(slugify(slugInput.value) || slugify(state.projects[idx].title) || 'project', idx);
         if (clean !== slugInput.value) {
+          const prev = state.projects[idx].slug;
           slugInput.value = clean;
           state.projects[idx].slug = clean;
+          v2RenameSlug(prev, clean);
           saveState();
+          v2Refresh();
         }
       };
     }
 
     row.querySelector('[data-action="del-proj"]').onclick = () => {
-      if (!confirm('Remove this project? Stream tiles pointing to it will reset to project 1.')) return;
-      state.projects.splice(idx, 1);
+      const inStrip = (state.strip || []).filter(s => s.projectIdx === idx).length;
+      if (!confirm('Remove this project?' + (inStrip ? ' Its ' + inStrip + ' strip tile' + (inStrip === 1 ? '' : 's') + ' will be removed too.' : '') +
+                   ' Its folder goes with it.')) return;
+      const gone = state.projects.splice(idx, 1)[0];
+      /* v2: strip tiles point at projects by index — drop this project's tiles and
+         shift the later ones down, or every tile after it links to the wrong case */
+      v2ProjectRemoved(idx, gone && gone.slug);
       /* reset orphaned project indices in the stream */
-      state.stream.forEach(s => {
+      (state.stream || []).forEach(s => {
         if (s.projectIdx >= state.projects.length) s.projectIdx = 0;
       });
       saveState();
       renderProjects();
       renderStream();
+      v2Refresh();
     };
 
     /* ── content blocks ── */
@@ -3289,11 +4153,15 @@ document.getElementById('addProjBtn').onclick = () => {
     desc1: '',
     desc2: '',
     slug: uniqueSlug('project', -1),
+    ...v2ProjectBlanks(),
     blocks: []
   });
+  /* v2: a new project gets a folder at the end of the row (untick it in Folders to hide) */
+  if (Array.isArray(state.folderOrder)) state.folderOrder.push(state.projects[state.projects.length - 1].slug);
   saveState();
   renderProjects();
   renderStream();      /* refresh stream tile project dropdowns */
+  v2Refresh();
 };
 
 /* ═════════════════════════════════════════════════════════════════
@@ -3307,6 +4175,10 @@ document.getElementById('addProjBtn').onclick = () => {
 const streamDrag = { fromIdx: null };
 
 function renderStream() {
+  /* v2 content has no stream unless an old one is still there — hide the card then */
+  const card = document.getElementById('streamCard');
+  if (!Array.isArray(state.stream)) { if (card) card.hidden = true; return; }
+  if (card) card.hidden = false;
   const grid = document.getElementById('streamGrid');
   const projOptions = state.projects.map((p, i) =>
     `<option value="${i}">${escHtml(p.title || `Project ${i + 1}`)}</option>`
@@ -3524,9 +4396,11 @@ document.getElementById('importJsonInput').onchange = async (e) => {
 };
 
 /* ═════════ RESET ═════════ */
-document.getElementById('resetBtn').onclick = () => {
+document.getElementById('resetBtn').onclick = async () => {
   if (!confirm('Reset all CMS data to defaults? This cannot be undone (export a backup first).')) return;
-  state = freshDefaults();
+  const keepCdn = state.cdn;
+  state = (await siteContent()) || freshDefaults();
+  if (keepCdn && keepCdn.cloudName) state.cdn = keepCdn;
   saveState();
   renderAll();
   toast('Reset to defaults', 'success');
@@ -3538,29 +4412,46 @@ document.getElementById('resetBtn').onclick = () => {
    template parts with the dynamic content from state.
 ═════════════════════════════════════════════════════════════════ */
 /* ═════════ PREVIEW ═════════
-   Builds the real page from the current editor state and renders it in an
-   iframe. Nothing is written to the repo and nothing is deployed, so checking a
-   design change costs nothing. */
-const previewOverlay = document.getElementById('previewOverlay');
-const previewFrame   = document.getElementById('previewFrame');
-
+   v2: the preview is the REAL site (this host's /index.html + js/ + css/), loaded
+   into an iframe with its fetch('/content.json') answered from the editor's
+   current state. Nothing is written to the repo and nothing is deployed. Needs
+   the CMS to be served from the site (alexcolombel.com/cms or the dev server);
+   from a file:// URL there is no site to load. */
 async function openPreview() {
   const btn = document.getElementById('previewBtn');
   const label = btn.innerHTML;
   btn.innerHTML = '<i class="ri-loader-4-line"></i> Building';
   btn.disabled = true;
 
-  const built = await buildExport({ preview: true });
+  let html = null;
+  try {
+    const res = await fetch(SITE_PREVIEW_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    html = await res.text();
+  } catch (err) {
+    toast('Preview needs the site next to this editor (' + err.message + ')', 'error');
+  }
 
   btn.innerHTML = label;
   btn.disabled = false;
-  if (!built) return;
+  if (!html) return;
+
+  /* read by the shim inside the frame */
+  window.__cmsPreviewContent = publicContent();
+  const shim = '<base href="/">' +
+    '<script>(function(){' +
+    'var C=parent.__cmsPreviewContent,f=window.fetch;' +
+    'window.fetch=function(u,o){var s=String(u&&u.url||u);' +
+    'if(/(^|\\/)content\\.json(\\?|$)/.test(s))return Promise.resolve(new Response(JSON.stringify(C),{headers:{"Content-Type":"application/json"}}));' +
+    'return f.apply(this,arguments)};' +
+    /* srcdoc frames can't push real paths; routing still renders, the URL just stays put */
+    '["pushState","replaceState"].forEach(function(m){var o=history[m].bind(history);history[m]=function(a,b,c){try{return o(a,b,c)}catch(e){}}});' +
+    '})();<\/script>';
+  html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, m => m + shim) : shim + html;
 
   previewOverlay.hidden = false;
   document.body.style.overflow = 'hidden';
-  /* srcdoc keeps it self-contained — no blob URL to create or revoke, and it
-     reloads cleanly every time you reopen. */
-  previewFrame.srcdoc = built.html;
+  previewFrame.srcdoc = html;
 }
 
 function closePreview() {
@@ -3593,2579 +4484,40 @@ document.getElementById('addTmBtn').onclick = () => {
   renderTestimonialsCms();
 };
 
-document.getElementById('generateBtn').onclick = generatePortfolio;
 document.getElementById('topPublishBtn').onclick = () => publishToRepo();
+
+/* v2: the fallback download is content.json (what Publish commits), not a page. */
+document.getElementById('generateBtn').onclick = () => {
+  const problem = contentProblems();
+  if (problem) return toast(problem, 'error');
+  const blob = new Blob([contentJson()], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = CONTENT_PATH;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  toast(`content.json — ${fmtBytes(blob.size)}`, 'success');
+};
 
 function fmtBytes(n) {
   return n > 1024 * 1024 ? (n / 1024 / 1024).toFixed(1) + ' MB'
        : (n / 1024).toFixed(0) + ' KB';
 }
 
-async function generatePortfolio() {
-  const built = await buildExport();
-  if (!built) return;
-
-  const blob = new Blob([built.html], { type: 'text/html' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'index.html';
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
-
-  toast(`index.html — ${fmtBytes(blob.size)}`, 'success');
-}
-
-/* Produces the finished HTML. Shared by the download button and Publish, so
-   what you download and what gets committed can never differ. */
-async function buildExport(opts) {
-  opts = opts || {};
-  /* ─── Validation ─── */
-  if (!state.projects.length) {
-    toast('Add at least one project before generating', 'error');
-    return null;
-  }
-
-  /* ─── Content payload ───
-     The page renders itself from this object, and content.json in the repo is
-     the same shape — so the baked copy and a later fetch share one code path
-     and can't drift. */
-  const contentObj = publicContent();
-
-  const subject = (state.ctaSubject || 'Project Enquiry').trim();
-  const html = buildHtml({
-    bio: state.bio,
-    telegramUrl: state.telegramUrl,
-    email: state.email,
-    mailto: 'mailto:' + (state.email || '') + '?subject=' + encodeURIComponent(subject),
-    contentJs: JSON.stringify(contentObj),
-    /* A preview must show what's in the editor right now. Leaving contentUrl
-       empty stops the page fetching content.json, so it renders purely from the
-       copy baked in — which is the state you're currently editing. */
-    contentUrl: opts.preview ? '' : rawContentUrl(),
-    ctaPrimaryLabel: (state.ctaPrimaryLabel || 'Start a project').trim(),
-    ctaSecondaryLabel: (state.ctaSecondaryLabel || 'Quick message').trim(),
-    socials: state.socials,
-    skillsLabel: state.skillsLabel
-  });
-
-  return { html };
-}
-
-/* ─────────────────────────────────────────────────────────────
-   buildHtml — the actual portfolio template, kept in sync with
-   /mnt/user-data/outputs/portfolio.html.
-   If you edit the portfolio template, mirror the changes here.
-───────────────────────────────────────────────────────────── */
-function buildHtml(d) {
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alex Colombel — Product Designer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
-<!-- Loaded without blocking the first paint. A stylesheet in the normal way
-     holds up rendering until it arrives, and two of them on third-party hosts
-     meant nothing at all appeared until both round trips finished. The page now
-     paints in system fonts and upgrades to Inter when it lands. -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" onload="this.onload=null;this.rel='stylesheet'">
-<noscript>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;600&display=swap">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css">
-</noscript>
-${d.contentUrl ? `<link rel="preload" as="fetch" crossorigin href="${escAttr(d.contentUrl)}">\n` : ''}<link rel="icon" id="favicon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 50'%3E%3Cstyle%3Epath{stroke:%230a0a0a}@media(prefers-color-scheme:dark){path{stroke:%23ffffff}}%3C/style%3E%3Cpath d='M6 36 C 14 14, 26 14, 28 32 C 29 40, 22 42, 20 36 C 18 30, 28 24, 38 28 C 46 31, 50 38, 56 32 C 62 26, 60 14, 52 14 C 46 14, 44 22, 50 26 C 58 30, 70 24, 76 18 C 82 12, 92 16, 88 26 C 84 36, 70 38, 66 32 C 62 26, 70 22, 78 26 C 86 30, 96 36, 108 30' fill='none' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M104 36 C 108 38, 112 36, 114 34' fill='none' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #ffffff; --ink: #0a0a0a; --ink-mid: #888888; --ink-soft: #b5b5b5;
-  --border: #ececec; --radius: 14px; --pad: 44px; --col-gap: 68px;
-  --sb-w: 376px;
-  /* system faces first so the page has real text before Inter arrives */
-  --fi: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --shot-scale: 90%; --db-gap: 10px;
-  /* form fields: a light fill reads as an input on a white page, the way the
-     CMS's white fill reads on its grey one */
-  --field: #f6f6f7; --field-border: #e4e4e6;
-}
-html, body { height: 100%; }
-body {
-  background: var(--bg); color: var(--ink); font-family: var(--fi);
-  font-size: 15px; font-weight: 400; line-height: 22px; letter-spacing: -0.15px;
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-}
-.page {
-  height: 100vh; display: flex; align-items: stretch;
-  padding: 0 var(--pad); gap: var(--col-gap);
-}
-.sidebar {
-  width: var(--sb-w); flex-shrink: 0;
-  display: flex; flex-direction: column;
-  padding: var(--pad) 0;
-}
-.sidebar-logo {
-  display: block; height: 56px; width: auto;
-  margin-bottom: 28px; flex-shrink: 0;
-  cursor: default; user-select: none;
-}
-.sidebar-logo svg { height: 100%; width: auto; display: block; overflow: visible; }
-/* Signature draws itself once on load, then stays put. */
-.sig-path { stroke-dasharray: 280; stroke-dashoffset: 280; animation: sig-draw 1.7s cubic-bezier(.65,.05,.36,1) .15s forwards; }
-.sig-path--end { stroke-dasharray: 30; stroke-dashoffset: 30; animation: sig-draw-end .45s cubic-bezier(.65,.05,.36,1) 1.55s forwards; }
-@keyframes sig-draw     { to { stroke-dashoffset: 0; } }
-@keyframes sig-draw-end { to { stroke-dashoffset: 0; } }
-@media (prefers-reduced-motion: reduce) {
-  .sig-path, .sig-path--end { animation: none; stroke-dashoffset: 0; }
-}
-.sidebar-bio { font-size: 14px; line-height: 21px; letter-spacing: -0.1px; color: var(--ink); margin-bottom: 28px; }
-.bio-cta {
-  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
-  font-family: var(--fi); font-size: 13px; font-weight: 500; letter-spacing: -0.1px;
-  /* stated explicitly: a <button> would otherwise take line-height:normal from
-     the UA stylesheet and end up shorter than the <a> beside it */
-  line-height: 20px;
-  text-decoration: none; color: var(--ink); background: #f5f5f5;
-  padding: 7px 8px 7px 14px; border-radius: 100px;
-  transition: background .25s ease, color .25s ease;
-  position: relative; align-self: flex-start; overflow: hidden;
-}
-.bio-cta:hover { background: #2962ff; color: #fff; }
-.bio-cta i { font-size: 15px; line-height: 1; }
-
-/* Primary — filled, reads first. Secondary — outlined, quieter. */
-.bio-ctas { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.bio-cta--primary { background: var(--ink); color: #fff; }
-.bio-cta--primary:hover { background: #2962ff; color: #fff; }
-.bio-cta--ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--border); padding: 7px 16px; }
-.bio-cta--ghost:hover { background: #f0f0f0; color: var(--ink); box-shadow: inset 0 0 0 1px #e2e2e2; }
-.bio-cta--ghost .bio-cta-plane { color: #1a1a1a; font-size: 17px; }
-.bio-cta-default {
-  display: inline-flex; align-items: center; gap: 4px;
-  transition: opacity .22s ease, transform .35s cubic-bezier(.34,1.4,.64,1);
-}
-.bio-cta:hover .bio-cta-default { opacity: 0; transform: translateX(-10px); }
-.bio-cta-plane {
-  position: absolute; inset: 0;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 16px; line-height: 1; color: #fff;
-  opacity: 0; transform: translateX(10px) scale(.8);
-  transition: opacity .22s ease, transform .4s cubic-bezier(.34,1.4,.64,1);
-  pointer-events: none;
-}
-.bio-cta:hover .bio-cta-plane { opacity: 1; transform: translateX(0) scale(1); }
-@media (prefers-reduced-motion: reduce) {
-  .bio-cta-default, .bio-cta-plane { transition: opacity .15s ease; }
-  .bio-cta:hover .bio-cta-default { transform: none; }
-  .bio-cta:hover .bio-cta-plane { transform: none; }
-}
-.skills { margin-top: 40px; }
-.skills-label { font-size: 14px; font-weight: 600; letter-spacing: -0.15px; color: var(--ink); margin-bottom: 16px; }
-.skills-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; row-gap: 14px; }
-.skill { display: inline-flex; align-items: center; gap: 9px; font-size: 14px; letter-spacing: -0.1px; color: var(--ink); line-height: 20px; cursor: default; transition: color .25s ease; }
-.skill i { font-size: 18px; color: var(--ink); line-height: 1; flex-shrink: 0; display: inline-flex; transition: transform .35s cubic-bezier(.34,1.4,.64,1), color .25s ease; }
-.skill:hover { color: var(--ink-mid); }
-.skill:hover i { color: var(--ink-mid); transform: scale(1.18) rotate(-6deg); }
-@media (prefers-reduced-motion: reduce) {
-  .skill i { transition: color .25s ease; }
-  .skill:hover i { transform: none; }
-}
-.sb-carousel {
-  margin-top: 36px; overflow: hidden;
-  mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
-}
-/* The distance is measured in pixels once the logos have actually loaded.
-   Using -50% meant the browser resolved it against whatever the track happened
-   to measure at that instant — which is zero before JS injects the logos, and
-   still tiny while their images are loading. That's why it crawled on a cold
-   load and lurched after a hover. */
-.sb-carousel-track {
-  display: flex; align-items: center; gap: 40px;
-  width: max-content;
-  animation: sbScroll var(--wm-duration, 28s) linear infinite;
-  animation-play-state: paused;
-}
-.sb-carousel-track.is-ready { animation-play-state: running; }
-.sb-carousel-track.is-ready:hover { animation-play-state: paused; }
-.sb-wm {
-  flex-shrink: 0;
-  display: inline-flex; align-items: center;
-  opacity: .55; transition: opacity .25s;
-}
-.sb-wm:hover { opacity: 1; }
-.sb-wm--logo img { height: 32px; width: auto; display: block; }
-@keyframes sbScroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(calc(var(--wm-shift, 0px) * -1)); }
-}
-/* ── testimonials ──
-   One at a time in the sidebar, cross-fading through a slight blur. Two stacked
-   layers so the outgoing quote can fade while the incoming one arrives; heights
-   differ per quote, so the wrapper animates to the new height rather than
-   snapping. */
-.tm-wrap { margin-top: 52px; position: relative; }
-/* same treatment as the skills heading, so the two sidebar sections read as a pair */
-.tm-label { font-size: 14px; font-weight: 600; letter-spacing: -0.15px; color: var(--ink); margin-bottom: 16px; }
-
-.tm-stage {
-  position: relative;
-  transition: height .42s cubic-bezier(.22,.61,.36,1);
-}
-.tm-slide {
-  position: absolute; inset: 0 0 auto 0;
-  opacity: 0; filter: blur(6px); transform: translateY(5px);
-  transition: opacity .5s ease, filter .5s ease, transform .5s cubic-bezier(.22,.61,.36,1);
-  pointer-events: none;
-}
-.tm-slide.is-on {
-  opacity: 1; filter: blur(0); transform: translateY(0);
-  pointer-events: auto;
-}
-.tm-quote {
-  font-size: 14px; line-height: 21px; letter-spacing: -0.1px;
-  color: var(--ink); opacity: .88; margin-bottom: 12px;
-}
-/* name over position on the left; the badge sits right, centred against the
-   pair rather than aligned to either line */
-.tm-by { display: flex; align-items: center; gap: 12px; }
-.tm-who { display: flex; flex-direction: column; min-width: 0; }
-.tm-name { font-size: 12px; font-weight: 600; color: var(--ink); line-height: 1.35; }
-.tm-handle { font-size: 11px; color: var(--ink-soft); line-height: 1.35; }
-.tm-proof {
-  flex-shrink: 0; margin-left: auto;
-  display: inline-flex; align-items: center; gap: 3px;
-  font-family: var(--fi); font-size: 11px; color: var(--ink-soft);
-  background: none; border: none; padding: 0; cursor: pointer;
-  transition: color .2s ease;
-}
-.tm-proof:hover { color: var(--ink-mid); }
-.tm-proof i { font-size: 12px; line-height: 1; color: #2962ff; }
-@media (prefers-reduced-motion: reduce) {
-  .tm-slide { transition: opacity .2s ease; filter: none; transform: none; }
-  .tm-stage { transition: none; }
-}
-.sidebar-footer {
-  margin-top: auto;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 16px; font-size: 13px; color: var(--ink-mid); letter-spacing: -0.1px;
-  flex-shrink: 0;
-}
-.sf-status {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-size: 13px; color: var(--ink-mid); letter-spacing: -0.1px;
-  font-variant-numeric: tabular-nums;
-}
-.sf-icon { font-size: 15px; line-height: 1; color: var(--ink-soft); display: inline-flex; }
-.sf-status .sf-sep { color: var(--ink-soft); }
-.sf-time { font-variant-numeric: tabular-nums; }
-.sf-socials { display: inline-flex; gap: 10px; }
-.sf-socials a { display: inline-flex; color: var(--ink-mid); text-decoration: none; transition: color .18s ease; }
-.sf-socials a:hover { color: var(--ink); }
-.sf-socials a i { font-size: 16px; line-height: 1; }
-.main {
-  flex: 1; min-width: 0; height: 100%;
-  overflow-y: auto;
-  scrollbar-width: none; -ms-overflow-style: none;
-}
-.main::-webkit-scrollbar { display: none; width: 0; height: 0; }
-.stream {
-  display: flex; flex-direction: column; gap: 24px;
-  padding-top: var(--pad); padding-bottom: 40px;
-}
-.shot {
-  position: relative; cursor: pointer; display: block;
-  width: var(--shot-scale); margin-inline: auto;
-  border-radius: var(--radius); overflow: hidden; background: #f5f5f5;
-  opacity: 0; transform: translateY(10px);
-  transition: opacity .5s ease, transform .5s ease;
-}
-.shot.visible { opacity: 1; transform: translateY(0); }
-/* Shots keep their natural aspect — --shot-scale just trims a little width off
-   the column so they breathe. Set it to 100% for edge-to-edge. */
-/* iOS draws its own play button over any <video> that isn't playing — which is
-   what happens whenever autoplay is refused, most often in Low Power Mode.
-   These pseudo-elements are the only handle on that shadow-DOM control. */
-video::-webkit-media-controls,
-video::-webkit-media-controls-panel,
-video::-webkit-media-controls-start-playback-button,
-video::-webkit-media-controls-play-button,
-video::-webkit-media-controls-overlay-play-button {
-  display: none !important;
-  -webkit-appearance: none;
-  opacity: 0 !important;
-}
-
-.shot img, .shot video { width: 100%; height: auto; display: block; }
-.shot-caption {
-  position: absolute; left: 14px; bottom: 14px; z-index: 2;
-  display: inline-flex; align-items: center;
-  font-family: var(--fi); font-size: 13px; font-weight: 500; letter-spacing: -0.1px; line-height: 1;
-  padding: 7px 14px;
-  border-radius: 8px;
-  background: rgba(255,255,255,.92);
-  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-  color: var(--ink); white-space: nowrap;
-  max-width: calc(100% - 28px); overflow: hidden; text-overflow: ellipsis;
-  transition: opacity .25s ease; pointer-events: none;
-  box-shadow: 0 1px 3px rgba(10,10,10,.06);
-}
-.shot-caption .sep { color: var(--ink-soft); margin: 0 8px; }
-.shot-caption .metric { color: #2962ff; font-weight: 600; }
-.shot-hover {
-  position: absolute; inset: 0;
-  background: rgba(10,10,10,.42);
-  opacity: 0; transition: opacity .35s cubic-bezier(.22,.61,.36,1);
-  pointer-events: none;
-}
-@media (hover: hover) and (pointer: fine) {
-  .shot:hover .shot-hover { opacity: 1; }
-}
-.shot-btn {
-  position: absolute; bottom: 14px; right: 14px; z-index: 3;
-  display: inline-flex; align-items: center; gap: 2px;
-  font-family: var(--fi); font-size: 13px; font-weight: 500; letter-spacing: -0.1px; line-height: 1;
-  color: var(--ink); background: #fff;
-  padding: 7px 8px 7px 14px; border-radius: 100px;
-  transform: translateY(16px); opacity: 0;
-  transition: transform .55s cubic-bezier(.22,.61,.36,1), opacity .4s cubic-bezier(.22,.61,.36,1);
-}
-@media (hover: hover) and (pointer: fine) {
-  .shot:hover .shot-btn { transform: translateY(0); opacity: 1; }
-}
-/* No hover on touch, so the affordance is just always there — and the tile
-   can't get stuck dimmed after a tap. */
-@media (hover: none) {
-  .shot-btn { transform: none; opacity: 1; }
-}
-.shot-btn i { font-size: 15px; line-height: 1; }
-.detail-overlay {
-  position: fixed; inset: 0; z-index: 200;
-  /* inset:0 resolves against the LARGE viewport on iOS, so a bottom-anchored
-     drawer ends up partly under the URL bar. dvh pins it to what's visible. */
-  height: 100vh; height: 100dvh;
-  pointer-events: none;
-  display: flex; align-items: center; justify-content: center;
-  padding: 40px 20px;
-}
-.detail-overlay.open { pointer-events: all; }
-.detail-overlay { overscroll-behavior: contain; }
-/* page is frozen behind any open layer — see lockScroll() */
-body.is-locked { position: fixed; left: 0; right: 0; width: 100%; overflow: hidden; }
-.detail-backdrop {
-  position: absolute; inset: 0;
-  background: rgba(10,10,10,.30);
-  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-  opacity: 0; transition: opacity .28s ease;
-}
-.detail-overlay.open .detail-backdrop { opacity: 1; }
-.detail-panel {
-  position: relative;
-  width: 100%; max-width: 720px;
-  max-height: calc(100vh - 80px);
-  max-height: calc(100dvh - 80px);
-  background: var(--bg); border-radius: 16px;
-  overflow-y: auto; overscroll-behavior: contain;
-  transform: scale(.96) translateY(8px); opacity: 0;
-  transition: transform .35s cubic-bezier(.22,.61,.36,1), opacity .25s ease;
-  scrollbar-width: none;
-  box-shadow: 0 24px 60px rgba(10,10,10,.18);
-}
-.detail-panel::-webkit-scrollbar { display: none; }
-.detail-overlay.open .detail-panel { transform: scale(1) translateY(0); opacity: 1; }
-.close-btn {
-  width: 32px; height: 32px; flex-shrink: 0;
-  border: none; background: none;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: var(--ink-mid); padding: 0;
-  transition: color .18s ease;
-}
-.close-btn:hover { color: var(--ink); }
-.close-btn i { line-height: 1; font-size: 22px; }
-.detail-body { padding: 28px 36px 0; }
-/* Title + close stay pinned while the case study scrolls under them —
-   frosted rather than a solid bar, so the content reads through it. */
-/* ── sticky header ──
-   The blur and the white tint both ramp out downward instead of stopping on a
-   hard line. A single masked blur layer would fade its *opacity*, which still
-   reads as an edge; three layers at decreasing radii, each masked to end
-   earlier than the last, ramp the actual blur radius from 20px to nothing.
-   The header itself carries no background — the layers do — so the title and
-   close button stay perfectly sharp on top. */
-.detail-header {
-  position: sticky; top: 0; z-index: 5;
-  margin: -28px -36px 24px; padding: 22px 36px 16px;
-  background: none;
-}
-.dh-veil {
-  position: absolute; left: 0; right: 0; top: 0;
-  bottom: -46px;              /* the ramp continues past the header box */
-  pointer-events: none;
-  border-radius: 16px 16px 0 0;
-  overflow: hidden;           /* keeps the layers inside the panel's corners */
-}
-.dh-veil span {
-  position: absolute; inset: 0;
-  display: block;
-}
-/* strongest blur, ends soonest */
-.dh-veil .dh-b1 {
-  -webkit-backdrop-filter: blur(20px) saturate(165%);
-  backdrop-filter: blur(20px) saturate(165%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 34%, transparent 62%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 34%, transparent 62%);
-}
-.dh-veil .dh-b2 {
-  -webkit-backdrop-filter: blur(9px) saturate(150%);
-  backdrop-filter: blur(9px) saturate(150%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 52%, transparent 80%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 52%, transparent 80%);
-}
-/* faintest blur, carries furthest — this is what removes the visible edge */
-.dh-veil .dh-b3 {
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 100%);
-}
-/* the white wash, fading on its own curve so the colour doesn't stop abruptly */
-.dh-veil .dh-tint {
-  background: linear-gradient(to bottom,
-    rgba(255,255,255,.94) 0%,
-    rgba(255,255,255,.88) 38%,
-    rgba(255,255,255,.55) 66%,
-    rgba(255,255,255,0) 100%);
-}
-/* content above the veil */
-.detail-title-row { position: relative; z-index: 1; }
-
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  /* no backdrop-filter — the tint alone still separates the title from the art */
-  .dh-veil .dh-tint {
-    background: linear-gradient(to bottom,
-      var(--bg) 0%, var(--bg) 55%, rgba(255,255,255,0) 100%);
-  }
-}
-.detail-title-row {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 24px;
-}
-.detail-title { font-family: var(--fi); font-size: 26px; font-weight: 600; line-height: 1.2; color: var(--ink); letter-spacing: -.4px; margin: 0; flex: 1; min-width: 0; }
-.detail-desc-label { font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mid); margin-bottom: 14px; }
-.detail-desc-text { font-size: 15px; line-height: 24px; letter-spacing: -0.1px; color: var(--ink); opacity: .8; margin-bottom: 16px; }
-.detail-desc-text:last-of-type { margin-bottom: 0; }
-/* ── case-study body: full-width shots, two-ups and prose, in author order.
-   One --db-gap drives both the vertical rhythm and the two-up gutter, so the
-   space above and below a row matches the space between a pair. ── */
-/* The gap between blocks stays tight; the step down from the overview copy is
-   a section break and needs more room than that. */
-.detail-blocks { margin-top: 40px; display: flex; flex-direction: column; gap: var(--db-gap); }
-.db-figure { margin: 0; }
-/* Consecutive screenshots often both end and begin in near-white, so without a
-   boundary they read as one overlapping mess. The hairline ring defines where
-   each image stops regardless of its content. */
-.db-media {
-  border-radius: 10px; overflow: hidden; background: #f5f5f5;
-  cursor: zoom-in; position: relative; display: block;
-  box-shadow: inset 0 0 0 1px rgba(10, 10, 10, .08);
-}
-.db-media img, .db-media video {
-  width: 100%; height: auto; display: block;
-  transition: transform .5s cubic-bezier(.22,.61,.36,1), opacity .3s ease;
-}
-/* Touch browsers latch :hover on tap and never release it, which left an image
-   stuck at scale(1.02) and cropped after you closed the lightbox. */
-@media (hover: hover) and (pointer: fine) {
-  .db-media:hover img, .db-media:hover video { transform: scale(1.02); }
-}
-/* cached images decode instantly and skip this; only a cold one fades in */
-.db-media img:not([data-ready]), .db-media video:not([data-ready]) { opacity: 0; }
-.db-media img[data-ready], .db-media video[data-ready] { opacity: 1; }
-.db-duo { display: grid; grid-template-columns: 1fr 1fr; gap: var(--db-gap); }
-.db-duo .db-media img, .db-duo .db-media video { aspect-ratio: 4/3; object-fit: cover; }
-.db-caption {
-  margin-top: 9px; font-size: 12px; line-height: 18px;
-  color: var(--ink-mid); letter-spacing: -0.05px;
-}
-.db-text-h {
-  font-family: var(--fi); font-size: 17px; font-weight: 600;
-  letter-spacing: -0.25px; color: var(--ink); margin-bottom: 8px;
-}
-.db-text p { font-size: 15px; line-height: 24px; letter-spacing: -0.1px; color: var(--ink); opacity: .8; margin-bottom: 12px; }
-.db-text p:last-child { margin-bottom: 0; }
-.db-text { padding-block: 6px; }
-
-/* ── skeletons ──
-   Rendered in the shell so they paint immediately, then replaced wholesale once
-   content arrives. Grey blocks that pulse, sized to the real thing so nothing
-   jumps when the swap happens. */
-@keyframes skel-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
-.skel {
-  background: #ececec; border-radius: 6px;
-  animation: skel-pulse 1.4s ease-in-out infinite;
-}
-.skel-line { height: 12px; margin-bottom: 9px; }
-.skel-line:last-child { margin-bottom: 0; }
-.skel-chip { height: 30px; border-radius: 100px; display: inline-block; }
-.skel-shot {
-  width: var(--shot-scale); margin: 0 auto var(--stream-gap, 64px);
-  aspect-ratio: 4 / 3; border-radius: 12px;
-}
-.skel-shot:last-child { margin-bottom: 0; }
-.is-loaded .skel { display: none; }
-@media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
-
-/* ── contact ──
-   Split panel: form on the left, work on the right with a testimonial floating
-   over it. The right half is decoration — it collapses away on small screens so
-   the form gets the whole width. */
-.contact {
-  position: fixed; inset: 0; z-index: 260;
-  height: 100vh; height: 100dvh;
-  display: flex; align-items: center; justify-content: center;
-  padding: 32px; pointer-events: none;
-}
-.contact.open { pointer-events: all; }
-.contact-backdrop {
-  position: absolute; inset: 0; background: rgba(12, 12, 14, .34);
-  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
-  opacity: 0; transition: opacity .32s ease;
-}
-.contact.open .contact-backdrop { opacity: 1; }
-.contact-panel {
-  position: relative; z-index: 2;
-  width: 100%; max-width: 960px; max-height: calc(100dvh - 64px);
-  background: var(--bg); border-radius: 18px; overflow: hidden;
-  display: grid; grid-template-columns: 1fr 0.82fr;
-  box-shadow: 0 30px 90px rgba(0,0,0,.22);
-  opacity: 0; transform: translateY(14px) scale(.985);
-  transition: opacity .34s ease, transform .42s cubic-bezier(.22,.61,.36,1);
-}
-.contact.open .contact-panel { opacity: 1; transform: none; }
-
-.contact-form { padding: 34px 34px 28px; overflow-y: auto; overscroll-behavior: contain; }
-.contact-title { font-size: 21px; font-weight: 600; letter-spacing: -0.4px; color: var(--ink); }
-.contact-sub { font-size: 13px; line-height: 19px; color: var(--ink-mid); margin: 7px 0 24px; }
-
-.cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.cf-field { margin-bottom: 14px; }
-.cf-field label {
-  display: block; font-size: 11px; font-weight: 500; color: var(--ink-mid);
-  margin-bottom: 6px; letter-spacing: .01em;
-}
-.cf-field label .opt { color: var(--ink-soft); font-weight: 400; }
-.cf-field input, .cf-field textarea {
-  width: 100%; font-family: var(--fi); font-size: 14px; color: var(--ink);
-  background: var(--field); border: 1px solid var(--field-border); border-radius: 9px;
-  padding: 11px 13px; outline: none; resize: vertical;
-  transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
-}
-.cf-field input::placeholder, .cf-field textarea::placeholder { color: var(--ink-soft); }
-.cf-field input:focus, .cf-field textarea:focus {
-  background: #fff; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(10,10,10,.06);
-}
-.cf-field.is-bad input, .cf-field.is-bad textarea {
-  border-color: #e5484d; box-shadow: 0 0 0 3px rgba(229,72,77,.09);
-}
-.cf-err { font-size: 11px; color: #e5484d; margin-top: 5px; display: none; }
-.cf-field.is-bad .cf-err { display: block; }
-
-/* budget as pills — one tap instead of a dropdown */
-.cf-budget { display: flex; flex-wrap: wrap; gap: 6px; }
-.cf-chip {
-  font-family: var(--fi); font-size: 12.5px; color: var(--ink-mid);
-  background: var(--field); border: 1px solid var(--field-border);
-  padding: 8px 13px; border-radius: 100px; cursor: pointer;
-  transition: all .16s ease;
-}
-.cf-chip:hover { border-color: var(--ink-mid); color: var(--ink); }
-.cf-chip.is-on {
-  background: var(--ink); border-color: var(--ink); color: #fff;
-}
-.cf-actions {
-  --cf-gap: 14px;
-  display: flex; align-items: center; gap: var(--cf-gap); margin-top: 22px;
-}
-/* same shape and behaviour as the sidebar primary CTA */
-.cf-submit {
-  position: relative; overflow: hidden;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-family: var(--fi); font-size: 13px; font-weight: 500; letter-spacing: -0.1px;
-  text-decoration: none; color: #fff; background: var(--ink);
-  border: none; padding: 12px 26px; border-radius: 100px; cursor: pointer;
-  transition: background .25s ease, color .25s ease;
-}
-.cf-submit:hover { background: #2962ff; }
-.cf-submit[disabled] { opacity: .55; cursor: not-allowed; background: var(--ink); }
-/* the label steps aside and the icon flies in — same curve as the sidebar CTA */
-.cf-submit-label {
-  display: inline-flex; align-items: center;
-  transition: opacity .22s ease, transform .35s cubic-bezier(.34,1.4,.64,1);
-}
-.cf-submit:hover .cf-submit-label { opacity: 0; transform: translateX(-10px); }
-.cf-submit-icon {
-  position: absolute; inset: 0;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 16px; line-height: 1; color: #fff;
-  opacity: 0; transform: translateX(10px) scale(.8);
-  transition: opacity .22s ease, transform .4s cubic-bezier(.34,1.4,.64,1);
-  pointer-events: none;
-}
-.cf-submit:hover .cf-submit-icon { opacity: 1; transform: translateX(0) scale(1); }
-.cf-submit[disabled]:hover .cf-submit-label { opacity: 1; transform: none; }
-.cf-submit[disabled]:hover .cf-submit-icon { opacity: 0; }
-@media (prefers-reduced-motion: reduce) {
-  .cf-submit-label, .cf-submit-icon { transition: opacity .15s ease; }
-  .cf-submit:hover .cf-submit-label { transform: none; }
-  .cf-submit:hover .cf-submit-icon { transform: none; }
-}
-
-.cf-note {
-  display: inline-flex; align-items: center; gap: var(--cf-gap);
-  font-size: 12px; color: var(--ink-soft);
-}
-/* not a default browser link — quiet until hovered */
-.cf-note a {
-  color: var(--ink-mid); text-decoration: none; font-weight: 500;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 1px; transition: color .2s ease, border-color .2s ease;
-}
-.cf-note a:hover { color: var(--ink); border-color: var(--ink); }
-.cf-spin { display: inline-block; animation: cf-spin 1s linear infinite; }
-@keyframes cf-spin { to { transform: rotate(360deg); } }
-
-/* success replaces the form entirely */
-.cf-done { text-align: center; padding: 46px 20px; }
-.cf-done-mark {
-  width: 46px; height: 46px; margin: 0 auto 16px; border-radius: 50%;
-  background: var(--ink); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-}
-.cf-done-mark i { font-size: 22px; }
-.cf-done h3 { font-size: 17px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; }
-.cf-done p { font-size: 13px; color: var(--ink-mid); margin-top: 8px; line-height: 19px; }
-
-/* right half */
-.contact-visual {
-  position: relative; background: #f1f1f2; overflow: hidden;
-  /* matching the parent's corners here stops a subpixel seam showing through
-     the panel's own clip */
-  border-radius: 0 18px 18px 0;
-}
-/* Same blur cross-dissolve as the testimonials, so the two rotations on this
-   panel feel like one idea. */
-.cv-shot {
-  position: absolute; inset: 0;
-  opacity: 0; filter: blur(9px);
-  transition: opacity .85s ease, filter .85s ease;
-}
-.cv-shot.is-on { opacity: 1; filter: blur(0); }
-
-/* The pan is on the media itself rather than the active slide, with
-   fill-mode forwards — an outgoing shot holds where it got to instead of
-   snapping back to the left edge while it fades. JS restarts it on entry. */
-.cv-shot img, .cv-shot video {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  object-position: 0% 50%;
-  animation: cv-pan 5s ease-in-out forwards;
-}
-@keyframes cv-pan {
-  from { object-position: 0% 50%; }
-  to   { object-position: 100% 50%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cv-shot img, .cv-shot video { animation: none; object-position: 50% 50%; }
-}
-.cv-scrim {
-  position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgba(10,10,12,.18) 0%, rgba(10,10,12,0) 34%, rgba(10,10,12,.42) 100%);
-}
-.cv-tm {
-  position: absolute; bottom: 18px; right: 18px; left: 18px;
-  background: rgba(255,255,255,.90);
-  -webkit-backdrop-filter: blur(14px) saturate(160%); backdrop-filter: blur(14px) saturate(160%);
-  border-radius: 12px; padding: 13px 14px;
-  box-shadow: 0 8px 26px rgba(0,0,0,.14);
-}
-.cv-tm-stage {
-  position: relative;
-  transition: height .42s cubic-bezier(.22,.61,.36,1);
-}
-.cv-tm-slide {
-  position: absolute; inset: 0 0 auto 0;
-  opacity: 0; filter: blur(6px); transform: translateY(4px);
-  transition: opacity .5s ease, filter .5s ease, transform .5s cubic-bezier(.22,.61,.36,1);
-}
-.cv-tm-slide.is-on { opacity: 1; filter: blur(0); transform: translateY(0); }
-@media (prefers-reduced-motion: reduce) {
-  .cv-tm-slide { transition: opacity .2s ease; filter: none; transform: none; }
-  .cv-tm-stage { transition: none; }
-}
-.cv-tm-quote { font-size: 12.5px; line-height: 18px; color: var(--ink); }
-.cv-tm-by { display: flex; flex-direction: column; margin-top: 9px; }
-.cv-tm-name { font-size: 11px; font-weight: 600; color: var(--ink); line-height: 1.3; }
-.cv-tm-handle { font-size: 10px; color: var(--ink-soft); line-height: 1.3; }
-
-.contact-close {
-  position: absolute; top: 14px; right: 14px; z-index: 5;
-  width: 32px; height: 32px; border: none; border-radius: 50%; cursor: pointer;
-  background: rgba(255,255,255,.9); color: var(--ink);
-  display: flex; align-items: center; justify-content: center;
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-  transition: background .18s ease;
-}
-.contact-close:hover { background: #fff; }
-.contact-close i { font-size: 18px; }
-
-@media (max-width: 820px) {
-  .contact { padding: 0; align-items: flex-end; }
-  .contact-panel {
-    grid-template-columns: 1fr; max-width: none; max-height: 92dvh;
-    border-radius: 16px 16px 0 0;
-  }
-  .contact-visual { display: none; border-radius: 0; }
-  .contact-form { padding: 26px 20px 24px; }
-  .cf-row { grid-template-columns: 1fr; gap: 0; }
-  .cf-field input, .cf-field textarea { font-size: 16px; }  /* no iOS zoom */
-  /* one column, centred: button, then "or", then the link */
-  .cf-actions { flex-direction: column; gap: 14px; }
-  .cf-submit { width: 100%; }
-  .cf-note { flex-direction: column; gap: 12px; }
-}
-
-/* ── lightbox: sits above the case-study modal ── */
-.lb {
-  position: fixed; inset: 0; z-index: 300;
-  height: 100vh; height: 100dvh;
-  display: flex; align-items: center; justify-content: center;
-  padding: 48px 64px; overscroll-behavior: contain;
-  pointer-events: none; opacity: 0; visibility: hidden;
-  transition: opacity .28s ease, visibility 0s linear .28s;
-}
-.lb.open { pointer-events: all; opacity: 1; visibility: visible; transition: opacity .28s ease; }
-.lb-backdrop {
-  position: absolute; inset: 0; background: rgba(10,10,10,.86);
-  opacity: 0; transition: opacity .28s ease; cursor: zoom-out;
-}
-.lb.open .lb-backdrop { opacity: 1; }
-.lb-img {
-  position: relative; max-width: 100%; max-height: 100%;
-  width: auto; height: auto; display: block; border-radius: 8px;
-  transform: scale(.94); opacity: 0;
-  transition: transform .34s cubic-bezier(.22,.61,.36,1), opacity .22s ease;
-  box-shadow: 0 30px 80px rgba(0,0,0,.5);
-  touch-action: none; -webkit-user-select: none; user-select: none;
-}
-.lb.open .lb-img { transform: scale(1); opacity: 1; }
-.lb-img[hidden] { display: none; }
-.lb.is-zoomed .lb-img { border-radius: 0; cursor: grab; }
-.lb.is-zoomed .lb-prev, .lb.is-zoomed .lb-next { opacity: 0; pointer-events: none; }
-.lb-hint {
-  position: absolute; bottom: 46px; left: 50%; transform: translateX(-50%);
-  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
-  color: rgba(255,255,255,.5); pointer-events: none;
-  transition: opacity .3s ease;
-}
-.lb.is-zoomed .lb-hint { opacity: 0; }
-.lb-btn {
-  position: absolute; z-index: 2; width: 40px; height: 40px;
-  display: flex; align-items: center; justify-content: center;
-  border: none; border-radius: 50%; cursor: pointer; padding: 0;
-  background: rgba(255,255,255,.1); color: #fff;
-  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-  transition: background .18s ease, transform .18s ease;
-}
-.lb-btn:hover { background: rgba(255,255,255,.22); }
-.lb-btn i { font-size: 22px; line-height: 1; }
-/* On desktop the three controls keep their own absolute positions; the wrapper
-   only becomes a real box on mobile. */
-.lb-nav { display: contents; }
-.lb-nav[hidden] { display: none; }
-/* the hint describes touch gestures, so it only belongs on touch */
-@media (hover: hover) and (pointer: fine) { .lb-hint { display: none; } }
-.lb-close { top: 20px; right: 20px; }
-.lb-prev { left: 16px; top: 50%; transform: translateY(-50%); }
-.lb-next { right: 16px; top: 50%; transform: translateY(-50%); }
-.lb-prev:hover, .lb-next:hover { transform: translateY(-50%) scale(1.06); }
-.lb-btn[hidden] { display: none; }
-.lb-count {
-  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-  font-size: 12px; color: rgba(255,255,255,.75); letter-spacing: .04em;
-  font-variant-numeric: tabular-nums;
-}
-/* Primary CTA stays pinned to the bottom of the panel with no bar behind it —
-   equal margin above and below, so at the end of the scroll it sits centred
-   between the last block and the panel edge. The button carries its own
-   elevation instead of a background strip. */
-.detail-cta-wrap {
-  position: sticky; bottom: 0; z-index: 5;
-  margin: 26px 0 0; padding-bottom: 26px;
-  display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: center;
-  pointer-events: none;
-}
-.detail-cta-wrap > * { pointer-events: auto; }
-.detail-cta-wrap .bio-cta--primary { box-shadow: 0 6px 20px rgba(10, 10, 10, .22); }
-/* It's a <button>, so it needs the anchor's reset to match the CTAs beside it.
-   Unlike "Quick message" — which sits on the white sidebar and can afford to be
-   transparent — this one floats over the case study as it scrolls past, so it
-   needs a solid fill of its own. Same ring, same hover, same padding. */
-.detail-share {
-  font-family: var(--fi); border: none; cursor: pointer;
-  background: var(--bg); color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--border);
-  padding: 7px 16px;
-}
-.detail-share:hover { background: #f0f0f0; box-shadow: inset 0 0 0 1px #e2e2e2; }
-.detail-share .bio-cta-plane { color: #1a1a1a; font-size: 17px; }
-
-/* confirmed state — holds the label still and swaps the ring for a tick */
-.detail-share.is-done,
-.detail-share.is-done:hover {
-  background: var(--bg);
-  box-shadow: inset 0 0 0 1px #cfe0ff;
-  color: #2962ff;
-  cursor: default;
-}
-.detail-share.is-done .bio-cta-default { opacity: 1; transform: none; }
-.detail-share.is-done .bio-cta-plane { opacity: 0; }
-
-/* The two icons share one cell so neither shifts the label, and swapping them
-   is a fade rather than a display toggle — display:none can't be transitioned,
-   which is why the tick used to appear with no animation at all. */
-.detail-share-swap {
-  position: relative; display: inline-flex;
-  width: 15px; height: 15px; flex-shrink: 0;
-}
-.detail-share-swap i {
-  position: absolute; inset: 0;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 15px; line-height: 1;
-  transition: transform .3s cubic-bezier(.34,1.4,.64,1), opacity .2s ease;
-}
-.detail-share-chevron { opacity: 1; transform: scale(1); }
-.detail-share-icon { opacity: 0; transform: scale(.5) rotate(-25deg); }
-.detail-share.is-done .detail-share-chevron { opacity: 0; transform: scale(.5); }
-.detail-share.is-done .detail-share-icon { opacity: 1; transform: scale(1) rotate(0); }
-@media (prefers-reduced-motion: reduce) {
-  .detail-share-swap i { transition: opacity .15s ease; transform: none !important; }
-}
-.detail-cta-secondary {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--fi); font-size: 13px; font-weight: 500; letter-spacing: -0.1px; line-height: 1;
-  text-decoration: none; color: var(--ink); background: transparent;
-  border: 1px solid var(--border); padding: 7px 14px; border-radius: 100px;
-  transition: background .18s ease, border-color .18s ease, color .18s ease;
-}
-.detail-cta-secondary:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
-.detail-cta-secondary i { font-size: 15px; line-height: 1; }
-.detail-cta-secondary[hidden] { display: none; }
-@media (max-width: 900px) {
-  body { overflow: auto; }
-  :root { --pad: 24px; --col-gap: 0; }
-  .page { flex-direction: column; height: auto; padding: var(--pad); gap: 32px; position: relative; }
-  .sidebar { width: 100%; height: auto; padding: 0; position: relative; }
-  .sidebar-footer {
-    margin-top: 28px;
-    position: absolute; top: 0; right: 0;
-    justify-content: flex-end;
-  }
-  .sf-status { display: none; }
-  .tm-wrap { margin-top: 34px; }
-  .main { width: 100%; height: auto; overflow: visible; }
-  .stream { padding-bottom: 32px; padding-top: 0; }
-  .sidebar-bio { margin-bottom: 20px; }
-  /* Modal → drawer on mobile */
-  .detail-overlay { padding: 0; align-items: flex-end; justify-content: stretch; }
-  .detail-panel {
-    max-width: none; width: 100%;
-    /* dvh tracks the URL bar; vh doesn't, which made the drawer overshoot the
-       screen and appear to resize while scrolling. 88 leaves a strip of the
-       page visible above the sheet, which is what you tap to dismiss it. */
-    max-height: 88vh;
-    max-height: 88dvh;
-    border-radius: 16px 16px 0 0;
-    transform: translateY(100%); opacity: 1;
-    transition: transform .42s cubic-bezier(.32,.72,0,1);
-    box-shadow: 0 -10px 30px rgba(10,10,10,.16);
-  }
-  .detail-overlay.open .detail-panel { transform: translateY(0); }
-  .detail-body { padding: 24px 20px 0; }
-  .detail-title { font-size: 22px; }
-  .detail-header { margin: -24px -20px 20px; padding: 18px 20px 14px; }
-  .detail-blocks { margin-top: 30px; }
-  .detail-cta-wrap { margin: 22px 0 0; padding-bottom: 22px; }
-  :root { --shot-scale: 100%; --db-gap: 18px; }
-  .db-duo { grid-template-columns: 1fr; }
-  .lb { padding: 16px 16px 76px; }
-  /* Side arrows sat on top of the image. On mobile they collapse into a compact
-     pill next to the counter, and swiping is the primary way to move. */
-  .lb-nav {
-    display: flex; align-items: center; gap: 4px;
-    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-    padding: 4px; border-radius: 100px;
-    background: rgba(255,255,255,.12);
-    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-  }
-  .lb-prev, .lb-next {
-    position: static; transform: none; width: 30px; height: 30px;
-    background: transparent;
-  }
-  .lb-prev:hover, .lb-next:hover { transform: none; }
-  .lb-prev i, .lb-next i { font-size: 19px; }
-  .lb-count {
-    position: static; transform: none;
-    min-width: 42px; text-align: center; font-size: 11px;
-  }
-  .lb-hint { bottom: 62px; }
-  /* while zoomed the whole bar goes, not just the arrows */
-  .lb.is-zoomed .lb-nav { opacity: 0; pointer-events: none; }
-  .bio-ctas { width: 100%; }
-}
-</` + `style>
-</head>
-<body>
-
-<div class="page">
-
-  <aside class="sidebar">
-
-    <div class="sidebar-logo" aria-label="Signature">
-      <svg viewBox="0 0 120 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path class="sig-path" d="M6 36 C 14 14, 26 14, 28 32 C 29 40, 22 42, 20 36 C 18 30, 28 24, 38 28 C 46 31, 50 38, 56 32 C 62 26, 60 14, 52 14 C 46 14, 44 22, 50 26 C 58 30, 70 24, 76 18 C 82 12, 92 16, 88 26 C 84 36, 70 38, 66 32 C 62 26, 70 22, 78 26 C 86 30, 96 36, 108 30"
-              stroke="#0a0a0a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        <path class="sig-path--end" d="M104 36 C 108 38, 112 36, 114 34"
-              stroke="#0a0a0a" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-      </svg>
-    </div>
-
-    <p class="sidebar-bio" id="sbBio"></p>
-    <div class="skel-bio" id="sbBioSkel" aria-hidden="true">
-      <div class="skel skel-line" style="width:96%"></div>
-      <div class="skel skel-line" style="width:92%"></div>
-      <div class="skel skel-line" style="width:78%"></div>
-    </div>
-
-    <div class="bio-ctas">
-      <a href="#" class="bio-cta bio-cta--primary" id="ctaPrimary">
-        <span class="bio-cta-default">
-          <span class="cta-label"></span>
-          <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
-        </span>
-        <i class="ri-mail-send-fill bio-cta-plane" aria-hidden="true"></i>
-      </a>
-      <a href="#" target="_blank" rel="noopener" class="bio-cta bio-cta--ghost" id="ctaSecondary">
-        <span class="bio-cta-default">
-          <span class="cta-label"></span>
-          <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
-        </span>
-        <i class="ri-telegram-2-fill bio-cta-plane" aria-hidden="true"></i>
-      </a>
-    </div>
-
-    <div class="skills">
-      <p class="skills-label" id="skillsLabel"></p>
-      <div class="skills-grid" id="skillsGrid"></div>
-      <div class="skills-grid" id="skillsSkel" aria-hidden="true">
-        <span class="skel skel-chip" style="width:118px"></span>
-        <span class="skel skel-chip" style="width:96px"></span>
-        <span class="skel skel-chip" style="width:132px"></span>
-        <span class="skel skel-chip" style="width:104px"></span>
-      </div>
-    </div>
-
-    <div class="sb-carousel">
-      <div class="sb-carousel-track" id="wmTrack"></div>
-    </div>
-
-    <div class="tm-wrap" id="tmWrap" hidden>
-      <p class="tm-label">What clients say</p>
-      <div class="tm-stage" id="tmStage"></div>
-    </div>
-
-    <div class="sidebar-footer">
-      <span class="sf-status" id="sfStatus">
-        <i class="sf-icon ri-moon-clear-line" id="sfIcon" aria-hidden="true"></i>
-        <span class="sf-greeting" id="sfGreeting">Good evening</span>
-        <span class="sf-sep" aria-hidden="true">·</span>
-        <span class="sf-time" id="sfTime">--:--</span>
-      </span>
-      <span class="sf-socials">
-        <a href="#" target="_blank" rel="noopener" aria-label="X / Twitter" id="socialX"><i class="ri-twitter-x-line"></i></a>
-        <a href="#" target="_blank" rel="noopener" aria-label="LinkedIn" id="socialLinkedin"><i class="ri-linkedin-fill"></i></a>
-        <a href="#" target="_blank" rel="noopener" aria-label="Dribbble" id="socialDribbble"><i class="ri-dribbble-line"></i></a>
-      </span>
-    </div>
-
-  </aside>
-
-  <main class="main" id="mainScroll">
-    <div class="stream" id="stream"></div>
-
-    <div class="stream-skel" id="streamSkel" aria-hidden="true">
-      <div class="skel skel-shot"></div>
-      <div class="skel skel-shot"></div>
-    </div>
-  </main>
-
-</div>
-
-<div class="detail-overlay" id="detailOverlay">
-  <div class="detail-backdrop" id="detailBackdrop"></div>
-  <div class="detail-panel" id="detailPanel">
-    <div class="detail-body">
-      <div class="detail-header">
-        <div class="dh-veil" aria-hidden="true">
-          <span class="dh-b1"></span><span class="dh-b2"></span><span class="dh-b3"></span><span class="dh-tint"></span>
-        </div>
-        <div class="detail-title-row">
-          <h2 class="detail-title" id="dTitle"></h2>
-          <button class="close-btn" id="detailClose" aria-label="Close"><i class="ri-close-line"></i></button>
-        </div>
-      </div>
-
-      <p class="detail-desc-label">Overview</p>
-      <p class="detail-desc-text" id="dDesc1"></p>
-      <p class="detail-desc-text" id="dDesc2"></p>
-
-      <div class="detail-blocks" id="dBlocks"></div>
-
-      <div class="detail-cta-wrap">
-        <button type="button" class="bio-cta bio-cta--ghost detail-share" id="dShare">
-          <span class="bio-cta-default">
-            <span class="detail-share-label">Share</span>
-            <span class="detail-share-swap">
-              <i class="ri-arrow-right-s-line detail-share-chevron" aria-hidden="true"></i>
-              <i class="ri-check-line detail-share-icon" aria-hidden="true"></i>
-            </span>
-          </span>
-          <i class="ri-links-line bio-cta-plane" aria-hidden="true"></i>
-        </button>
-        <a href="#" class="bio-cta bio-cta--primary" id="ctaPrimaryModal">
-          <span class="bio-cta-default">
-            <span class="cta-label"></span>
-            <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
-          </span>
-          <i class="ri-mail-send-fill bio-cta-plane" aria-hidden="true"></i>
-        </a>
-        <a href="#" target="_blank" rel="noopener" class="detail-cta-secondary" id="dWebsite" hidden>
-          Live website
-          <i class="ri-external-link-line" aria-hidden="true"></i>
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="contact" id="contact" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
-  <div class="contact-backdrop" id="contactBackdrop"></div>
-  <div class="contact-panel">
-    <button class="contact-close" id="contactClose" aria-label="Close"><i class="ri-close-line"></i></button>
-
-    <div class="contact-form">
-      <div id="cfBody">
-        <h2 class="contact-title" id="cfTitle">Start a project</h2>
-        <p class="contact-sub" id="cfSub">Tell me what you're building. I read every message and reply within a day.</p>
-
-        <form id="cfForm" novalidate>
-          <div class="cf-row">
-            <div class="cf-field" data-for="name">
-              <label for="cfName">Your name</label>
-              <input type="text" id="cfName" name="name" autocomplete="name" placeholder="Alex Colombel">
-              <span class="cf-err">Please add your name</span>
-            </div>
-            <div class="cf-field" data-for="email">
-              <label for="cfEmail">Email</label>
-              <input type="email" id="cfEmail" name="email" autocomplete="email" placeholder="you@company.com">
-              <span class="cf-err">Please add a valid email</span>
-            </div>
-          </div>
-
-          <div class="cf-field" data-for="company">
-            <label for="cfCompany">Company <span class="opt">— optional</span></label>
-            <input type="text" id="cfCompany" name="company" autocomplete="organization" placeholder="Where you work">
-          </div>
-
-          <div class="cf-field" data-for="budget">
-            <label>Budget range</label>
-            <div class="cf-budget" id="cfBudget"></div>
-            <input type="hidden" id="cfBudgetValue" name="budget">
-          </div>
-
-          <div class="cf-field" data-for="message">
-            <label for="cfMessage">What are you looking to build?</label>
-            <textarea id="cfMessage" name="message" rows="4" placeholder="A sentence or two is plenty — what it is, roughly when, and what success looks like."></textarea>
-            <span class="cf-err">Please add a few words</span>
-          </div>
-
-          <div class="cf-actions">
-            <button type="submit" class="cf-submit" id="cfSubmit">
-              <span class="cf-submit-label">Send enquiry</span>
-              <i class="ri-send-plane-fill cf-submit-icon" aria-hidden="true"></i>
-            </button>
-            <span class="cf-note">
-              <span>or</span>
-              <a href="#" id="cfTelegram" target="_blank" rel="noopener">message me directly</a>
-            </span>
-          </div>
-        </form>
-      </div>
-
-      <div class="cf-done" id="cfDone" hidden>
-        <div class="cf-done-mark"><i class="ri-check-line"></i></div>
-        <h3>Message sent</h3>
-        <p id="cfDoneMsg">Thanks — I'll get back to you within a day.</p>
-      </div>
-    </div>
-
-    <div class="contact-visual" id="contactVisual">
-      <div id="cvShots"></div>
-      <div class="cv-scrim"></div>
-      <div class="cv-tm" id="cvTm" hidden></div>
-    </div>
-  </div>
-</div>
-
-<div class="lb" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
-  <div class="lb-backdrop" id="lbBackdrop"></div>
-  <button class="lb-btn lb-close" id="lbClose" aria-label="Close"><i class="ri-close-line"></i></button>
-  <img class="lb-img" id="lbImg" src="" alt="">
-  <video class="lb-img lb-video" id="lbVideo" muted loop playsinline preload="metadata" disablepictureinpicture></video>
-  <div class="lb-nav" id="lbNav">
-    <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous image"><i class="ri-arrow-left-s-line"></i></button>
-    <div class="lb-count" id="lbCount"></div>
-    <button class="lb-btn lb-next" id="lbNext" aria-label="Next image"><i class="ri-arrow-right-s-line"></i></button>
-  </div>
-  <div class="lb-hint" id="lbHint">Swipe to browse · pinch to zoom</div>
-</div>
-
-<script>
-/* ─── content ───
-   content.json in the repo is what the page renders. The copy below is only a
-   fallback for when that file can't be reached, and it is deliberately fenced
-   off: publishing compares index.html with everything between these markers
-   removed, so editing text or images leaves the rest of the file byte-identical
-   and the host skips the deploy entirely. */
-const CONTENT_URL = ${escJs(d.contentUrl || '')};
-/*CONTENT_FALLBACK_START*/
-const CONTENT_FALLBACK = ${d.contentJs};
-/*CONTENT_FALLBACK_END*/
-
-let CONTENT = CONTENT_FALLBACK;
-let projects = [];
-
-/* ═════════ CONTACT ═════════
-   Submits to Web3Forms, which turns a plain POST into an email. The access key
-   is meant to be public — it only routes to the configured inbox and grants
-   nothing else. With no key set the form falls back to opening a mailto, so the
-   button always does something useful. */
-const CONTACT_ENDPOINT = 'https://api.web3forms.com/submit';
-let cfBudget = '';
-let cvTimer = null, cvIndex = 0, cvTmTimer = null, cvTmIndex = 0;
-
-function contactCfg() { return (CONTENT && CONTENT.contact) || {}; }
-
-function cfFieldEl(name) { return document.querySelector('.cf-field[data-for="' + name + '"]'); }
-function cfMarkBad(name, bad) {
-  const el = cfFieldEl(name);
-  if (el) el.classList.toggle('is-bad', !!bad);
-}
-
-function cfValidate() {
-  const name = document.getElementById('cfName').value.trim();
-  const email = document.getElementById('cfEmail').value.trim();
-  const msg = document.getElementById('cfMessage').value.trim();
-  const okEmail = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email);
-  cfMarkBad('name', !name);
-  cfMarkBad('email', !okEmail);
-  cfMarkBad('message', !msg);
-  return name && okEmail && msg;
-}
-
-function renderBudgets(c) {
-  const wrap = document.getElementById('cfBudget');
-  if (!wrap) return;
-  const opts = (c.contact && c.contact.budgets && c.contact.budgets.length)
-    ? c.contact.budgets
-    : ['Under €5k', '€5–10k', '€10–25k', '€25k+', 'Not sure yet'];
-  wrap.innerHTML = opts.map(o =>
-    '<button type="button" class="cf-chip" data-b="' + esc(o) + '">' + esc(o) + '</button>').join('');
-  cfBudget = '';
-  document.getElementById('cfBudgetValue').value = '';
-}
-
-/* right-hand column: work rotating behind a testimonial */
-function renderContactVisual(c) {
-  const shots = document.getElementById('cvShots');
-  const tm = document.getElementById('cvTm');
-  if (!shots) return;
-
-  const imgs = (c.stream || []).map(sh => sh.image).filter(Boolean).slice(0, 8);
-  shots.innerHTML = imgs.map((src, i) => {
-    const url = cdnAt(src, 900);
-    const media = isVideoSrc(src)
-      ? '<video src="' + url + '" poster="' + cdnPoster(src, 900) + '"' +
-        ' muted loop autoplay playsinline preload="metadata" disablepictureinpicture></video>'
-      : '<img src="' + url + '" alt="" loading="lazy" decoding="async">';
-    return '<div class="cv-shot' + (i === 0 ? ' is-on' : '') + '">' + media + '</div>';
-  }).join('');
-  primeVideos(shots);
-
-  const items = (c.testimonials || []).filter(t => (t.quote || '').trim());
-  if (!items.length) { tm.hidden = true; tm.innerHTML = ''; }
-  else {
-    tm.hidden = false;
-    tm.innerHTML = '<div class="cv-tm-stage"><div class="cv-tm-slide is-on"></div><div class="cv-tm-slide"></div></div>';
-    const stage = tm.querySelector('.cv-tm-stage');
-    const slides = [...tm.querySelectorAll('.cv-tm-slide')];
-    const fit = el => { const h = el.scrollHeight; if (h) stage.style.height = h + 'px'; };
-    const fill = (el, t) => {
-      el.innerHTML = '<div class="cv-tm-quote">" ' + esc(t.quote) + ' "</div>' +
-        '<div class="cv-tm-by">' +
-        '<span class="cv-tm-name">' + esc(t.name) + '</span>' +
-        (t.handle ? '<span class="cv-tm-handle">' + esc(t.handle) + '</span>' : '') + '</div>';
-    };
-    fill(slides[0], items[0]);
-    cvTmIndex = 0;
-    requestAnimationFrame(() => fit(slides[0]));
-    if (cvTmTimer) clearInterval(cvTmTimer);
-    if (items.length > 1) {
-      cvTmTimer = setInterval(() => {
-        cvTmIndex = (cvTmIndex + 1) % items.length;
-        const incoming = slides.find(x => !x.classList.contains('is-on'));
-        const outgoing = slides.find(x => x.classList.contains('is-on'));
-        fill(incoming, items[cvTmIndex]);
-        fit(incoming);                 /* height first, so the card eases */
-        incoming.classList.add('is-on');
-        if (outgoing) outgoing.classList.remove('is-on');
-      }, 4600);
-    }
-  }
-
-  if (cvTimer) clearInterval(cvTimer);
-  cvIndex = 0;
-
-  /* Restart the pan from the left each time a slide comes in. Without this the
-     animation only ever runs once and later views would sit at the end. */
-  const restartPan = el => {
-    const m = el.querySelector('img, video');
-    if (!m) return;
-    m.style.animation = 'none';
-    void m.offsetWidth;        /* force a reflow so the restart takes */
-    m.style.animation = '';
-  };
-  restartPan(shots.querySelector('.cv-shot'));
-
-  /* Deliberately shorter than the 5s pan: the crossfade lands around 60% of the
-     way across, so there is always movement on screen. */
-  if (imgs.length > 1) {
-    cvTimer = setInterval(() => {
-      const all = shots.querySelectorAll('.cv-shot');
-      all[cvIndex].classList.remove('is-on');
-      cvIndex = (cvIndex + 1) % all.length;
-      restartPan(all[cvIndex]);
-      all[cvIndex].classList.add('is-on');
-    }, 3000);
-  }
-}
-
-function openContact() {
-  const el = document.getElementById('contact');
-  if (!el || el.classList.contains('open')) return;
-  document.getElementById('cfBody').hidden = false;
-  document.getElementById('cfDone').hidden = true;
-  renderContactVisual(CONTENT);
-  el.classList.add('open');
-  lockScroll();
-  setTimeout(() => document.getElementById('cfName').focus(), 260);
-}
-
-function closeContact() {
-  const el = document.getElementById('contact');
-  if (!el || !el.classList.contains('open')) return;
-  el.classList.remove('open');
-  unlockScroll();
-  /* stop the timers behind a closed panel */
-  if (cvTimer) { clearInterval(cvTimer); cvTimer = null; }
-  if (cvTmTimer) { clearInterval(cvTmTimer); cvTmTimer = null; }
-}
-
-async function cfSubmit(e) {
-  e.preventDefault();
-  if (!cfValidate()) {
-    const bad = document.querySelector('.cf-field.is-bad input, .cf-field.is-bad textarea');
-    if (bad) bad.focus();
-    return;
-  }
-  const cfg = contactCfg();
-  const btn = document.getElementById('cfSubmit');
-  const payload = {
-    name: document.getElementById('cfName').value.trim(),
-    email: document.getElementById('cfEmail').value.trim(),
-    company: document.getElementById('cfCompany').value.trim(),
-    budget: cfBudget || 'Not specified',
-    message: document.getElementById('cfMessage').value.trim()
-  };
-
-  /* no key configured — hand it to the mail client rather than losing it */
-  if (!cfg.accessKey) {
-    const NL = String.fromCharCode(10);
-    const body = [
-      'Name: ' + payload.name,
-      'Email: ' + payload.email,
-      'Company: ' + payload.company,
-      'Budget: ' + payload.budget,
-      '',
-      payload.message
-    ].join(NL);
-    window.location.href = 'mailto:' + (CONTENT.email || '') +
-      '?subject=' + encodeURIComponent(cfg.subject || 'Project Enquiry') +
-      '&body=' + encodeURIComponent(body);
-    return;
-  }
-
-  btn.disabled = true;
-  btn.innerHTML = '<span class="cf-submit-label"><i class="ri-loader-4-line cf-spin"></i>&nbsp;Sending</span>';
-  try {
-    const res = await fetch(CONTACT_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        access_key: cfg.accessKey,
-        subject: (cfg.subject || 'Project Enquiry') + ' — ' + payload.name,
-        from_name: payload.name,
-        replyto: payload.email,
-        ...payload
-      })
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || data.success === false) throw new Error(data.message || 'Something went wrong');
-    document.getElementById('cfBody').hidden = true;
-    document.getElementById('cfDone').hidden = false;
-  } catch (err) {
-    btn.disabled = false;
-    btn.innerHTML = '<span class="cf-submit-label">Send enquiry</span>' +
-      '<i class="ri-send-plane-fill cf-submit-icon" aria-hidden="true"></i>';
-    const note = document.querySelector('.cf-note');
-    if (note) note.innerHTML = '<span style="color:#e5484d">Could not send — try again, or email directly.</span>';
-  }
-}
-
-(function wireContact() {
-  const form = document.getElementById('cfForm');
-  if (!form) return;
-  form.addEventListener('submit', cfSubmit);
-  document.getElementById('contactClose').addEventListener('click', closeContact);
-  document.getElementById('contactBackdrop').addEventListener('click', closeContact);
-
-  document.getElementById('cfBudget').addEventListener('click', e => {
-    const chip = e.target.closest('.cf-chip');
-    if (!chip) return;
-    const on = chip.classList.contains('is-on');
-    document.querySelectorAll('.cf-chip').forEach(c => c.classList.remove('is-on'));
-    if (!on) { chip.classList.add('is-on'); cfBudget = chip.dataset.b; }
-    else cfBudget = '';
-    document.getElementById('cfBudgetValue').value = cfBudget;
-  });
-
-  /* clear the error as soon as they start fixing it */
-  ['name', 'email', 'message'].forEach(k => {
-    const el = document.getElementById('cf' + k[0].toUpperCase() + k.slice(1));
-    if (el) el.addEventListener('input', () => cfMarkBad(k, false));
-  });
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && document.getElementById('contact').classList.contains('open')) closeContact();
-  });
-})();
-
-/* ═════════ TESTIMONIALS ═════════
-   Cross-fades one quote at a time. Both layers stay mounted so the outgoing one
-   can blur out while the incoming blurs in; the stage animates to the new
-   height because quotes differ in length. */
-let tmItems = [], tmIndex = 0, tmTimer = null, tmSlides = [];
-const TM_INTERVAL = 4200;
-
-
-function tmSlideHtml(t) {
-  const handle = t.handle ? '<span class="tm-handle">' + esc(t.handle) + '</span>' : '';
-  const proof = t.proof
-    ? '<button class="tm-proof" data-proof="' + esc(t.proof) + '" title="Click to see the original message">' +
-      '<i class="ri-verified-badge-fill"></i>Verified</button>'
-    : '';
-  return '<blockquote class="tm-quote">' + esc(t.quote) + '</blockquote>' +
-    '<div class="tm-by">' +
-      '<span class="tm-who"><span class="tm-name">' + esc(t.name) + '</span>' + handle + '</span>' +
-      proof +
-    '</div>';
-}
-
-function tmShow(i, animate) {
-  if (!tmItems.length) return;
-  tmIndex = (i + tmItems.length) % tmItems.length;
-  const stage = document.getElementById('tmStage');
-
-  /* fill the hidden layer, then swap which one is visible */
-  const incoming = tmSlides[(tmSlides.indexOf(tmSlides.find(el => el.classList.contains('is-on'))) + 1) % 2] || tmSlides[0];
-  const outgoing = tmSlides.find(el => el !== incoming);
-  incoming.innerHTML = tmSlideHtml(tmItems[tmIndex]);
-
-  /* height first, so the container eases instead of jumping */
-  const h = incoming.scrollHeight;
-  if (h) stage.style.height = h + 'px';
-
-  if (!animate) {
-    incoming.style.transition = 'none';
-    requestAnimationFrame(() => { incoming.style.transition = ''; });
-  }
-  incoming.classList.add('is-on');
-  if (outgoing) outgoing.classList.remove('is-on');
-
-}
-
-function tmStart() {
-  if (tmTimer) clearInterval(tmTimer);
-  if (tmItems.length < 2) return;
-  tmTimer = setInterval(() => tmShow(tmIndex + 1, true), TM_INTERVAL);
-}
-
-function renderTestimonials(c) {
-  const wrap = document.getElementById('tmWrap');
-  const stage = document.getElementById('tmStage');
-  if (!wrap || !stage) return;
-
-  tmItems = (c.testimonials || []).filter(t => t && (t.quote || '').trim());
-  if (tmTimer) { clearInterval(tmTimer); tmTimer = null; }
-
-  if (!tmItems.length) { wrap.hidden = true; stage.innerHTML = ''; return; }
-  wrap.hidden = false;
-
-  stage.innerHTML = '<div class="tm-slide"></div><div class="tm-slide"></div>';
-  tmSlides = [...stage.querySelectorAll('.tm-slide')];
-
-  tmIndex = 0;
-  tmSlides[0].innerHTML = tmSlideHtml(tmItems[0]);
-  tmSlides[0].classList.add('is-on');
-  requestAnimationFrame(() => {
-    const h = tmSlides[0].scrollHeight;
-    if (h) stage.style.height = h + 'px';
-  });
-
-  tmStart();
-}
-
-/* delegated so it survives every re-render */
-document.addEventListener('click', e => {
-  const proof = e.target.closest('.tm-proof');
-  if (proof) openLbWith([proof.dataset.proof]);
-});
-
-/* pause while hovered so a quote can actually be read */
-(function tmHoverPause() {
-  const wrap = document.getElementById('tmWrap');
-  if (!wrap) return;
-  wrap.addEventListener('mouseenter', () => { if (tmTimer) { clearInterval(tmTimer); tmTimer = null; } });
-  wrap.addEventListener('mouseleave', tmStart);
-})();
-
-/* Local time + greeting.
-   06-11 morning · 12-17 afternoon · 18-05 evening.
-   Sun icon 06:00-19:59, moon 20:00-05:59. */
-/* ═════════ ANIMATED FAVICON ═════════
-   Chrome and Safari won't animate an SVG favicon, so the signature is redrawn
-   on a canvas and the icon href swapped ~20x/s for the length of the draw.
-   The static SVG in <head> covers no-JS and stays as the final frame. */
-(function animateFavicon() {
-  const link = document.getElementById('favicon');
-  if (!link || !window.Path2D) return;
-  const D1 = 'M6 36 C 14 14, 26 14, 28 32 C 29 40, 22 42, 20 36 C 18 30, 28 24, 38 28 C 46 31, 50 38, 56 32 C 62 26, 60 14, 52 14 C 46 14, 44 22, 50 26 C 58 30, 70 24, 76 18 C 82 12, 92 16, 88 26 C 84 36, 70 38, 66 32 C 62 26, 70 22, 78 26 C 86 30, 96 36, 108 30', D2 = 'M104 36 C 108 38, 112 36, 114 34';
-
-  const NS = 'http://www.w3.org/2000/svg';
-  const probe = document.createElementNS(NS, 'svg');
-  probe.setAttribute('width', '0'); probe.setAttribute('height', '0');
-  probe.style.cssText = 'position:absolute;opacity:0;pointer-events:none';
-  const mk = d => { const el = document.createElementNS(NS, 'path'); el.setAttribute('d', d); probe.appendChild(el); return el; };
-  const e1 = mk(D1), e2 = mk(D2);
-  document.body.appendChild(probe);
-  let L1, L2;
-  try { L1 = e1.getTotalLength(); L2 = e2.getTotalLength(); } catch (err) { probe.remove(); return; }
-  probe.remove();
-
-  const SIZE = 64, VW = 120, VH = 50;
-  const cv = document.createElement('canvas');
-  cv.width = cv.height = SIZE;
-  const ctx = cv.getContext('2d');
-  if (!ctx) return;
-  const p1 = new Path2D(D1), p2 = new Path2D(D2);
-  const scale = SIZE / VW, offY = (SIZE - VH * scale) / 2;
-
-  /* Browser chrome, not the page: a dark-themed browser draws the tab strip
-     dark, so the mark has to invert to stay visible. */
-  const darkQ = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
-  const inkFor = () => (darkQ && darkQ.matches) ? '#ffffff' : '#0a0a0a';
-
-  const CYCLE = 2000, START = 60, MAIN = 1050, TAIL_AT = 1040, TAIL = 300;
-  const DRAW_END = START + MAIN + TAIL;
-  const ease = x => { x = x < 0 ? 0 : x > 1 ? 1 : x; return x * x * (3 - 2 * x); };
-
-  function paint(t, colour) {
-    ctx.clearRect(0, 0, SIZE, SIZE);
-    ctx.save();
-    ctx.translate(0, offY); ctx.scale(scale, scale);
-    ctx.strokeStyle = colour; ctx.lineWidth = 7;
-    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    const a = ease((t - START) / MAIN);
-    ctx.setLineDash([L1, L1]); ctx.lineDashOffset = L1 * (1 - a);
-    ctx.stroke(p1);
-    const b = ease((t - TAIL_AT) / TAIL);
-    ctx.setLineDash([L2, L2]); ctx.lineDashOffset = L2 * (1 - b);
-    ctx.stroke(p2);
-    ctx.restore();
-    try { link.href = cv.toDataURL('image/png'); } catch (err) {}
-  }
-
-  let raf = null, t0 = performance.now(), lastPaint = 0, holding = false;
-
-  function frame(now) {
-    const t = (now - t0) % CYCLE;
-    const nowHolding = t >= DRAW_END;
-    /* nothing new to draw while the finished mark just sits there */
-    if (!(nowHolding && holding) && (now - lastPaint >= 45 || nowHolding !== holding)) {
-      lastPaint = now;
-      paint(t, inkFor());
-    }
-    holding = nowHolding;
-    raf = requestAnimationFrame(frame);
-  }
-
-  function start() {
-    if (raf) return;
-    t0 = performance.now(); lastPaint = 0; holding = false;
-    raf = requestAnimationFrame(frame);
-  }
-  function stop() {
-    if (raf) { cancelAnimationFrame(raf); raf = null; }
-  }
-
-  /* ── away state ──
-     requestAnimationFrame is suspended in a background tab, so park on the
-     finished signature rather than leaving a half-drawn one frozen. */
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) { stop(); paint(DRAW_END, inkFor()); }
-    else start();
-  });
-
-  /* repaint immediately if the browser theme flips mid-visit */
-  if (darkQ) {
-    const onScheme = () => { if (document.hidden) paint(DRAW_END, inkFor()); };
-    darkQ.addEventListener ? darkQ.addEventListener('change', onScheme)
-                           : darkQ.addListener && darkQ.addListener(onScheme);
-  }
-
-  if (!document.hidden) start();
-  else paint(DRAW_END, inkFor());
-})();
-
-/* ═════════ AWAY TITLE ═════════
-   Independent of the favicon: a browser suspends animation in a background tab
-   but still lets the title change, so this is the part that actually reaches
-   someone who has tabbed away. Kept deliberately quiet — no unread-style
-   counters or fake notifications. */
-(function awayTitle() {
-  const AWAY = '\u2190 Still designing over here';
-  let real = document.title;
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      if (document.title !== AWAY) real = document.title;
-      document.title = AWAY;
-    } else {
-      document.title = real;
-    }
-  });
-})();
-
-/* Alex's local time, so a client can see what o'clock it is at his end.
-   23:00-05:59 night · 06:00-11:59 morning · 12:00-17:59 afternoon · 18:00-22:59 evening. */
-const TZ = 'Europe/Madrid';
-function localHour() {
-  const parts = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: 'numeric', hour12: false }).formatToParts(new Date());
-  return parseInt(parts.find(p => p.type === 'hour').value, 10);
-}
-function updateStatus() {
-  const icon = document.getElementById('sfIcon');
-  const greet = document.getElementById('sfGreeting');
-  const time = document.getElementById('sfTime');
-  if (!icon || !greet || !time) return;
-  const hour = localHour();
-  const daytime = hour >= 6 && hour < 20;
-  icon.className = 'sf-icon ' + (daytime ? 'ri-sun-line' : 'ri-moon-clear-line');
-  greet.textContent = hour < 6  ? 'Good night'
-                    : hour < 12 ? 'Good morning'
-                    : hour < 18 ? 'Good afternoon'
-                    : hour < 23 ? 'Good evening'
-                    :             'Good night';
-  time.textContent = new Intl.DateTimeFormat('en-GB', {
-    timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: false
-  }).format(new Date());
-}
-updateStatus();
-setInterval(updateStatus, 15000);
-
-/* ═════════ VIDEO AUTOPLAY ═════════
-   Inline autoplay needs muted + playsinline, and the attributes alone aren't
-   always enough — Safari wants the properties set too. Even then a refusal is
-   possible (Low Power Mode, data saver), so the poster stands in and the play
-   is retried on the first user gesture, which lifts the restriction. */
-function primeVideos(root) {
-  (root || document).querySelectorAll('video').forEach(v => {
-    v.muted = true;
-    v.defaultMuted = true;
-    v.playsInline = true;
-    v.setAttribute('webkit-playsinline', '');   /* older iOS */
-    v.disableRemotePlayback = true;
-    const p = v.play();
-    if (p && p.catch) p.catch(() => { /* poster stays up; retried on gesture */ });
-  });
-}
-
-(function retryVideosOnGesture() {
-  const once = () => {
-    primeVideos(document);
-    ['touchstart', 'pointerdown', 'keydown'].forEach(e =>
-      window.removeEventListener(e, once, true));
-  };
-  ['touchstart', 'pointerdown', 'keydown'].forEach(e =>
-    window.addEventListener(e, once, { capture: true, passive: true }));
-
-  /* a tab returning to the foreground gets another go */
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) primeVideos(document);
-  });
-})();
-
-/* ═════════ LOAD CONTENT ═════════
-   The page never waits on the network to render. It paints straight away from
-   the best copy it already has — the one cached from your last visit, or the
-   fallback baked into this file — and only then asks the repo whether anything
-   changed. A slow or dead GitHub costs nothing but freshness.
-
-   That ordering matters: the previous version awaited the fetch before its
-   first render, so a slow response left the page sitting on skeletons, and a
-   hung one left it there indefinitely. */
-const CONTENT_CACHE_KEY = 'portfolio-content-v1';
-const CONTENT_TIMEOUT   = 6000;
-
-/* Stable signature ignoring timestamps, so a re-publish with identical content
-   doesn't trigger a pointless repaint. */
-function contentSig(o) {
-  try {
-    const c = JSON.parse(JSON.stringify(o));
-    delete c.savedAt; delete c.publishedAt; delete c.__v;
-    const sort = v => Array.isArray(v) ? v.map(sort)
-      : (v && typeof v === 'object')
-        ? Object.keys(v).sort().reduce((a, k) => { a[k] = sort(v[k]); return a; }, {})
-        : v;
-    return JSON.stringify(sort(c));
-  } catch (e) { return Math.random() + ''; }
-}
-
-function withFallbackDims(data) {
-  data.dims = { ...(CONTENT_FALLBACK.dims || {}), ...(data.dims || {}) };
-  return data;
-}
-
-/* Last known-good content.json from this browser. Fresher than the baked
-   fallback, which only moves when the page template is redeployed. */
-function cachedContent() {
-  try {
-    const raw = localStorage.getItem(CONTENT_CACHE_KEY);
-    if (!raw) return null;
-    const o = JSON.parse(raw);
-    return (o && Array.isArray(o.projects)) ? o : null;
-  } catch (e) { return null; }
-}
-
-function revealInView() {
-  document.querySelectorAll('.shot').forEach(el => {
-    const r = el.getBoundingClientRect();
-    if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('visible');
-  });
-}
-
-function paint(data, keepScroll) {
-  const main = document.getElementById('mainScroll');
-  const at = keepScroll && main ? main.scrollTop : null;
-  CONTENT = data;
-  applyContent(data);
-  initObserver();
-  if (at !== null && main) main.scrollTop = at;   /* a late update must not jump you */
-  requestAnimationFrame(revealInView);
-}
-
-/* Bounded so a stalled connection can't leave the page half-alive. */
-async function refreshContent(shown) {
-  let timer = null;
-  try {
-    const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-    if (ctrl) timer = setTimeout(() => ctrl.abort(), CONTENT_TIMEOUT);
-    /* default caching on purpose — raw.githubusercontent sends a short max-age,
-       so a repeat visit is served from disk instead of the network */
-    const res = await fetch(CONTENT_URL, ctrl ? { signal: ctrl.signal } : undefined);
-    if (timer) clearTimeout(timer);
-    if (!res.ok) return;
-    const fresh = await res.json();
-    if (!fresh || !Array.isArray(fresh.projects)) return;
-
-    try { localStorage.setItem(CONTENT_CACHE_KEY, JSON.stringify(fresh)); } catch (e) {}
-    withFallbackDims(fresh);
-    if (contentSig(fresh) === contentSig(shown)) return;   /* already current */
-    paint(fresh, true);
-  } catch (e) {
-    if (timer) clearTimeout(timer);
-    /* offline, aborted, blocked or rate-limited — what's on screen stands */
-  }
-}
-
-function loadContent() {
-  const shown = withFallbackDims(cachedContent() || CONTENT_FALLBACK);
-  paint(shown, false);
-  warmModalImages();
-  openFromUrl();   /* a shared link lands straight on its project */
-  if (CONTENT_URL) refreshContent(shown);
-}
-
-/* Deferred by one microtask so it can't run before the rest of this script has
-   finished evaluating. Without it, any path that doesn't await — no repo
-   configured, or fetch throwing synchronously — reaches initObserver() while
-   its bindings are still in the temporal dead zone, and the page dies. */
-Promise.resolve().then(loadContent);
-
-/* Everything behind a modal is fetched during idle time after load, three at a
-   time so it never competes with the visible stream. By the time a client opens
-   a project the images are already in cache. */
-function warmModalImages() {
-  const start = () => {
-    const urls = [];
-    projects.forEach(p => (p.blocks || []).forEach(b => {
-      if (b.image && !isVideoSrc(b.image)) urls.push(cdnAt(b.image, 1600));
-      (b.images || []).forEach(im => { if (im && !isVideoSrc(im)) urls.push(cdnAt(im, 900)); });
-    }));
-    if (!urls.length) return;
-    let i = 0;
-    const next = () => {
-      if (i >= urls.length) return;
-      const img = new Image();
-      img.decoding = 'async';
-      img.onload = img.onerror = next;
-      img.src = urls[i++];
-    };
-    for (let lane = 0; lane < 3; lane++) next();
-  };
-  const kick = () => {
-    if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 3000 });
-    else setTimeout(start, 1200);
-  };
-  kick();
-}
-
-let shotObserver = null;
-function initObserver() {
-  /* Without IntersectionObserver the reveal-on-scroll class never lands and the
-     shots would stay invisible — so show them all rather than fail closed. */
-  if (typeof IntersectionObserver === 'undefined') {
-    document.querySelectorAll('.shot').forEach(i => i.classList.add('visible'));
-    return;
-  }
-  const isMobile = window.innerWidth <= 900;
-  const root = isMobile ? null : document.getElementById('mainScroll');
-  if (shotObserver) shotObserver.disconnect();
-  shotObserver = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { root, threshold: .05 });
-  document.querySelectorAll('.shot').forEach(i => shotObserver.observe(i));
-}
-/* ═════════ SCROLL ═════════
-   The sidebar is fixed and the stream is its own scroll container, so a wheel
-   over the sidebar did nothing — which reads as the page being stuck. Forward
-   any wheel that isn't already inside a scrollable area to the stream. */
-(function unifyScroll() {
-  const main = document.getElementById('mainScroll');
-  if (!main) return;
-  const isDesktop = () => window.matchMedia('(min-width: 901px)').matches;
-
-  document.addEventListener('wheel', e => {
-    if (!isDesktop()) return;
-    if (e.ctrlKey) return;                                   /* pinch-zoom */
-    if (main.contains(e.target)) return;                     /* already there */
-    if (e.target.closest('.detail-panel, .lb, .modal')) return;  /* open layers */
-    main.scrollTop += e.deltaY;
-    e.preventDefault();
-  }, { passive: false });
-})();
-
-/* first call happens in loadContent(), once there are shots to observe */
-window.addEventListener('resize', () => {
-  document.querySelectorAll('.shot').forEach(p => p.classList.remove('visible'));
-  initObserver();
-});
-
-/* ═════════ SCROLL LOCK ═════════
-   Freezing the page behind an open layer. Counted, because the lightbox opens
-   on top of the modal and closing it must not unfreeze the page underneath.
-   iOS ignores overflow:hidden on body, hence position:fixed + restoring
-   scrollY by hand. */
-let lockCount = 0, lockedY = 0;
-const pageScrolls = () => window.matchMedia('(max-width: 900px)').matches;
-
-function lockScroll() {
-  if (!pageScrolls()) return;
-  if (lockCount++ > 0) return;
-  lockedY = window.scrollY || window.pageYOffset || 0;
-  document.body.style.top = -lockedY + 'px';
-  document.body.classList.add('is-locked');
-}
-
-function unlockScroll() {
-  if (!lockCount) return;
-  lockCount = Math.max(0, lockCount - 1);
-  if (lockCount > 0) return;
-  document.body.classList.remove('is-locked');
-  document.body.style.top = '';
-  window.scrollTo(0, lockedY);
-}
-
-const overlay  = document.getElementById('detailOverlay');
-const backdrop = document.getElementById('detailBackdrop');
-const panel    = document.getElementById('detailPanel');
-const closeBtn = document.getElementById('detailClose');
-
-/* Every image in the open case study, in reading order — the lightbox pages
-   through this list. Rebuilt each time a project opens. */
-let lbImages = [], lbIndex = 0;
-
-function esc(str) {
-  return String(str == null ? '' : str)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-
-/* Cloudinary serves any size and format off one stored URL — f_auto picks AVIF
-   or WebP per browser, c_limit never upscales. Anything else passes through. */
-function cdnAt(u, w) {
-  if (typeof u !== 'string') return u;
-  const marker = u.indexOf('/video/upload/') !== -1 ? '/video/upload/' : '/image/upload/';
-  const i = u.indexOf(marker);
-  if (i === -1) return u;
-  const cut = i + marker.length;
-  return u.slice(0, cut) + 'f_auto,q_auto,c_limit,w_' + w + '/' + u.slice(cut);
-}
-
-/* ═════════ RENDER FROM CONTENT ═════════ */
-function dimsOf(url) {
-  const v = (CONTENT.dims || {})[url];
-  if (!v) return null;
-  const [w, h] = String(v).split('x').map(Number);
-  return (w && h) ? [w, h] : null;
-}
-
-function renderSkills(c) {
-  document.getElementById('skillsGrid').innerHTML = (c.skills || [])
-    .map(sk => '<span class="skill"><i class="' + esc(sk.icon) + '"></i>' + esc(sk.label) + '</span>')
-    .join('');
-}
-
-const WM_SPEED = 34;   /* px per second, so more logos means a longer loop, not a faster one */
-
-function renderWordmarks(c) {
-  const track = document.getElementById('wmTrack');
-  if (!track) return;
-  const logos = (c.wordmarks || []).filter(w => w.logo);
-  const one = logos
-    .map(w => '<span class="sb-wm sb-wm--logo"><img src="' + esc(w.logo) + '" alt="' + esc(w.name || '') + '" decoding="async"></span>')
-    .join('');
-  /* duplicated so the marquee can loop seamlessly */
-  track.classList.remove('is-ready');
-  track.innerHTML = one + one;
-  if (!logos.length) return;
-
-  const measure = () => {
-    const items = track.children;
-    const half = items.length / 2;
-    if (!half) return false;
-    /* exactly one copy's advance, gaps included — no arithmetic to get wrong */
-    const shift = items[half].offsetLeft - items[0].offsetLeft;
-    if (shift <= 0) return false;
-    track.style.setProperty('--wm-shift', shift + 'px');
-    track.style.setProperty('--wm-duration', (shift / WM_SPEED).toFixed(2) + 's');
-    track.classList.add('is-ready');
-    return true;
-  };
-
-  /* If the measurement can't be taken — layout not settled, images blocked —
-     fall back to the percentage form so it still scrolls. Frozen would be
-     worse than approximate. */
-  const measureOrFallback = () => {
-    if (measure()) return;
-    setTimeout(() => {
-      if (measure()) return;
-      track.style.setProperty('--wm-shift', '50%');
-      track.style.setProperty('--wm-duration', '28s');
-      track.classList.add('is-ready');
-    }, 600);
-  };
-
-  /* wait for the logos to have real dimensions, but never hang on a broken one */
-  const imgs = [...track.querySelectorAll('img')];
-  const settled = imgs.map(img => img.complete
-    ? Promise.resolve()
-    : new Promise(res => { img.addEventListener('load', res, { once: true });
-                           img.addEventListener('error', res, { once: true }); }));
-  Promise.race([
-    Promise.all(settled),
-    new Promise(res => setTimeout(res, 2500))
-  ]).then(() => requestAnimationFrame(measureOrFallback));
-
-  /* a resize changes the column width, so the loop distance changes with it */
-  clearTimeout(renderWordmarks._t);
-  if (!renderWordmarks._bound) {
-    renderWordmarks._bound = true;
-    window.addEventListener('resize', () => {
-      clearTimeout(renderWordmarks._t);
-      renderWordmarks._t = setTimeout(measure, 200);
-    });
-  }
-}
-
-function captionHtml(sh) {
-  const caption = (sh.caption || '').trim();
-  const metric  = (sh.metric  || '').trim();
-  if (!caption && !metric) return '';
-  const parts = [];
-  if (caption) {
-    caption.split(/\s*·\s*/).filter(Boolean).forEach((seg, i) => {
-      if (i > 0) parts.push('<span class="sep">·</span>');
-      parts.push(esc(seg));
-    });
-  }
-  if (metric) {
-    if (parts.length) parts.push('<span class="sep">·</span>');
-    parts.push('<span class="metric">' + esc(metric) + '</span>');
-  }
-  return '<div class="shot-caption">' + parts.join('') + '</div>';
-}
-
-function renderStream(c) {
-  const html = (c.stream || []).map((sh, idx) => {
-    if (!sh.image) return '';
-    const proj = (c.projects || [])[sh.projectIdx];
-    const alt = proj ? proj.title : '';
-    const wh = dimsOf(sh.image);
-    const size = wh ? ' width="' + wh[0] + '" height="' + wh[1] + '"' : '';
-    /* first shot is the LCP candidate — everything after it can wait */
-    const prio = idx === 0
-      ? ' loading="eager" fetchpriority="high" decoding="async"'
-      : ' loading="lazy" decoding="async"';
-    const media = isVideoSrc(sh.image)
-      ? '<video src="' + cdnAt(sh.image, 1600) + '" poster="' + cdnPoster(sh.image, 1600) + '"' + size +
-        ' muted loop autoplay playsinline preload="metadata" disablepictureinpicture></video>'
-      : '<img src="' + cdnAt(sh.image, 2000) + '" alt="' + esc(alt) + '"' + size + prio + '>';
-    return '<div class="shot" data-project="' + (sh.projectIdx || 0) + '">' + media + captionHtml(sh) +
-      '<div class="shot-hover"><div class="shot-btn">View more <i class="ri-arrow-right-s-line"></i></div></div></div>';
-  }).filter(Boolean).join('');
-  document.getElementById('stream').innerHTML = html;
-}
-
-/* Falls back to deriving one from the title, so a project added before slugs
-   existed still gets a working URL. */
-function slugify(t) {
-  return String(t || '')
-    .normalize('NFKD').replace(/[^\\w\\s-]/g, '')
-    .trim().toLowerCase().replace(/[\\s_]+/g, '-').replace(/-+/g, '-');
-}
-
-function projectsFrom(c) {
-  return (c.projects || []).map((p, i) => ({
-    slug: (p.slug || slugify(p.title) || ('project-' + (i + 1))),
-    client: p.client || '',
-    title: p.title || '',
-    website: p.website || '',
-    desc1: p.desc1 || '',
-    desc2: p.desc2 || '',
-    blocks: (p.blocks || []).map(b => {
-      if (b.type === 'text') {
-        if (!(b.heading || '').trim() && !(b.body || '').trim()) return null;
-        return { type: 'text', heading: b.heading || '', body: b.body || '' };
-      }
-      if (b.type === 'duo') {
-        const imgs = (b.images || []).filter(Boolean);
-        return imgs.length ? { type: 'duo', images: imgs, caption: b.caption || '' } : null;
-      }
-      if (!b.image) return null;
-      const wh = dimsOf(b.image);
-      const o = { type: 'image', image: b.image, caption: b.caption || '' };
-      if (wh) { o.w = wh[0]; o.h = wh[1]; }
-      return o;
-    }).filter(Boolean)
-  }));
-}
-
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el && typeof value === 'string') el.textContent = value;
-}
-function setHref(id, value) {
-  const el = document.getElementById(id);
-  if (el && typeof value === 'string') el.href = value;
-}
-function setCtaLabel(id, label) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const slot = el.querySelector('.cta-label');
-  if (slot) slot.textContent = label;
-  el.setAttribute('aria-label', label);
-}
-
-function applyContent(c) {
-  const subject = (c.ctaSubject || 'Project Enquiry').trim();
-  const mailto = 'mailto:' + (c.email || '') + '?subject=' + encodeURIComponent(subject);
-
-  setText('sbBio', c.bio);
-  setText('skillsLabel', c.skillsLabel);
-  setHref('ctaPrimary', mailto);
-  setHref('ctaPrimaryModal', mailto);
-  setHref('ctaSecondary', c.telegramUrl);
-
-  /* the panel is the real path; the mailto href above is the no-JS fallback */
-  ['ctaPrimary', 'ctaPrimaryModal'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el || el.dataset.contactBound) return;
-    el.dataset.contactBound = '1';
-    el.addEventListener('click', e => { e.preventDefault(); openContact(); });
-  });
-
-  const cfg = c.contact || {};
-  setText('cfTitle', (cfg.heading || c.ctaPrimaryLabel || 'Start a project').trim());
-  setText('cfSub', (cfg.sub || "Tell me what you're building. I read every message and reply within a day.").trim());
-  const tg = document.getElementById('cfTelegram');
-  if (tg && c.telegramUrl) tg.href = c.telegramUrl;
-  renderBudgets(c);
-  setCtaLabel('ctaPrimary', (c.ctaPrimaryLabel || 'Start a project').trim());
-  setCtaLabel('ctaPrimaryModal', (c.ctaPrimaryLabel || 'Start a project').trim());
-  setCtaLabel('ctaSecondary', (c.ctaSecondaryLabel || 'Quick message').trim());
-  setHref('socialX', (c.socials || {}).x);
-  setHref('socialLinkedin', (c.socials || {}).linkedin);
-  setHref('socialDribbble', (c.socials || {}).dribbble);
-
-  projects = projectsFrom(c);
-  renderTestimonials(c);
-  renderSkills(c);
-  renderWordmarks(c);
-  renderStream(c);
-  primeVideos(document.getElementById('stream'));
-
-  /* content is in — drop the skeletons */
-  document.body.classList.add('is-loaded');
-}
-
-function isVideoSrc(u) {
-  return typeof u === 'string' &&
-    (/\\/video\\/upload\\//.test(u) || /\\.(mp4|webm|mov|m4v)(\\?|$)/i.test(u));
-}
-
-/* First frame as a poster so a video box is never blank or black. */
-function cdnPoster(u, w) {
-  const marker = '/video/upload/';
-  const i = typeof u === 'string' ? u.indexOf(marker) : -1;
-  if (i === -1) return '';
-  const cut = i + marker.length;
-  return u.slice(0, cut) + 'so_0,f_auto,q_auto,c_limit,w_' + w + '/' + u.slice(cut).replace(/\\.[^.\\/]+$/, '.jpg');
-}
-
-function mediaHtml(src, alt, w, dims) {
-  const i = lbImages.length;
-  lbImages.push(cdnAt(src, 2400));
-  /* width/height give the browser the aspect ratio up front, so the box is the
-     right size before a single byte arrives — no reflow. */
-  const sz = (dims && dims.w && dims.h) ? ' width="' + dims.w + '" height="' + dims.h + '"' : '';
-  /* Videos carry no chrome at all: muted + loop + playsinline is what lets them
-     autoplay inline on iOS, and no controls attribute means no UI. */
-  const tag = isVideoSrc(src)
-    ? '<video src="' + cdnAt(src, w) + '" poster="' + cdnPoster(src, w) + '"' + sz +
-      ' muted loop autoplay playsinline preload="metadata" disablepictureinpicture data-ready></video>'
-    : '<img src="' + cdnAt(src, w) + '" alt="' + esc(alt) + '"' + sz + ' decoding="async">';
-  return '<div class="db-media" data-lb="' + i + '">' + tag + '</div>';
-}
-
-function blocksHtml(p) {
-  lbImages = [];
-  return (p.blocks || []).map(b => {
-    if (b.type === 'text') {
-      const paras = String(b.body || '').split(/\\n\\s*\\n/).filter(Boolean)
-        .map(t => '<p>' + esc(t).replace(/\\n/g, '<br>') + '</p>').join('');
-      if (!b.heading && !paras) return '';
-      return '<div class="db-text">'
-        + (b.heading ? '<div class="db-text-h">' + esc(b.heading) + '</div>' : '')
-        + paras + '</div>';
-    }
-    if (b.type === 'duo') {
-      const imgs = (b.images || []).filter(Boolean);
-      if (!imgs.length) return '';
-      return '<figure class="db-figure"><div class="db-duo">'
-        + imgs.map(src => mediaHtml(src, p.title, 900)).join('')
-        + '</div>'
-        + (b.caption ? '<figcaption class="db-caption">' + esc(b.caption) + '</figcaption>' : '')
-        + '</figure>';
-    }
-    if (!b.image) return '';
-    return '<figure class="db-figure">' + mediaHtml(b.image, p.title, 1600, b)
-      + (b.caption ? '<figcaption class="db-caption">' + esc(b.caption) + '</figcaption>' : '')
-      + '</figure>';
-  }).join('');
-}
-
-/* ═════════ PROJECT URLS ═════════
-   Each project gets its own path so it can be linked and shared. The server
-   serves index.html for any unknown path (see netlify.toml), and this reads the
-   path on load to open the matching modal. History is used rather than a hash
-   so the URL looks like a real page and back/forward behave normally. */
-const BASE_TITLE = document.title;
-
-function projectBySlug(slug) {
-  if (!slug) return -1;
-  const want = String(slug).toLowerCase();
-  return projects.findIndex(p => p.slug === want);
-}
-
-function currentSlug() {
-  const parts = location.pathname.split('/').filter(Boolean);
-  return parts.length ? parts[parts.length - 1].toLowerCase() : '';
-}
-
-function setProjectUrl(p, replace) {
-  if (!p || !window.history || !history.pushState) return;
-  const url = '/' + p.slug;
-  if (location.pathname === url && !replace) return;
-  try {
-    history[replace ? 'replaceState' : 'pushState']({ slug: p.slug }, '', url);
-    document.title = p.title + ' — ' + BASE_TITLE;
-  } catch (e) { /* file:// and the like — the modal still works */ }
-}
-
-function clearProjectUrl() {
-  if (!window.history || !history.pushState) return;
-  if (location.pathname === '/' ) { document.title = BASE_TITLE; return; }
-  try {
-    history.pushState({}, '', '/');
-    document.title = BASE_TITLE;
-  } catch (e) {}
-}
-
-let currentProject = -1;
-
-function openProject(idx, opts) {
-  opts = opts || {};
-  const p = projects[idx];
-  if (!p) return;
-  currentProject = idx;
-  if (opts.fromUrl) document.title = p.title + ' — ' + BASE_TITLE;
-  else setProjectUrl(p, opts.replace);
-  document.getElementById('dTitle').textContent  = p.title;
-  document.getElementById('dDesc1').textContent  = p.desc1;
-  document.getElementById('dDesc2').textContent  = p.desc2;
-  const blocksEl = document.getElementById('dBlocks');
-  blocksEl.innerHTML = blocksHtml(p);
-  primeVideos(blocksEl);
-  blocksEl.querySelectorAll('img').forEach(img => {
-    if (img.complete && img.naturalWidth) img.setAttribute('data-ready', '');
-  });
-  /* if a load event is ever missed, reveal anyway rather than stay blank */
-  setTimeout(() => blocksEl.querySelectorAll('img:not([data-ready])')
-    .forEach(img => img.setAttribute('data-ready', '')), 4000);
-  const websiteBtn = document.getElementById('dWebsite');
-  if (p.website) {
-    websiteBtn.href = p.website;
-    websiteBtn.hidden = false;
-  } else {
-    websiteBtn.removeAttribute('href');
-    websiteBtn.hidden = true;
-  }
-  panel.scrollTop = 0;
-  if (!overlay.classList.contains('open')) lockScroll();
-  overlay.classList.add('open');
-
-  /* Once this project is open, quietly fetch its zoom-size versions so the
-     lightbox opens instantly. Scoped to this project, not the whole site. */
-  const warmZoom = () => lbImages.forEach(u => {
-    if (isVideoSrc(u)) return;
-    const im = new Image(); im.decoding = 'async'; im.src = u;
-  });
-  if ('requestIdleCallback' in window) requestIdleCallback(warmZoom, { timeout: 2000 });
-  else setTimeout(warmZoom, 600);
-}
-function closeOverlay(opts) {
-  if (!overlay.classList.contains('open')) return;
-  closeLb();
-  overlay.classList.remove('open');
-  unlockScroll();
-  if (!(opts && opts.fromUrl)) clearProjectUrl();
-}
-
-/* back/forward, and the deep link on first load */
-window.addEventListener('popstate', () => {
-  const i = projectBySlug(currentSlug());
-  if (i >= 0) openProject(i, { fromUrl: true });
-  else closeOverlay({ fromUrl: true });
-});
-
-function openFromUrl() {
-  const i = projectBySlug(currentSlug());
-  if (i >= 0) openProject(i, { fromUrl: true });
-}
-
-document.getElementById('stream').addEventListener('click', e => {
-  const shot = e.target.closest('.shot');
-  if (shot) openProject(+shot.dataset.project);
-});
-closeBtn.addEventListener('click', closeOverlay);
-backdrop.addEventListener('click', closeOverlay);
-
-/* ── lightbox ── */
-const lb      = document.getElementById('lightbox');
-const lbImg   = document.getElementById('lbImg');
-const lbCount = document.getElementById('lbCount');
-const lbPrev  = document.getElementById('lbPrev');
-const lbNext  = document.getElementById('lbNext');
-
-const lbVideo = document.getElementById('lbVideo');
-const lbHint  = document.getElementById('lbHint');
-const lbNav   = document.getElementById('lbNav');
-
-/* ── pinch / double-tap zoom ──
-   Landscape shots on a portrait phone render small, so the lightbox needs real
-   zoom. Transform-based rather than native pinch, because the lightbox is a
-   fixed overlay and the page behind it is locked. Images only — video keeps
-   its aspect and doesn't need it. */
-let zs = 1, zx = 0, zy = 0;
-const MAX_Z = 4;
-
-function applyZoom(animate) {
-  lbImg.style.transition = animate ? 'transform .26s cubic-bezier(.22,.61,.36,1)' : 'none';
-  lbImg.style.transform = 'translate(' + zx + 'px,' + zy + 'px) scale(' + zs + ')';
-  lb.classList.toggle('is-zoomed', zs > 1.01);
-}
-
-function clampPan() {
-  const w = lbImg.offsetWidth * zs, h = lbImg.offsetHeight * zs;
-  const maxX = Math.max(0, (w - window.innerWidth) / 2);
-  const maxY = Math.max(0, (h - window.innerHeight) / 2);
-  zx = Math.min(maxX, Math.max(-maxX, zx));
-  zy = Math.min(maxY, Math.max(-maxY, zy));
-}
-
-function resetZoom(animate) {
-  zs = 1; zx = 0; zy = 0;
-  applyZoom(animate);
-  lbImg.style.transition = '';
-  lbImg.style.transform = '';
-}
-
-/* zoom toward a point so the thing you tapped stays under your finger */
-function zoomTo(scale, px, py) {
-  const rect = lbImg.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
-  const k = scale / zs;
-  zx = (zx - (px - cx)) * k + (px - cx);
-  zy = (zy - (py - cy)) * k + (py - cy);
-  zs = scale;
-  clampPan();
-  applyZoom(true);
-}
-
-function showLb(i) {
-  if (!lbImages.length) return;
-  lbIndex = (i + lbImages.length) % lbImages.length;
-  const src = lbImages[lbIndex];
-  const video = isVideoSrc(src);
-
-  resetZoom(false);
-  lbVideo.style.transition = '';
-  lbVideo.style.transform = '';
-  lbImg.hidden = video;
-  lbVideo.hidden = !video;
-  if (video) {
-    lbImg.removeAttribute('src');
-    lbVideo.src = src;
-    lbVideo.poster = cdnPoster(src, 1600);
-    lbVideo.muted = true;
-    lbVideo.playsInline = true;
-    lbVideo.play().catch(() => {});
-  } else {
-    lbVideo.pause();
-    lbVideo.removeAttribute('src');
-    lbImg.src = src;
-  }
-
-  const many = lbImages.length > 1;
-  lbCount.textContent = many ? (lbIndex + 1) + ' / ' + lbImages.length : '';
-  lbPrev.hidden = !many;
-  lbNext.hidden = !many;
-  lbNav.hidden = !many;
-  lbHint.textContent = many
-    ? (video ? 'Swipe to browse' : 'Swipe to browse · pinch to zoom')
-    : (video ? '' : 'Pinch to zoom');
-}
-function openLb(i) {
-  if (lb.classList.contains('open')) return showLb(i);
-  showLb(i);
-  lockScroll();
-  lb.classList.add('open');
-}
-
-/* Open the viewer on images that aren't part of a case study — the screenshot
-   behind a testimonial, for instance. */
-function openLbWith(urls, start) {
-  if (!urls || !urls.length) return;
-  lbImages = urls.slice();
-  openLb(start || 0);
-}
-function closeLb() {
-  if (!lb.classList.contains('open')) return;
-  lb.classList.remove('open');
-  lb.classList.remove('is-zoomed');
-  lbVideo.pause();
-  resetZoom(false);
-  unlockScroll();
-}
-
-/* ── gestures ── */
-const dist = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
-const mid  = t => [(t[0].clientX + t[1].clientX) / 2, (t[0].clientY + t[1].clientY) / 2];
-let gesture = null, lastTap = 0;
-
-lbImg.addEventListener('touchstart', e => {
-  if (e.touches.length === 2) {
-    e.preventDefault();
-    const m = mid(e.touches);
-    gesture = { pinch: true, d0: dist(e.touches), s0: zs, mx: m[0], my: m[1] };
-  } else if (e.touches.length === 1) {
-    const t = e.touches[0];
-    gesture = zs > 1.01
-      ? { pan: true, x0: t.clientX, y0: t.clientY, zx0: zx, zy0: zy }
-      /* only at rest — a swipe while zoomed would fight panning */
-      : { swipe: true, x0: t.clientX, y0: t.clientY, dx: 0, axis: null };
-    const now = Date.now();
-    if (now - lastTap < 300) {
-      e.preventDefault();
-      zs > 1.01 ? resetZoom(true) : zoomTo(2.6, e.touches[0].clientX, e.touches[0].clientY);
-      gesture = null;
-      lastTap = 0;
-    } else {
-      lastTap = now;
-    }
-  }
-}, { passive: false });
-
-lbImg.addEventListener('touchmove', e => {
-  if (!gesture) return;
-  e.preventDefault();
-  if (gesture.pinch && e.touches.length === 2) {
-    const scale = Math.min(MAX_Z, Math.max(1, gesture.s0 * (dist(e.touches) / gesture.d0)));
-    const k = scale / zs;
-    const rect = lbImg.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
-    zx = (zx - (gesture.mx - cx)) * k + (gesture.mx - cx);
-    zy = (zy - (gesture.my - cy)) * k + (gesture.my - cy);
-    zs = scale;
-    clampPan();
-    applyZoom(false);
-  } else if (gesture.pan && e.touches.length === 1) {
-    zx = gesture.zx0 + (e.touches[0].clientX - gesture.x0);
-    zy = gesture.zy0 + (e.touches[0].clientY - gesture.y0);
-    clampPan();
-    applyZoom(false);
-  } else if (gesture.swipe && e.touches.length === 1) {
-    const dx = e.touches[0].clientX - gesture.x0;
-    const dy = e.touches[0].clientY - gesture.y0;
-    /* decide once whether this is a horizontal swipe, then commit to it */
-    if (!gesture.axis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
-      gesture.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-    }
-    if (gesture.axis === 'x' && lbImages.length > 1) {
-      gesture.dx = dx;
-      lbImg.style.transition = 'none';
-      lbVideo.style.transition = 'none';
-      const t = 'translate(' + dx * 0.6 + 'px,0)';
-      lbImg.style.transform = t;
-      lbVideo.style.transform = t;
-    }
-  }
-}, { passive: false });
-
-function endSwipe(g) {
-  if (!g || !g.swipe || g.axis !== 'x' || lbImages.length < 2) return false;
-  if (Math.abs(g.dx) < 55) return false;
-  showLb(lbIndex + (g.dx < 0 ? 1 : -1));
-  return true;
-}
-
-function onTouchEnd(e) {
-  if (e.touches.length !== 0) return;
-  const g = gesture;
-  gesture = null;
-  if (endSwipe(g)) return;
-  lbVideo.style.transition = '';
-  lbVideo.style.transform = '';
-  if (zs <= 1.01) resetZoom(true);
-}
-
-lbImg.addEventListener('touchend', onTouchEnd);
-lbImg.addEventListener('touchcancel', onTouchEnd);
-lbVideo.addEventListener('touchstart', e => {
-  if (e.touches.length === 1) gesture = { swipe: true, x0: e.touches[0].clientX, y0: e.touches[0].clientY, dx: 0, axis: null };
-}, { passive: true });
-lbVideo.addEventListener('touchmove', e => {
-  if (!gesture || !gesture.swipe || e.touches.length !== 1) return;
-  const dx = e.touches[0].clientX - gesture.x0;
-  const dy = e.touches[0].clientY - gesture.y0;
-  if (!gesture.axis && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
-    gesture.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-  }
-  if (gesture.axis === 'x' && lbImages.length > 1) {
-    e.preventDefault();
-    gesture.dx = dx;
-    lbVideo.style.transition = 'none';
-    lbVideo.style.transform = 'translate(' + dx * 0.6 + 'px,0)';
-  }
-}, { passive: false });
-lbVideo.addEventListener('touchend', onTouchEnd);
-lbVideo.addEventListener('touchcancel', onTouchEnd);
-
-/* desktop: double-click toggles, wheel zooms */
-lbImg.addEventListener('dblclick', e => {
-  e.preventDefault();
-  zs > 1.01 ? resetZoom(true) : zoomTo(2.4, e.clientX, e.clientY);
-});
-lbImg.addEventListener('wheel', e => {
-  e.preventDefault();
-  const next = Math.min(MAX_Z, Math.max(1, zs * (e.deltaY < 0 ? 1.12 : 1 / 1.12)));
-  next <= 1.01 ? resetZoom(true) : zoomTo(next, e.clientX, e.clientY);
-}, { passive: false });
-
-/* delegated so it keeps working after the modal re-renders */
-/* Native share sheet where there is one — that's the good path on a phone,
-   since it offers Messages, Mail, AirDrop and so on. Falls back to copying the
-   link, and to a hidden input where the clipboard API is unavailable. */
-(function wireShare() {
-  const btn = document.getElementById('dShare');
-  if (!btn) return;
-  const label = btn.querySelector('.detail-share-label');
-
-  let resetTimer = null;
-  const flash = text => {
-    label.textContent = text;
-    btn.classList.add('is-done');
-    clearTimeout(resetTimer);
-    resetTimer = setTimeout(() => {
-      label.textContent = 'Share';
-      btn.classList.remove('is-done');
-    }, 2200);
-  };
-
-  /* The modern API is undefined outside a secure context and rejects inside an
-     iframe without clipboard-write, so the old execCommand path is a real
-     fallback rather than dead code. */
-  const legacyCopy = url => {
-    try {
-      const t = document.createElement('textarea');
-      t.value = url;
-      t.setAttribute('readonly', '');
-      t.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0';
-      document.body.appendChild(t);
-      t.focus();
-      t.select();
-      t.setSelectionRange(0, url.length);   /* iOS needs the explicit range */
-      const ok = document.execCommand('copy');
-      t.remove();
-      return ok;
-    } catch (err) { return false; }
-  };
-
-  const copy = async url => {
-    if (navigator.clipboard && window.isSecureContext) {
-      try {
-        await navigator.clipboard.writeText(url);
-        return true;
-      } catch (e) { /* blocked by permissions — fall through */ }
-    }
-    return legacyCopy(url);
-  };
-
-  /* Desktop Chrome exposes navigator.share but routes it through the OS, where
-     an extension or a blocked dialog can leave the promise unsettled — the
-     await then never returns and the button appears dead. Copying is also just
-     the better desktop behaviour. So the sheet is reserved for touch devices,
-     where it's both reliable and genuinely more useful. */
-  const isTouch = () =>
-    window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-
-  const canShare = data => {
-    if (!navigator.share) return false;
-    if (navigator.canShare) { try { return navigator.canShare(data); } catch (e) { return false; } }
-    return true;
-  };
-
-  btn.addEventListener('click', async () => {
-    if (btn.classList.contains('is-done')) return;
-    const p = projects[currentProject];
-    if (!p) return;
-    const origin = (location.origin && location.origin !== 'null')
-      ? location.origin
-      : 'https://alexcolombel.com';
-    const url = origin + '/' + p.slug;
-    const data = { title: p.title, text: p.client || p.title, url };
-
-    if (isTouch() && canShare(data)) {
-      try {
-        await navigator.share(data);
-        return;                                   /* shared — nothing to say */
-      } catch (e) {
-        if (e && e.name === 'AbortError') return;  /* dismissed on purpose */
-        /* anything else — sheet unavailable, blocked — falls through to copy */
-      }
-    }
-
-    flash(await copy(url) ? 'Link copied' : 'Copy failed');
-  });
-})();
-
-/* mark images ready as they decode, so the fade only applies to cold loads */
-document.getElementById('dBlocks').addEventListener('load', e => {
-  if (e.target.tagName === 'IMG') e.target.setAttribute('data-ready', '');
-}, true);
-
-document.getElementById('dBlocks').addEventListener('click', e => {
-  const media = e.target.closest('[data-lb]');
-  if (media) openLb(+media.dataset.lb);
-});
-document.getElementById('lbBackdrop').addEventListener('click', closeLb);
-document.getElementById('lbClose').addEventListener('click', closeLb);
-lbPrev.addEventListener('click', () => showLb(lbIndex - 1));
-lbNext.addEventListener('click', () => showLb(lbIndex + 1));
-
-/* Escape closes the topmost layer first */
-document.addEventListener('keydown', e => {
-  const lbOpen = lb.classList.contains('open');
-  if (e.key === 'Escape') { lbOpen ? closeLb() : closeOverlay(); return; }
-  if (!lbOpen) return;
-  if (e.key === 'ArrowLeft')  showLb(lbIndex - 1);
-  if (e.key === 'ArrowRight') showLb(lbIndex + 1);
-});
-</` + `script>
-</body>
-</html>`;
-}
+/* Blocks a publish that would break the v2 site. Returns a message, or ''. */
+function contentProblems() {
+  if (!(state.projects || []).length) return 'Add at least one project before publishing';
+  const dupes = stripDuplicates();
+  if (dupes.size) return 'The strip breaks a rule (repeat or twins side by side) — fix the red tiles first';
+  const n = (state.projects || []).length;
+  const bad = (state.strip || []).findIndex(s => !(s && Number.isInteger(s.projectIdx) && s.projectIdx >= 0 && s.projectIdx < n));
+  if (bad !== -1) return 'Strip tile ' + (bad + 1) + ' points at a project that no longer exists';
+  return '';
+}
+
+/* buildHtml (the old single-file site template) was removed here: the v2 site
+   is its own index.html + js/ + css/ in the repo, so this editor only ever
+   writes content.json. See cms/README.md. */
 
 /* ═════════════════════════════════════════════════════════════════
    INIT

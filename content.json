@@ -346,7 +346,11 @@
           "caption": ""
         }
       ],
-      "slug": "smartsolve"
+      "slug": "smartsolve",
+      "metric": "0 → 500k+ users",
+      "outfit": null,
+      "metricValue": "0→500k+",
+      "metricUnit": "users"
     },
     {
       "title": "Kodai",
@@ -399,7 +403,11 @@
           "caption": ""
         }
       ],
-      "slug": "kodai"
+      "slug": "kodai",
+      "metric": "0 → 30k+ users",
+      "outfit": null,
+      "metricValue": "0→30k+",
+      "metricUnit": "users"
     },
     {
       "title": "Raena AI",
@@ -454,7 +462,11 @@
           "caption": "Hero video"
         }
       ],
-      "slug": "raena-ai"
+      "slug": "raena-ai",
+      "metric": "0 → 1M+ users",
+      "outfit": null,
+      "metricValue": "0→1M+",
+      "metricUnit": "users"
     },
     {
       "title": "Vallum",
@@ -495,7 +507,11 @@
           "caption": ""
         }
       ],
-      "slug": "vallum"
+      "slug": "vallum",
+      "metric": "+92% satisfaction score",
+      "outfit": null,
+      "metricValue": "+92%",
+      "metricUnit": "satisfaction"
     },
     {
       "title": "Bau Match",
@@ -560,7 +576,11 @@
           "caption": ""
         }
       ],
-      "slug": "bau-match"
+      "slug": "bau-match",
+      "metric": "+60% MRR",
+      "outfit": null,
+      "metricValue": "+60%",
+      "metricUnit": "MRR"
     },
     {
       "title": "Emaily",
@@ -600,11 +620,15 @@
           "caption": ""
         }
       ],
-      "slug": "emaily"
+      "slug": "emaily",
+      "metric": "+80% MRR",
+      "outfit": null,
+      "metricValue": "+80%",
+      "metricUnit": "MRR"
     },
     {
-      "title": "Jackpot Studio",
-      "client": "Jackpot Studio",
+      "title": "Jackpot Studios",
+      "client": "Jackpot Studios",
       "website": "",
       "desc1": "I joined Jackpot Studios at the very beginning as its first designer and built the studio's visual language from the ground up. As Art Director I've shipped 30+ casino titles, slots, table games and originals. Owning game UI, art direction and animation on each one, along with the design systems, operator tools and marketing assets that sit around them.",
       "desc2": "The job is as much direction as it is design. I set the direction for each title and work with illustrators, 3D artists and other designers to carry it through to the final build, so thirty-odd games still read as one studio. It's paid off where it counts: aggregators have repeatedly singled out the quality of our game design, and the systems behind it let us keep shipping at that bar without slowing down.",
@@ -666,7 +690,11 @@
           "caption": "Slot symbol animation"
         }
       ],
-      "slug": "jackpot-studio"
+      "slug": "jackpot-studio",
+      "metric": "0 → 50k+ users",
+      "outfit": null,
+      "metricValue": "0→50k+",
+      "metricUnit": "users"
     }
   ],
   "stream": [
@@ -679,7 +707,7 @@
     {
       "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963636/e9n4js9cmj9flstniipa.mp4",
       "projectIdx": 6,
-      "caption": "Jackpot Studio",
+      "caption": "Jackpot Studios",
       "metric": "0 → 50k+ users"
     },
     {
@@ -713,6 +741,98 @@
       "metric": "+60% MRR"
     }
   ],
+  "name": "Alex Colombel",
+  "role": "Product Designer",
+  "status": {
+    "availability": "Open for new projects"
+  },
+  "location": {
+    "city": "Barcelona, Spain",
+    "lat": "41.3874",
+    "lon": "2.1686",
+    "tz": "Europe/Madrid"
+  },
+  "updated": "11.2026",
+  "socialCodes": [
+    {
+      "code": "X",
+      "label": "X / Twitter",
+      "key": "x"
+    },
+    {
+      "code": "LN",
+      "label": "LinkedIn",
+      "key": "linkedin"
+    },
+    {
+      "code": "DR",
+      "label": "Dribbble",
+      "key": "dribbble"
+    },
+    {
+      "code": "TG",
+      "label": "Telegram",
+      "url": "https://t.me/alexclmb"
+    }
+  ],
+  "folderOrder": [
+    "vallum",
+    "jackpot-studio",
+    "emaily",
+    "raena-ai",
+    "kodai",
+    "smartsolve",
+    "bau-match"
+  ],
+  "strip": [
+    {
+      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851712/xch9sacwhrpw04lb6oi6.webp",
+      "projectIdx": 3
+    },
+    {
+      "image": "https://res.cloudinary.com/pc2jrabx/video/upload/v1785963636/e9n4js9cmj9flstniipa.mp4",
+      "projectIdx": 6
+    },
+    {
+      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785015618/kir1x0lyxybrwfyspiya.png",
+      "projectIdx": 5
+    },
+    {
+      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851713/rwby2xa23thy1keahezt.webp",
+      "projectIdx": 2
+    },
+    {
+      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1786057841/vz0mg42rfqjzznhqe7ph.png",
+      "projectIdx": 1
+    },
+    {
+      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1784851714/ig8ybuzn1uu59qcr1y0q.webp",
+      "projectIdx": 0
+    },
+    {
+      "image": "https://res.cloudinary.com/pc2jrabx/image/upload/v1785014877/qbdkmfokoimyjgto1hws.png",
+      "projectIdx": 4
+    }
+  ],
   "publishedAt": "2026-08-07T10:45:30.113Z",
-  "savedAt": "2026-08-07T10:45:30.113Z"
+  "savedAt": "2026-08-07T10:45:30.113Z",
+  "sameImage": [
+    [
+      "kir1x0lyxybrwfyspiya",
+      "nxgw5swr3kas58fsnhyu"
+    ],
+    [
+      "vz0mg42rfqjzznhqe7ph",
+      "blga3yjio9qq6j8slytv"
+    ],
+    [
+      "qbdkmfokoimyjgto1hws",
+      "ynypkqafosd7jepwecrh"
+    ],
+    [
+      "e9n4js9cmj9flstniipa",
+      "lih8w7ms5yjhy3urgfif"
+    ]
+  ],
+  "rating": 5
 }

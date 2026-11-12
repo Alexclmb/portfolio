@@ -4,16 +4,11 @@
 
   # This is the rule that stops content edits from costing a deploy.
   # Netlify runs it before building: exit 0 cancels the build, non-zero proceeds.
-  # git diff --quiet exits 0 when nothing outside content.json changed — i.e. a
-  # content-only publish is skipped, while a new index.html still deploys.
-  # If it errors (first build, no parent commit) it exits non-zero and builds,
-  # which is the safe direction.
+  # A content-only publish from the CMS is skipped (the page reads the freshest
+  # content.json straight from this repo), while any other change still deploys.
   ignore = "git diff --quiet HEAD^ HEAD -- . ':(exclude)content.json'"
 
 # Keep the editor out of search results.
-# robots.txt only asks crawlers not to *fetch* the page; a URL can still get
-# indexed if something links to it. This header is the directive that actually
-# forbids indexing, so it's the one doing the real work.
 [[headers]]
   for = "/cms"
   [headers.values]
@@ -23,50 +18,27 @@
   [headers.values]
     X-Robots-Tag = "noindex, nofollow, noarchive"
 
-# content.json is public either way (the site is public), but there's no reason
-# for it to show up in search results. It also must not be cached hard, or the
-# CMS could pull a stale copy after a publish.
+# content.json is public either way, but should not be indexed or cached hard.
 [[headers]]
   for = "/content.json"
   [headers.values]
     X-Robots-Tag = "noindex"
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# index.html must never be cached hard either, or a publish won't show up.
+# The page and its code must never be cached hard, or a publish won't show up.
 [[headers]]
   for = "/index.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-
-# ── project URLs ──
-# Each project has its own path (/vallum, /kodai …) but the site is a single
-# static file, so those paths don't exist on disk. Serve index.html for them
-# with a 200 rather than a redirect: the URL stays as typed, and the page reads
-# it on load to open the right modal.
-#
-# Ordering matters — these run top to bottom, so anything real has to be
-# excluded before the catch-all.
-[[redirects]]
-  from = "/cms"
-  to = "/cms/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/cms/*"
-  to = "/cms/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/content.json"
-  to = "/content.json"
-  status = 200
-
-[[redirects]]
-  from = "/robots.txt"
-  to = "/robots.txt"
-  status = 200
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

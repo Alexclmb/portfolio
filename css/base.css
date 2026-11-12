@@ -1,0 +1,143 @@
+/* Base + shared components, in Alex's system (values from css/tokens.css). */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--t-body); line-height: var(--lh-body); letter-spacing: var(--tr-body);
+  font-weight: var(--w-regular);
+  font-synthesis: none;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+p { margin: 0; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+img, video { display: block; max-width: 100%; }
+/* safety: an inline SVG whose sizing CSS failed to load stays icon-sized */
+:where(svg) { width: 1em; height: 1em; overflow: visible; }
+img[data-failed] { visibility: hidden; }   /* a failed picture leaves its quiet placeholder box */
+::selection { background: color-mix(in srgb, var(--ink) 14%, transparent); color: var(--ink); }
+:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 3px; border-radius: 3px; }
+
+.muted { color: var(--ink-mid); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* text link: quiet until hovered (his .cf-note a) */
+.link, .link-accent { color: var(--ink); }
+.link-accent { color: var(--blue); }
+.link:hover, .link-accent:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+/* buttons: his .bio-cta pills. Base = soft grey fill; primary = ink; ghost =
+   hairline ring. All go blue (#2962ff) on hover, and the signature: the label
+   steps aside and an icon flies in (.btn-label / .btn-icon). */
+.btn {
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s-1);
+  font-size: var(--t-ui); font-weight: var(--w-medium); letter-spacing: var(--tr-ui); line-height: 20px;
+  color: var(--ink); background: var(--surface);
+  padding: 7px 8px 7px 14px; border-radius: var(--r-pill);
+  white-space: nowrap;
+  transition: background-color var(--dur-base) ease, color var(--dur-base) ease, box-shadow var(--dur-base) ease, scale var(--dur-fast) ease-out;
+}
+.btn:hover { background: var(--blue); color: #fff; }
+.btn:active { scale: .96; }
+.btn-primary { background: var(--ink); color: var(--on-ink); }
+.btn-primary:hover { background: var(--blue); color: #fff; }
+.btn-ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--border); padding: 7px 16px; }
+.btn-ghost:hover { background: var(--surface-hover); color: var(--ink); box-shadow: inset 0 0 0 1px var(--ring-hover); }
+.btn-ghost .btn-icon { color: var(--ink); }
+.btn-lg { padding: 12px 26px; }                 /* .cf-submit */
+.btn[disabled] { opacity: .55; cursor: not-allowed; }
+.btn-primary[disabled]:hover { background: var(--ink); color: var(--on-ink); }
+.btn svg { width: 15px; height: 15px; fill: currentColor; flex: none; }
+.btn-label { display: inline-flex; align-items: center; gap: var(--s-1); transition: opacity .22s ease, transform var(--dur-pop) var(--ease-spring); }
+.btn-icon {
+  position: absolute; inset: 0; display: inline-flex; align-items: center; justify-content: center;
+  opacity: 0; transform: translateX(10px) scale(.8);
+  transition: opacity .22s ease, transform .4s var(--ease-spring);
+  pointer-events: none;
+}
+.btn-icon svg { width: 16px; height: 16px; }
+.btn:hover .btn-label { opacity: 0; transform: translateX(-10px); }
+.btn:hover .btn-icon { opacity: 1; transform: none; }
+.btn[disabled]:hover .btn-label { opacity: 1; transform: none; }
+.btn[disabled]:hover .btn-icon { opacity: 0; }
+/* Share: confirmed state holds the label still and swaps the chevron for a tick (his .detail-share.is-done) */
+.btn.is-done, .btn.is-done:hover { background: var(--surface-window); box-shadow: inset 0 0 0 1px var(--blue-ring); color: var(--blue); cursor: default; }
+.btn.is-done .btn-label { opacity: 1; transform: none; }
+.btn.is-done .btn-icon { opacity: 0; }
+.swap-icon { position: relative; display: inline-flex; width: 15px; height: 15px; flex: none; }
+.swap-icon svg { position: absolute; inset: 0; transition: transform .3s var(--ease-spring), opacity .2s ease; }
+.swap-icon .s2 { opacity: 0; transform: scale(.5) rotate(-25deg); }
+.is-done .swap-icon .s1 { opacity: 0; transform: scale(.5); }
+.is-done .swap-icon .s2 { opacity: 1; transform: none; }
+/* his .detail-cta-secondary (Live website) */
+.btn-line { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--border); padding: 7px 14px; gap: 6px; transition: background-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease, color var(--dur-fast) ease, scale var(--dur-fast) ease-out; }
+.btn-line:hover { background: var(--ink); color: var(--on-ink); box-shadow: inset 0 0 0 1px var(--ink); }
+
+/* inputs (his .cf-field) */
+.input {
+  width: 100%;
+  font: inherit; font-size: var(--t-small); letter-spacing: 0; color: var(--ink);
+  background: var(--field); border: 1px solid var(--field-border); border-radius: var(--r-input);
+  padding: 11px 13px; outline: none; resize: vertical;
+  transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+}
+.input::placeholder { color: var(--ink-soft); }
+.input:focus { background: var(--bg); border-color: var(--ink); box-shadow: var(--ring-focus); }
+.input[aria-invalid="true"] { border-color: var(--error); box-shadow: var(--ring-error); }
+.input:disabled { opacity: .55; cursor: not-allowed; }
+textarea.input { min-height: 96px; display: block; }
+@media (max-width: 768px) { .input { font-size: 16px; } }   /* no iOS zoom (his rule) */
+
+/* choice chips (his .cf-chip) */
+.chip { position: relative; display: inline-flex; cursor: pointer; }
+.chip input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.chip span {
+  font-size: 12.5px; color: var(--ink-mid);
+  background: var(--field); border: 1px solid var(--field-border);
+  padding: var(--s-3) 13px; border-radius: var(--r-pill); line-height: 1;
+  transition: border-color .16s ease, color .16s ease, background-color .16s ease;
+}
+.chip:hover span { border-color: var(--ink-mid); color: var(--ink); }
+.chip input:checked + span { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+.chip input:focus-visible + span { outline: 1.5px solid var(--ink); outline-offset: 3px; }
+
+/* the email "Copied" swap: two labels in one grid cell, no width change */
+.swap { display: inline-grid; }
+.swap > * { grid-area: 1 / 1; transition: opacity var(--dur-fast) ease-out; }
+.swap-b { opacity: 0; }
+.is-swapped .swap-a { opacity: 0; }
+.is-swapped .swap-b { opacity: 1; }
+
+/* signature: draws itself once on load (his curve and timing) */
+.sig { display: block; width: fit-content; height: var(--lh-small, 21px); }
+/* the viewBox is cropped to the ink (stroke included), so the ink is exactly one line tall and starts on the margin */
+.sig svg { display: block; width: auto; height: 100%; overflow: visible; }
+.sig path { fill: none; stroke: var(--ink); stroke-width: 1.85; stroke-linecap: round; stroke-linejoin: round; }   /* 1.4 px on screen, his weight at his size */
+.sig-path { stroke-dasharray: 280; stroke-dashoffset: 280; animation: sig-draw 1.7s cubic-bezier(.65, .05, .36, 1) .15s forwards; }
+.sig-path--end { stroke-dasharray: 30; stroke-dashoffset: 30; animation: sig-draw .45s cubic-bezier(.65, .05, .36, 1) 1.55s forwards; }
+@keyframes sig-draw { to { stroke-dashoffset: 0; } }
+
+/* theme switching */
+.theme-fade, .theme-fade * { transition: background-color var(--dur-base) ease, color var(--dur-base) ease, fill var(--dur-base) ease, stroke var(--dur-base) ease !important; }
+html.theme-vt::view-transition-old(root),
+html.theme-vt::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+html.theme-vt::view-transition-new(root) {
+  clip-path: circle(var(--vt-r, 0px) at var(--vt-x, 100%) var(--vt-y, 100%));
+  animation: vt-hold var(--vt-hold, .6s) linear both;
+}
+html.theme-vt::view-transition-group(theme-wave),
+html.theme-vt::view-transition-new(theme-wave) { animation: none; }
+html.theme-vt::view-transition-group(theme-wave) { z-index: 2; }
+@keyframes vt-hold { from { opacity: 1; } to { opacity: 1; } }
+
+/* reduced motion: decided here, once */
+@media (prefers-reduced-motion: reduce) {
+  .sig-path { animation: none; stroke-dashoffset: 0; }
+  .btn-label, .btn-icon { transition: opacity .15s ease; }
+  .btn:hover .btn-label, .btn:hover .btn-icon { transform: none; }
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-delay: 0s !important; }
+}

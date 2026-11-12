@@ -1,0 +1,321 @@
+/* Home: a three-row grid filling the viewport: the info row, the middle (the
+   strip, vertically centred, with the walker anchored to it) and the bottom row
+   (the case folders, which are the windows' Dock, and place · clock · theme).
+   Late content (folders, pictures, the walker) arrives in reserved space.
+   Values come from css/tokens.css (Alex's live-site system). */
+html, body { overflow: hidden; }
+.stage {
+  position: absolute; inset: 0;        /* absolute, not fixed: no stacking context, so the dock can sit above the window layer */
+  height: 100dvh; overflow: hidden; overscroll-behavior: none;
+  display: grid; grid-template-rows: auto 1fr auto;
+  padding: var(--s-10) var(--gx) var(--dock-b);
+  /* the strip keeps the earlier build's size: band = 72svh − max(40svh, 290px), 288 px at 1440×900 */
+  --strip-h: calc(72svh - max(40svh, 290px));
+  --dock-b: 50px;          /* the folder names' ink ends as far from the bottom (≈52) as the signature's ink starts from the top */
+  --dock-h: 80px;          /* folder icon 56 + gap 6 + label 18 */
+}
+
+/* 1 · info row: four columns on one line grid, all starting on the same first line. */
+.bio {
+  position: relative; z-index: var(--z-ui);
+  display: grid;
+  grid-template-columns: minmax(170px, 1fr) minmax(0, 1.35fr) minmax(170px, 1fr) auto;
+  column-gap: var(--s-6);
+  align-items: start;
+  font-size: var(--t-small); line-height: var(--lh-small); letter-spacing: var(--tr-ui);
+}
+.bio-col { min-width: 0; }
+.bio-text { max-width: 36ch; text-wrap: pretty; }
+.bio-name { font-weight: var(--w-medium); }
+.bio-email { display: inline-block; cursor: copy; transition: color var(--dur-fast) ease; }
+.bio-email:hover { color: var(--blue); }
+.bio-status { display: flex; flex-direction: column; align-items: flex-start; }
+
+/* socials: plain text links in the row's own type, on its first baseline (his
+   .sf-socials gap 10 px). On hover / focus the code swaps in place to the network's
+   glyph (his Remix icons), centred in the same box: nothing moves. */
+.bio-social { display: flex; gap: 10px; justify-self: end; }
+.soc { position: relative; display: inline-block; color: var(--ink); }
+.soc::before { content: ''; position: absolute; inset: -10px -5px; }   /* hit area, no layout */
+.soc .code { display: inline-block; transition: opacity var(--dur-fast) ease-out, transform var(--dur-pop) var(--ease-spring); }
+.soc .ico { position: absolute; left: 50%; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; fill: currentColor; opacity: 0; transform: scale(.6); transition: opacity var(--dur-fast) ease-out, transform var(--dur-pop) var(--ease-spring); pointer-events: none; }
+.soc:hover .code, .soc:focus-visible .code { opacity: 0; transform: scale(.6); }
+.soc:hover .ico, .soc:focus-visible .ico { opacity: 1; transform: none; }
+
+/* rating: five filled stars + "5/5" (no count); the stars fill one by one on load, in a reserved width */
+.rating { display: inline-flex; align-items: center; gap: var(--s-2); white-space: nowrap; font-variant-numeric: tabular-nums; height: var(--lh-small); }
+.stars { display: inline-flex; gap: 1px; margin-top: -1px; }   /* centred on the x-height of “5/5” */
+.stars .s { position: relative; display: inline-block; width: 13px; height: 13px; }
+.star { position: absolute; inset: 0; width: 13px; height: 13px; display: block; }
+.star path { fill: var(--border); }
+.star.on path { fill: var(--ink); }
+.star.on { clip-path: inset(0 100% 0 0); animation: star-fill var(--dur-base) var(--ease-out) both; animation-delay: calc(.35s + var(--i) * 90ms); }
+@keyframes star-fill { to { clip-path: inset(0 0 0 0); } }
+#rating .rating-text { transition: color var(--dur-fast) ease; }
+#rating:hover .rating-text { color: var(--blue); }
+
+/* 2 · folders -------------------------------------------------------------
+   Back (with tab) · three of the project's pictures as little sheets · front
+   flap carrying the sticker (metric + unit). Hover / focus / its window open:
+   the flap tilts open on its bottom edge and the sheets rise, springy. */
+.folders {
+  transition: opacity 150ms ease-out;
+  height: var(--dock-h);                /* reserved before content.json lands */
+  display: flex; align-items: flex-end; gap: 16px;   /* even pitch: every slot is the icon's width, names are centred under their icon */
+}
+/* every folder is exactly one icon wide and its name is centred beneath it (a long name like "Jackpot Studios" overhangs equally on both sides), so icons AND names sit at an even rhythm */
+.folder { flex: none; width: 72px; display: flex; flex-direction: column; align-items: center; text-align: center; border-radius: var(--r-input); }
+/* the drawing starts 2.6 px inside its box: pull it out so the folder's ink sits on the page margin, like the label under it */
+.folder-icon { position: relative; width: 72px; height: 56px; margin-left: -2.6px; perspective: 180px; }
+.folder-icon svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.f-back { fill: color-mix(in srgb, var(--ink) 72%, var(--bg)); }
+.f-front { position: absolute; inset: 0; transform-origin: 50% 97%; transition: transform var(--dur-fast) ease-out; }
+.f-front svg { fill: var(--ink); }
+.docs { position: absolute; inset: 0; pointer-events: none; user-select: none; }
+.doc {
+  position: absolute; left: 14px; top: 16px; width: 44px; height: 34px;
+  background: var(--surface);
+  border-radius: var(--r-skel);
+  overflow: hidden;
+  box-shadow: var(--sh-caption);
+  transition: transform var(--dur-fast) ease-out;
+}
+.doc img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.doc:nth-child(1) { --rise: -14px; --rot: -11deg; --dx: -9px; --d: 0ms; }
+.doc:nth-child(2) { --rise: -21px; --rot: 3deg; --dx: 0px; --d: 40ms; }
+.doc:nth-child(3) { --rise: -13px; --rot: 12deg; --dx: 9px; --d: 80ms; }
+/* the sticker: the number in his metric blue, the unit under it (round 8: kept, per Alex) */
+.sticker {
+  position: absolute; left: 50%; top: 19px;
+  transform: translateX(-50%) rotate(var(--tilt, -4deg));
+  display: flex; flex-direction: column; align-items: center;
+  padding: 2px 5px 3px;
+  background: var(--bg);
+  border-radius: 4px;
+  box-shadow: var(--sh-caption);
+  white-space: nowrap;
+}
+.sticker b { font-size: var(--t-tiny); line-height: 12px; font-weight: var(--w-semi); color: var(--blue); font-variant-numeric: tabular-nums; letter-spacing: -.1px; }
+.sticker i { font-style: normal; font-size: 9px; line-height: 10px; color: var(--ink-mid); font-weight: var(--w-medium); }
+/* a real sticker (round 8, Alex: "one or two of the edges a bit folded"): a lifted corner
+   folds over, showing the paler back of the paper with a crisp fold line; where it lifted,
+   the folder shows (painted in the flap's own ink, so the face reads as cut away); a tight
+   shadow sits only under the lifted flap. data-peel: tr / br on ::after, bl / tl on ::before.
+   Hover peels a touch further and settles (transform only). */
+html:not([data-sticker]) .sticker[data-peel]::before, html:not([data-sticker]) .sticker[data-peel]::after {
+  content: none; position: absolute; width: 6px; height: 6px;
+  --under: color-mix(in srgb, var(--bg) 80%, var(--ink) 20%);
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+html:not([data-sticker]) .sticker[data-peel~="tr"]::after { content: ''; top: 0; right: 0; transform-origin: 100% 0;
+  background: linear-gradient(to bottom left, var(--ink) 50%, var(--under) 50%); box-shadow: -.5px .75px .75px rgb(10 10 10 / .22); border-top-right-radius: 1px; }
+html:not([data-sticker]) .sticker[data-peel~="br"]::after { content: ''; bottom: 0; right: 0; transform-origin: 100% 100%;
+  background: linear-gradient(to top left, var(--ink) 50%, var(--under) 50%); box-shadow: -.5px -.5px .75px rgb(10 10 10 / .22); border-bottom-right-radius: 1px; }
+html:not([data-sticker]) .sticker[data-peel~="bl"]::before { content: ''; bottom: 0; left: 0; transform-origin: 0 100%;
+  background: linear-gradient(to top right, var(--ink) 50%, var(--under) 50%); box-shadow: .5px -.5px .75px rgb(10 10 10 / .22); border-bottom-left-radius: 1px; }
+html:not([data-sticker]) .sticker[data-peel~="tl"]::before { content: ''; top: 0; left: 0; transform-origin: 0 0;
+  background: linear-gradient(to bottom right, var(--ink) 50%, var(--under) 50%); box-shadow: .5px .75px .75px rgb(10 10 10 / .22); border-top-left-radius: 1px; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html:not([data-sticker]) .folder:hover .sticker[data-peel]::before, html:not([data-sticker]) .folder:hover .sticker[data-peel]::after { transform: scale(1.4); }
+}
+@media (prefers-reduced-motion: reduce) { html:not([data-sticker]) .sticker[data-peel]::before, html:not([data-sticker]) .sticker[data-peel]::after { transition: none; } }
+
+/* ?sticker=holo only (round 8 candidate, not the default): a die-cut holographic sticker whose
+   foil follows the pointer (--mx/--my, js/main.js), with a small peeled corner */
+html[data-sticker="holo"] .sticker b { color: #0a0a0a; }
+html[data-sticker="holo"] .sticker i { color: #0a0a0a; opacity: .7; }
+html[data-sticker="holo"] .sticker {
+  padding: 1.5px 5px 2.5px; border-radius: 4px; color: #0a0a0a;
+  background: linear-gradient(115deg, #ffc9ef 0%, #c9e7ff 22%, #d4ffe0 40%, #fff2b8 58%, #ffd0c4 76%, #e2ceff 100%);
+  background-size: 300% 300%;
+  background-position: calc(30% + var(--mx, .3) * 40%) calc(30% + var(--my, .3) * 40%);
+  box-shadow: 0 0 0 2px #fff, 0 1px 2px 2px rgb(0 0 0 / .18);
+  transition: background-position 400ms var(--ease);
+}
+html[data-sticker="holo"] .sticker::before {   /* a fine diagonal sheen over the foil */
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: repeating-linear-gradient(135deg, rgb(255 255 255 / 0) 0 2px, rgb(255 255 255 / .45) 2px 3px),
+              linear-gradient(105deg, rgb(255 255 255 / 0) 30%, rgb(255 255 255 / .7) 45%, rgb(255 255 255 / 0) 60%);
+  background-size: 100% 100%, 260% 100%;
+  background-position: 0 0, calc(100% - var(--mx, .2) * 100%) 0;
+  opacity: .55; transition: opacity var(--dur-fast) ease-out, background-position 400ms var(--ease);
+}
+html[data-sticker="holo"] .sticker > * { position: relative; }
+html[data-sticker="holo"] .sticker::after {   /* the peeled corner: the paper's back over the face, the flap showing where it lifted */
+  content: ''; position: absolute; right: -2px; bottom: -2px; width: 7px; height: 7px;
+  background: linear-gradient(135deg, #f4f4f4 0%, #d6d6d6 48%, transparent 49%), linear-gradient(135deg, transparent 50%, var(--ink) 50%);
+  border-top-left-radius: 2px;
+  transform-origin: 100% 100%; transition: transform var(--dur-pop) var(--ease-spring);
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html[data-sticker="holo"] .folder:hover .sticker::before { opacity: .9; }
+  html[data-sticker="holo"] .folder:hover .sticker::after { transform: scale(1.45); }
+}
+.folder-label { margin-top: var(--s-2); font-size: 11px; line-height: 16px; letter-spacing: .01em; white-space: nowrap; transition: color 150ms ease-out; }
+/* the name answers the pointer: it turns the accent blue while its folder is hovered, focused or open */
+.folder.is-open .folder-label, .folder:focus-visible .folder-label { color: var(--blue); }
+@media (hover: hover) { .folder:hover .folder-label { color: var(--blue); } }
+.folder.is-open .f-front, .folder:focus-visible .f-front { transform: rotateX(-40deg); transition: transform var(--dur-pop) var(--ease-spring); }
+.folder.is-open .doc, .folder:focus-visible .doc { transform: translate(var(--dx), var(--rise)) rotate(var(--rot)); transition: transform var(--dur-pop) var(--ease-spring) var(--d); }
+@media (hover: hover) and (pointer: fine) {
+  .folder:hover .f-front { transform: rotateX(-40deg); transition: transform var(--dur-pop) var(--ease-spring); }
+  .folder:hover .doc { transform: translate(var(--dx), var(--rise)) rotate(var(--rot)); transition: transform var(--dur-pop) var(--ease-spring) var(--d); }
+}
+.folder:focus-visible { outline-offset: 4px; }
+
+/* while a window is open (landed), the folder row is not seen under the scrim (round 8) */
+/* Alex: the folder row must NOT disappear while a window is open; it stays in place under the scrim like the rest of the page */
+html.win-rest .folders { pointer-events: none; }
+
+/* 3 · strip ---------------------------------------------------------------- */
+.strip {
+  position: absolute; z-index: var(--z-strip);
+  left: 0; right: 0; top: calc(50% - var(--strip-h) / 2); height: var(--strip-h);   /* centred in the middle row */
+  overflow: visible;
+  perspective: 1200px; perspective-origin: 50% 50%;   /* js/strip.js sets it (?persp=) */
+  cursor: grab; touch-action: none;
+  user-select: none; -webkit-user-select: none;
+}
+.strip.is-dragging { cursor: grabbing; }
+.strip-track { position: absolute; inset: 0; transform-style: preserve-3d; }
+.tile {
+  position: absolute; left: 0; top: 0; height: 100%; padding: 0;
+  background: var(--surface);
+  overflow: hidden;
+  border-radius: var(--r-media);
+  clip-path: inset(0 round var(--r-media));   /* no corner bleed under 3D transforms or on video */
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.tile img, .tile video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
+.tile img { opacity: 0; transition: opacity var(--dur-base) ease-out; }
+.tile img.is-ready { opacity: 1; }
+.tile.is-lifted > * { visibility: hidden; }
+@media (hover: hover) and (pointer: fine) { .strip.label-on, .strip.label-on * { cursor: none; } }
+/* a tile in a fold zone is drawn as vertical slices on the cylinder (js/strip.js) */
+.slices { position: absolute; left: 0; top: 0; height: 100%; transform-style: preserve-3d; visibility: hidden; pointer-events: none; }
+.slice { position: absolute; left: 0; top: 0; height: 100%; background-repeat: no-repeat; background-color: var(--surface); backface-visibility: hidden; will-change: transform; }
+.tile.is-sliced { overflow: visible; clip-path: none; border-radius: 0; background: none; transform-style: preserve-3d; pointer-events: none; }
+.slice.first { border-radius: var(--r-media) 0 0 var(--r-media); }
+.slice.last { border-radius: 0 var(--r-media) var(--r-media) 0; }
+.tile.is-sliced > img { visibility: hidden; }
+.tile.is-sliced > video { opacity: 0; }   /* still playing: its canvas slices draw its frames */
+.tile.is-sliced > .slices { visibility: visible; }
+.tile.is-sliced .slice { pointer-events: auto; }
+.tile.is-lifted.is-sliced > .slices { visibility: hidden; }
+/* optional lens fringe (?chroma=), only on folded tiles, soft and inside the shape */
+.tile.is-sliced.has-ca.side-r .slice.first, .tile.is-sliced.has-ca.side-l .slice.last { box-shadow: inset calc(var(--ca-dir, 1) * var(--ca, 0px)) 0 var(--ca, 0px) calc(var(--ca, 0px) * -.5) rgb(41 98 255 / .35); }
+.tile.is-sliced.has-ca.side-l .slice.last { --ca-dir: -1; }
+
+/* the label that trails the pointer over the strip (mouse only): his shot caption, at metadata size */
+.strip-label {
+  position: fixed; left: 0; top: 0; z-index: var(--z-label);
+  pointer-events: none; user-select: none;
+  opacity: 0; transition: opacity var(--dur-fast) ease-out;
+  transform-origin: 0 0; will-change: transform, opacity;
+}
+.strip-label.on { opacity: 1; }
+.strip-label > span {
+  display: block; white-space: nowrap; overflow: hidden;
+  font-size: var(--t-meta); line-height: 1; font-weight: var(--w-medium); letter-spacing: var(--tr-ui);
+  padding: 6px 10px; border-radius: var(--r-caption);
+  background: var(--pill-glass);
+  -webkit-backdrop-filter: blur(var(--blur-glass)); backdrop-filter: blur(var(--blur-glass));
+  box-shadow: var(--sh-caption);
+  color: var(--ink);
+}
+.strip-label em { font-style: normal; display: inline-block; }
+.strip-label .sep { color: var(--ink-soft); margin: 0 6px; }
+.strip-label .metric { color: var(--blue); font-weight: var(--w-semi); }
+
+/* optional edge blur (?edgeblur=px, default 0 = off) */
+.edge-blur { position: absolute; z-index: var(--z-edge); pointer-events: none; user-select: none; top: calc(50% - var(--strip-h) / 2); height: var(--strip-h); width: 20vw; }
+.edge-l { left: 0; }
+.edge-r { right: 0; transform: scaleX(-1); }
+.edge-blur > i { position: absolute; inset: 0; }
+.edge-blur > i:nth-child(1) { backdrop-filter: blur(calc(var(--edge-blur, 0px) * .25)); mask-image: linear-gradient(to left, transparent, #000 60%); }
+.edge-blur > i:nth-child(2) { backdrop-filter: blur(calc(var(--edge-blur, 0px) * .5)); mask-image: linear-gradient(to left, transparent 33%, #000 80%); }
+.edge-blur > i:nth-child(3) { backdrop-filter: blur(var(--edge-blur, 0px)); mask-image: linear-gradient(to left, transparent 60%, #000 100%); }
+html:not(.has-edgeblur) .edge-blur { display: none; }
+
+/* 2 · the middle row: the strip is centred in it (equal gaps above and below
+   the pictures); the walker is anchored to the strip as before and never
+   reaches into the bottom row. */
+.mid { position: relative; margin: 0 calc(var(--gx) * -1); min-height: calc(var(--strip-h) + 2 * var(--s-6)); }
+
+/* 4 · walker --------------------------------------------------------------- */
+#walker {
+  position: absolute; z-index: var(--z-walker);
+  left: 50%; transform: translateX(-50%);
+  top: calc(50% - var(--strip-h) / 2 - 18svh);                       /* his earlier offset above the strip */
+  height: min(69svh, calc(50% + var(--strip-h) / 2 + 18svh - 6px));  /* his earlier size; shoes stay above the bottom row */
+  width: min(100vw, 76vh);
+  pointer-events: none;   /* the module raycasts window clicks itself */
+}
+
+/* 3 · the bottom row ---------------------------------------------------------
+   Folders on the left (the windows' Dock: above the window layer, so a window
+   passes under it as under the Dock's glass), place · clock · theme on the right,
+   on the folder names' line. */
+.dock {
+  position: relative; z-index: var(--z-ui);
+  display: flex; justify-content: space-between; align-items: flex-end; gap: var(--s-7);
+}
+/* round 8: the row is no longer lifted during a pour (it re-stacked under the scrim on the landing frame); the clicked folder alone is drawn above the scrim, as two layers (js/windows.js folderRig) */
+/* his .sidebar-footer / .sf-status: 13 px, mid grey, tabular clock */
+.geo {
+  display: flex; align-items: center; height: var(--lh-meta); flex: none;
+  font-size: var(--t-ui); letter-spacing: var(--tr-ui); color: var(--ink-mid);
+}
+.geo p { display: flex; align-items: center; gap: var(--s-3); }
+.geo .sep { color: var(--ink-soft); }
+.clock { display: inline-block; min-width: 8ch; font-variant-numeric: tabular-nums; }
+
+/* theme control: his sun-line / moon-line glyphs, swapped in place (the shape carries the state) */
+.theme-ctl { position: relative; display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: -2.67px; color: var(--ink-mid); transition: color var(--dur-fast) ease, scale var(--dur-fast) ease-out; }
+.theme-ctl::before { content: ''; position: absolute; inset: -10px; }   /* 40×40 hit area */
+.theme-ctl:hover { color: var(--ink); }
+.theme-ctl svg { grid-area: 1 / 1; width: 16px; height: 16px; fill: currentColor; transition: opacity var(--dur-fast) ease-out, transform var(--dur-pop) var(--ease-spring); }
+.theme-ctl .moon { opacity: 0; transform: rotate(-50deg) scale(.6); }
+[data-theme="dark"] .theme-ctl .sun { opacity: 0; transform: rotate(50deg) scale(.6); }
+[data-theme="dark"] .theme-ctl .moon { opacity: 1; transform: none; }
+.theme-ctl:active { scale: .96; }
+
+/* tablet: three info columns, socials under the status */
+@media (max-width: 1100px) and (min-width: 769px) {
+  .stage { --gx: 40px; }
+  .bio { grid-template-columns: minmax(150px, 1fr) minmax(0, 1.4fr) minmax(150px, 1fr); }
+  .bio-social { grid-column: 3; justify-self: start; margin-top: var(--s-2); }
+}
+
+/* where the folder row no longer fits beside the clock (≈ 940 px): the folders
+   wrap into a centred grid (his first build's phone layout) above a compact clock line */
+@media (max-width: 940px) {
+  .dock { flex-direction: column; align-items: center; gap: var(--s-6); z-index: var(--z-ui); }   /* a phone window is a sheet over everything */
+  .folders { height: auto; min-height: calc(2 * 104px + var(--s-3)); flex-wrap: wrap; justify-content: center; align-content: flex-end; gap: var(--s-3) 6px; max-width: 344px; }
+  .folder { flex: none; width: 76px; min-width: 0; align-items: center; text-align: center; }   /* 76: four still fit on a 375 px phone (4 x 76 + 3 x 6 = 322) */
+  .folder-icon { margin-left: 0; }
+  .folder-label { white-space: normal; text-wrap: balance; min-height: calc(2 * var(--lh-meta)); }
+  .geo { justify-content: center; }
+}
+@media (max-width: 940px) and (min-width: 769px) { .folders { max-width: none; min-height: 104px; } }
+
+/* phone: info on top, the strip + walker centred, the folder grid and the clock below; the page may scroll if it is too short */
+@media (max-width: 768px) {
+  html, body { overflow: hidden auto; }
+  .stage {
+    position: relative; inset: auto; height: auto; min-height: 100dvh; overflow: visible;
+    padding: max(20px, env(safe-area-inset-top)) var(--gx) calc(18px + env(safe-area-inset-bottom));
+    --strip-h: min(260px, 31svh);      /* close to the earlier phone tiles, so info, strip, folders and clock fit one screen */
+  }
+  .bio { grid-template-columns: 1fr auto; row-gap: var(--s-3); column-gap: var(--s-4); }
+  .bio-id { grid-column: 1; grid-row: 1; }
+  .bio-social { grid-column: 2; grid-row: 1; }
+  .bio-text { grid-column: 1 / -1; grid-row: 2; max-width: none; margin-top: 12px; }   /* 20 px block gap after the email */
+  .bio-status { grid-column: 1 / -1; grid-row: 3; flex-direction: row; flex-wrap: wrap; gap: var(--s-1) var(--s-3); margin-top: 4px; }   /* 12 px after the bio */
+  .mid { min-height: calc(var(--strip-h) + 56px); }
+  #walker { width: 100vw; top: calc(50% - var(--strip-h) / 2 - 44px); height: calc(var(--strip-h) + 72px); }
+}
+
+/* (no dev-only offsets: the layout is identical on localhost and in production;
+   the Agentation toolbar may overlap the theme button in dev, and it is draggable) */

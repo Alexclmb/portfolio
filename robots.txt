@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /cms
-Disallow: /cms/
 Disallow: /content.json
