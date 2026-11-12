@@ -250,7 +250,7 @@ function setTheme(t) {
   document.documentElement.dataset.theme = t;
   labelTheme(t);
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', t === 'dark' ? '#0a0a0a' : '#ffffff');
-  try { localStorage.setItem('ac-theme', t); } catch (_) {}   // the visitor's manual choice
+  // not remembered: every load starts light (Alex), the switch lasts for this visit
 }
 
 async function toggleTheme(origin = $('themeCtl')) {

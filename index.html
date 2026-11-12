@@ -13,10 +13,9 @@
   (function () {
     var root = document.documentElement, q = location.search;
     var get = function (st, k) { try { return st.getItem(k); } catch (e) { return null; } };
-    /* Theme before first paint, so there is no flash: the visitor's manual choice, else the OS preference. */
-    var t = get(localStorage, 'ac-theme');
-    if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    root.dataset.theme = t;
+    /* Alex: the site ALWAYS loads in the light theme, whatever the OS preference or an earlier visit.
+       The sun/moon button still switches to dark for the current visit only. */
+    root.dataset.theme = 'light';
     /* window chrome while Alex chooses: ?chrome=classic (his close icon, default) | beads */
     root.dataset.chrome = /[?&]chrome=beads\b/.test(q) ? 'beads' : 'classic';
     if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) root.classList.add('is-dev');
