@@ -306,6 +306,10 @@ export function createStrip(root, track, content, { onOpen, onFrame } = {}) {
           const sl = ensureSlices(t);
           if (sl) {
             if (!t.sliced) {
+              // the swap between the live video and its canvas slices must be instant both ways: the
+              // skeleton's opacity fade (.tile video, css/home.css) made the video fade back in from 0
+              // over ~180 ms on leaving the fold (the "flashing" video), and fade out at x 0 on entering
+              if (t.vid) t.vid.style.transition = 'none';
               t.el.classList.add('is-sliced'); t.el.classList.toggle('has-ca', CHROMA > 0); t.el.style.transform = 'none'; t.sliced = true;
               if (t.vid) { t.vDirty = true; if (t.rvfc && !t.rvfcOn) { t.rvfcOn = true; t.vid.requestVideoFrameCallback(t.rvfc); } }
             }
