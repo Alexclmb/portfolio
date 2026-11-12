@@ -132,8 +132,8 @@ html[data-chrome="beads"] .win-title-row { justify-content: flex-start; gap: var
   box-shadow: inset 0 0 0 1px var(--media-ring);
 }
 .db-media::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--media-ring); pointer-events: none; }
-.db-media img, .db-media video { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform var(--dur-slow) var(--ease), opacity 150ms ease-out; }   /* a picture that arrives after the window landed fades in over 150 ms */
-.db-media img:not(.is-ready) { opacity: 0; }
+.db-media img, .db-media video { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform var(--dur-slow) var(--ease), opacity var(--dur-fast) var(--ease); }   /* media that arrives after the window landed fades in over its placeholder (js/util.js holdMedia) */
+.db-media img:not(.is-ready), .db-media video:not(.is-ready) { opacity: 0; }
 @media (hover: hover) and (pointer: fine) { .db-media:hover img, .db-media:hover video { transform: scale(1.02); } }
 .db-media.is-lifted > * { visibility: hidden; }
 .db-duo { display: grid; grid-template-columns: 1fr 1fr; gap: var(--db-gap); }

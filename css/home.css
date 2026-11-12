@@ -188,13 +188,15 @@ html.win-rest .folders { pointer-events: none; }
   backface-visibility: hidden;
 }
 .tile img, .tile video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
-.tile img { opacity: 0; transition: opacity var(--dur-base) ease-out; }
-.tile img.is-ready { opacity: 1; }
+.tile img, .tile video { opacity: 0; transition: opacity var(--dur-fast) var(--ease); }   /* over the placeholder until ready (js/util.js holdMedia) */
+.tile img.is-ready, .tile video.is-ready { opacity: 1; }
+.tile.is-sliced::before { display: none; }   /* a folded tile is drawn by its slices: no sweep across the fold */
 .tile.is-lifted > * { visibility: hidden; }
 @media (hover: hover) and (pointer: fine) { .strip.label-on, .strip.label-on * { cursor: none; } }
 /* a tile in a fold zone is drawn as vertical slices on the cylinder (js/strip.js) */
 .slices { position: absolute; left: 0; top: 0; height: 100%; transform-style: preserve-3d; visibility: hidden; pointer-events: none; }
-.slice { position: absolute; left: 0; top: 0; height: 100%; background-repeat: no-repeat; background-color: var(--surface); backface-visibility: hidden; will-change: transform; }
+.slice { position: absolute; left: 0; top: 0; height: 100%; background: var(--surface) var(--si, none) var(--sp, 0 0) / var(--ss, auto) no-repeat; backface-visibility: hidden; will-change: transform; }
+.tile.media-ph .slice { background: var(--si, none) var(--sp, 0 0) / var(--ss, auto) no-repeat, var(--ph-mark) var(--mx, 0) 50% / var(--mw, 48px) auto no-repeat, var(--surface); }   /* his mark across the fold until the cover is ready */
 .tile.is-sliced { overflow: visible; clip-path: none; border-radius: 0; background: none; transform-style: preserve-3d; pointer-events: none; }
 .slice.first { border-radius: var(--r-media) 0 0 var(--r-media); }
 .slice.last { border-radius: 0 var(--r-media) var(--r-media) 0; }

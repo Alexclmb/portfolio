@@ -3,7 +3,7 @@
 // loaded file, and the full-size file is swapped in once it has decoded (same
 // box, so no flash and no shift). Close zooms back into the tile when it is
 // still on screen. Transform + opacity only; every animation is interruptible.
-import { cdnAt, cdnPoster, isVideo, reducedMotion } from './util.js';
+import { cdnAt, cdnPoster, isVideo, reducedMotion, holdMedia } from './util.js';
 import { DUR, EASE as M } from './motion.js';
 
 const $ = id => document.getElementById(id);
@@ -123,6 +123,7 @@ function makeMedia(it, ph) {
     full.decode().then(() => { if (el.isConnected) el.src = full.src; }).catch(() => {});
   }
   el.draggable = false;
+  if (!(ph && (ph.naturalWidth || ph.readyState >= 2))) holdMedia(el);   // nothing decoded to show yet: the placeholder with his mark (static)
   size(el, it);
   return el;
 }

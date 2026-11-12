@@ -4,7 +4,7 @@
 // never past the viewport. On a phone it is his bottom drawer.
 // It opens out of what was clicked (folder icon, strip picture, link) and
 // closes back into it with the Dock's genie (js/genie.js).
-import { esc, isDesktop, mediaEl, ratioOf, watchVideo, reducedMotion } from './util.js';
+import { esc, isDesktop, mediaEl, ratioOf, watchVideo, reducedMotion, holdMedia, posterReady } from './util.js';
 import { wireProofs, closeProof, proofSrc } from './proof.js';
 import { createGenie } from './genie.js';
 import { splashWave, finishWave } from './transition.js';
@@ -27,25 +27,35 @@ function lighten(tpl, el) {
   if (head) head.style.background = getComputedStyle(el).backgroundColor;
   const view = el.querySelector('.win-body')?.getBoundingClientRect();
   const src = [...el.querySelectorAll('.db-media')], copies = [...tpl.querySelectorAll('.db-media')];
+  // every media box in a copy shows what the live box shows: its decoded media, else the
+  // placeholder with the mark (static: no sweep in a copy). A live box's hand-off waits for
+  // the landing (holdMedia), so the landed window shows the same thing on the landing frame.
+  tpl.querySelectorAll('.media-ph.is-loading').forEach(n => n.classList.remove('is-loading'));
   src.forEach((m, i) => {
     const r = m.getBoundingClientRect(), c = copies[i];
     if (!c) return;
     if (!view || r.bottom < view.top || r.top > view.bottom) { c.replaceChildren(); return; }
     c.querySelectorAll('video').forEach(v => {
-      const img = document.createElement('img');
-      img.src = v.poster || ''; img.className = 'is-ready';
-      img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
-      v.replaceWith(img);
+      const lv = m.querySelector('video'), pu = v.getAttribute('poster');
+      // round 9 fix: the poster used to be put in here, then its src was stripped by the
+      // picture check below (no live <img> has that src): the grey box. Now: the poster if
+      // it is decoded and the live video shows (is-ready), else nothing over the placeholder.
+      if (lv && lv.classList.contains('is-ready') && posterReady(pu)) {
+        const img = document.createElement('img');
+        img.src = pu; img.className = 'is-ready'; img.dataset.poster = '';
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;position:relative;transition:none';
+        v.replaceWith(img);
+      } else v.remove();
     });
   });
   tpl.querySelectorAll('video').forEach(v => v.remove());
-  // the copies show the pictures that are already decoded (before, every copy kept them at
-  // opacity 0: no load handler on a clone, so they popped in on the landing frame)
-  const live = [...el.querySelectorAll('img')], copies2 = [...tpl.querySelectorAll('img')];
+  // the copies show the pictures the live window already shows (decoded and faded in);
+  // the others keep the placeholder and are never loaded or decoded mid-run
+  const live = [...el.querySelectorAll('img')], copies2 = [...tpl.querySelectorAll('img:not([data-poster])')];
   copies2.forEach(i => {
     const s = live.find(l => l.src === i.src);
-    if (s && s.complete && s.naturalWidth) { i.classList.add('is-ready'); i.style.transition = 'none'; }
-    else i.removeAttribute('src');   // not decoded yet: no copy loads or decodes it mid-run (a 20-40 ms frame on a cold open)
+    if (s && s.complete && s.naturalWidth && s.classList.contains('is-ready')) { i.classList.add('is-ready'); i.style.transition = 'none'; }
+    else { i.removeAttribute('src'); i.classList.remove('is-ready'); }
   });
 }
 /* ?genie=<ms> dial (open); close scales with it. Round 8: 400 / 340 (the Dock's 500 felt long to Alex) */
@@ -618,6 +628,7 @@ export function renderCase(content, p, { onMedia, startAt = null }) {
       // the first pictures are in view when the window lands: fetched at once, not lazily
       const m = mediaEl(u, { width: duo ? 900 : 1600, alt: b.caption || p.title, lazy: k > 1, priority: k < 2 ? 'high' : null });
       box.appendChild(m);
+      holdMedia(box, m, duo ? 4 / 3 : ratioOf(content, u));   // skeleton with his mark until it is ready
       watchVideo(m);
       item.thumb = () => m;
       if (startAt && aid(u) === aid(startAt)) box.dataset.start = '';

@@ -2,7 +2,7 @@
 // Hover (with intent) or focus shows it, click/tap pins it; no modal, no route.
 // The bubble lives in the top layer (body), positioned from the link's rect,
 // so the window's scroll container never clips it.
-import { cdnAt, reducedMotion } from './util.js';
+import { cdnAt, reducedMotion, holdMedia } from './util.js';
 import { DUR, EASE } from './motion.js';
 
 const OPEN_DELAY = 100, GRACE = 160;
@@ -57,6 +57,8 @@ function show(btn, { now = false } = {}) {
     bubble.style.width = w + 'px'; bubble.style.height = h + 'px';
     img.alt = `Original message from ${btn.dataset.name}`;
     img.src = btn.dataset.src;
+    img.classList.remove('media-ph');
+    if (!img.complete) holdMedia(img);   // not preloaded yet: the placeholder with his mark until it decodes
     bubble.hidden = false;
     place();
     if (reducedMotion()) return;

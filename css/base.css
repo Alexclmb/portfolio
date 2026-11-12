@@ -18,6 +18,40 @@ img, video { display: block; max-width: 100%; }
 /* safety: an inline SVG whose sizing CSS failed to load stays icon-sized */
 :where(svg) { width: 1em; height: 1em; overflow: visible; }
 img[data-failed] { visibility: hidden; }   /* a failed picture leaves its quiet placeholder box */
+
+/* ── media placeholder (js/util.js holdMedia) ───────────────────────────────
+   A media box that is not ready yet: his --surface, his signature (the intro /
+   favicon path) as a quiet mark in the middle, at 15 % ink on the surface, and
+   a slow, barely-there light sweep. The box keeps its reserved size (aspect
+   ratio from content.json), so nothing shifts. The mark is sized from the
+   box's shorter side (--ph-k = shorter / width, set by holdMedia): 20 % of it,
+   28-72 px. [class] lifts it over the boxes' own `background` shorthands. */
+:root {
+  --ph-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='3 11 114 31.5' fill='none' stroke='%230a0a0a' stroke-opacity='.15' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 36 C 14 14, 26 14, 28 32 C 29 40, 22 42, 20 36 C 18 30, 28 24, 38 28 C 46 31, 50 38, 56 32 C 62 26, 60 14, 52 14 C 46 14, 44 22, 50 26 C 58 30, 70 24, 76 18 C 82 12, 92 16, 88 26 C 84 36, 70 38, 66 32 C 62 26, 70 22, 78 26 C 86 30, 96 36, 108 30'/%3E%3Cpath d='M104 36 C 108 38, 112 36, 114 34'/%3E%3C/svg%3E");
+  --ph-hi: color-mix(in srgb, var(--bg) 75%, transparent);   /* the sweep: white on #f5f5f5 */
+}
+:root[data-theme="dark"] {
+  --ph-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='3 11 114 31.5' fill='none' stroke='%23f5f5f5' stroke-opacity='.15' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 36 C 14 14, 26 14, 28 32 C 29 40, 22 42, 20 36 C 18 30, 28 24, 38 28 C 46 31, 50 38, 56 32 C 62 26, 60 14, 52 14 C 46 14, 44 22, 50 26 C 58 30, 70 24, 76 18 C 82 12, 92 16, 88 26 C 84 36, 70 38, 66 32 C 62 26, 70 22, 78 26 C 86 30, 96 36, 108 30'/%3E%3Cpath d='M104 36 C 108 38, 112 36, 114 34'/%3E%3C/svg%3E");
+  --ph-hi: color-mix(in srgb, var(--ring-hover) 70%, transparent);   /* a step above the dark surface */
+}
+.media-ph[class] {
+  background-color: var(--surface);
+  background-image: var(--ph-mark);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: clamp(28px, calc(20% * var(--ph-k, .75)), 72px) auto;
+}
+.media-ph > img, .media-ph > video { position: relative; }   /* painted over the sweep */
+.media-ph.is-loading.is-near::before {   /* near the viewport only (js/util.js) */
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 25%, var(--ph-hi) 50%, transparent 75%);
+  transform: translateX(-100%);
+  animation: ph-sweep 1.6s linear infinite;
+  will-change: transform;   /* only while loading: the class goes with the first frame */
+}
+@keyframes ph-sweep { to { transform: translateX(100%); } }
+html.is-genie .media-ph::before { display: none; }   /* no sweep anywhere on the page while a genie runs */
+html.is-away .media-ph::before { animation-play-state: paused; }
 ::selection { background: color-mix(in srgb, var(--ink) 14%, transparent); color: var(--ink); }
 :focus-visible { outline: 1.5px solid var(--ink); outline-offset: 3px; border-radius: 3px; }
 
@@ -137,6 +171,7 @@ html.theme-vt::view-transition-group(theme-wave) { z-index: 2; }
 /* reduced motion: decided here, once */
 @media (prefers-reduced-motion: reduce) {
   .sig-path { animation: none; stroke-dashoffset: 0; }
+  .media-ph::before { display: none; }   /* placeholder stays static: mark, no sweep */
   .btn-label, .btn-icon { transition: opacity .15s ease; }
   .btn:hover .btn-label, .btn:hover .btn-icon { transform: none; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-delay: 0s !important; }

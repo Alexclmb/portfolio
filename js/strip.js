@@ -3,7 +3,7 @@
 // touch and arrow keys, drifts at 70 px/s with no input, for as long as
 // the page shows. Over a tile the cursor becomes a small label that trails the pointer.
 // Transforms only; no layout per frame.
-import { mediaEl, ratioOf, watchVideo, reducedMotion, esc } from './util.js';
+import { mediaEl, ratioOf, watchVideo, reducedMotion, esc, holdMedia } from './util.js';
 import { DUR, EASE } from './motion.js';
 const DUR_BASE = DUR.base, EASE_OUT = EASE.out;
 
@@ -140,6 +140,16 @@ export function createStrip(root, track, content, { onOpen, onFrame } = {}) {
     return FOLD_IN ? [sg * (F + x), z, -sg * th] : [sg * (F + x), -z, sg * th];
   }
 
+  /* While a tile's media is not ready (.tile.media-ph) its slices also carry his mark,
+     each slice offset so the mark sits whole in the middle of the folded tile
+     (css/home.css .tile.media-ph .slice). Size as the flat placeholder: 20 % of the
+     tile's shorter side, 28-72 px. */
+  function markSlice(t, sl, k, sw) {
+    const mw = Math.max(28, Math.min(72, .2 * Math.min(t.w, H)));
+    sl.style.setProperty('--mw', mw.toFixed(1) + 'px');
+    sl.style.setProperty('--mx', (t.w / 2 - mw / 2 - k * sw).toFixed(2) + 'px');
+  }
+
   /* Slices for an image tile: same decoded file as a background, offset per slice. */
   function ensureSlices(t) {
     if (t.slices) return t.slices;
@@ -158,9 +168,10 @@ export function createStrip(root, track, content, { onOpen, onFrame } = {}) {
       sl.style.width = (sw + .8).toFixed(2) + 'px';   // a hair of overlap hides seams along the arc
       if (k === 0) sl.classList.add('first');
       if (k === SLICES - 1) sl.classList.add('last');
-      sl.style.backgroundImage = url;
-      sl.style.backgroundSize = `${t.w}px 100%`;
-      sl.style.backgroundPosition = `${(-k * sw).toFixed(2)}px 0`;
+      sl.style.setProperty('--si', url);
+      sl.style.setProperty('--ss', `${t.w}px 100%`);
+      sl.style.setProperty('--sp', `${(-k * sw).toFixed(2)}px 0`);
+      markSlice(t, sl, k, sw);
       wrap.appendChild(sl);
       t.slices.push(sl);
     }
@@ -188,6 +199,7 @@ export function createStrip(root, track, content, { onOpen, onFrame } = {}) {
       c.style.width = cw.toFixed(2) + 'px';
       if (k === 0) c.classList.add('first');
       if (k === SLICES - 1) c.classList.add('last');
+      markSlice(t, c, k, sw);   // shows until the poster or a frame is drawn over it
       c._ctx = c.getContext('2d');
       wrap.appendChild(c);
       t.slices.push(c);
@@ -256,6 +268,7 @@ export function createStrip(root, track, content, { onOpen, onFrame } = {}) {
         // videos are drawn into the fold's canvas slices: CORS keeps those canvases clean (Cloudinary sends ACAO *)
         if (m.tagName === 'VIDEO') m.crossOrigin = 'anonymous';
         el.appendChild(m);
+        holdMedia(el, m, it.ratio);   // skeleton with his mark until the cover is ready
         watchVideo(m);
         track.appendChild(el);
         tiles.push({ el, w, o: o + w / 2, i: it.i, shown: true });
