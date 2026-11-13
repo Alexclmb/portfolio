@@ -1,0 +1,138 @@
+{
+  "file": "alex-sitter.glb (= alex/alex-sitter-v5.glb)",
+  "units": "metres, glTF space (+Y up, character faces +Z), origin = seat point (underside of the bottom at sit frame 0)",
+  "fps": 30,
+  "seatY": 0.0,
+  "standGroundY": -0.4228,
+  "standGroundY_note": "lowest stand vertex measured in the re-imported v2 GLB is -0.4211 (Draco quantisation); -0.4228 is the pre-export value",
+  "sitFeetLowestY": -0.4543,
+  "clips": {
+    "sit": {
+      "duration": 8.0,
+      "loop": true
+    },
+    "stand": {
+      "duration": 3.6,
+      "loop": true
+    },
+    "standup": {
+      "duration": 5.9667,
+      "loop": false,
+      "note": "legacy fallback (stands up in place), unused"
+    },
+    "hopdown": {
+      "duration": 1.6,
+      "loop": false,
+      "from": "sit frame 0",
+      "to": "stand frame 0",
+      "takeoff": 0.4,
+      "land": 0.7333,
+      "hipsYAtTakeoff": 0.2776,
+      "hipsYAtLand": 0.522,
+      "airHipsVelocity": [
+        0.32,
+        0.733,
+        0.96
+      ],
+      "note": "baked hip motion is exactly linear (constant velocity) between takeoff and land; feet planted from land to end (drift < 2 mm); page adds its extra drop between takeoff and land"
+    },
+    "hopup": {
+      "duration": 1.8,
+      "loop": false,
+      "from": "stand frame 0",
+      "to": "sit frame 0",
+      "takeoff": 0.5,
+      "land": 0.9,
+      "hipsYAtTakeoff": 0.532,
+      "hipsYAtLand": 0.268,
+      "airHipsVelocity": [
+        -0.267,
+        -0.661,
+        -0.925
+      ],
+      "note": "feet planted from 0 to takeoff (drift 0); land = bottom touches the seat; baked hip motion linear between takeoff and land"
+    },
+    "leap": {
+      "duration": 1.5,
+      "loop": false,
+      "from": "sit frame 0",
+      "to": "sit frame 0",
+      "takeoff": 0.3,
+      "land": 0.85,
+      "hipsYAtTakeoff": 0.2676,
+      "hipsYAtLand": 0.2376,
+      "hipsYMax": 0.2676,
+      "hipsYSit": 0.2376,
+      "airHipsVelocity": [
+        0.0,
+        -0.0545,
+        0.0
+      ],
+      "note": "in place: no baked x travel, Hips z (forward) within 1.9 cm of sit; hips stay exactly at sit height while seated (0-0.12 s and from land on), rise 3 cm into takeoff, linear between takeoff and land. Symmetric left/right; page adds lateral travel, arc, yaw/roll and head look."
+    },
+    "walk": {
+      "duration": 1.4,
+      "loop": true,
+      "cycles": 1,
+      "cycleDuration": 1.4,
+      "speed": 0.5718,
+      "strideLength": 0.8005,
+      "contacts": {
+        "left": {
+          "contact": 0.8,
+          "liftoff": 0.4
+        },
+        "right": {
+          "contact": 0.2,
+          "liftoff": 1.1
+        }
+      },
+      "groundY": -0.4228,
+      "hipsX": 0.1067,
+      "hipsForwardZ": 0.42,
+      "note": "in place, faces +Z. Move the root forward (along his facing) at `speed` m/s = `strideLength` per cycle and the planted foot does not slide (stance feet are IK-locked to exactly this speed). Times are within the loop; each foot is planted from contact to liftoff (wrapping). Hips centred on the stand pose (x 0.1067, z 0.42 like stand). t=0 = passing position, left foot in mid-stance."
+    },
+    "walkstart": {
+      "duration": 0.4667,
+      "loop": false,
+      "from": "stand frame 0",
+      "to": "walk t=0",
+      "note": "eased blend with a small forward lean; ramp the root speed from 0 to walk.speed over this clip"
+    },
+    "walkstop": {
+      "duration": 0.5,
+      "loop": false,
+      "from": "walk t=0 (passing, left foot in stance)",
+      "to": "stand frame 0",
+      "note": "start it when the walk loop wraps to t=0; ramp the root speed from walk.speed to 0 over this clip"
+    }
+  },
+  "standOffsetFromSeat": {
+    "hipsForwardZ": 0.42,
+    "hipsSideX": 0.1067,
+    "hipsUpY": 0.3244,
+    "note": "stand frame 0 Hips minus sit frame 0 Hips (sit Hips at y 0.2376, stand Hips at y 0.562); baked into hopdown/hopup/standup"
+  },
+  "seat": {
+    "yMin": -0.0015,
+    "yMax": 0.0024,
+    "xMin": -0.2334,
+    "xMax": 0.2301,
+    "zFront": 0.175,
+    "zBack": 0.0772,
+    "note": "sit loop, all frames: underside of bottom/thighs pressed flat on y=0. yMin = deepest point, yMax = largest gap of any 1 cm x-slice across xMin..xMax. zFront/zBack = depth of the contact patch (glTF +Z forward). The centre of the buttocks between y-depth -0.03 and +0.05 m sits ~12 mm up, hidden behind the thighs."
+  },
+  "hands": {
+    "left": {
+      "x": 0.3145,
+      "y": 0.0004,
+      "z": 0.0409
+    },
+    "right": {
+      "x": -0.2985,
+      "y": 0.0012,
+      "z": 0.0557
+    },
+    "note": "lowest point of each hand (fingertip pads) at sit frame 0, glTF space; planted for the whole sit loop (no change across frames)"
+  }
+}

@@ -255,6 +255,16 @@ html:not(.has-edgeblur) .edge-blur { display: none; }
   pointer-events: none;   /* the module raycasts window clicks itself */
 }
 
+/* 5 · sitter: Alex seated on a strip card (js/sitter.js). The host is a zero-size origin in
+   the middle row; the canvas is moved onto the card's top-centre by transform every frame.
+   Under the windows, the label and the info row; never takes pointer events (his own
+   pixels are hit-tested in JS, so the cards under him stay clickable). */
+#sitter { position: absolute; left: 0; top: 0; width: 0; height: 0; z-index: var(--z-walker); pointer-events: none; }
+.sitter-canvas { position: absolute; left: 0; top: 0; display: block; pointer-events: none; opacity: 0; transition: opacity 220ms var(--ease); will-change: transform, opacity; }
+.sitter-canvas.is-on { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .sitter-canvas { transition: none; } }
+html.sitter-hover .strip, html.sitter-hover .strip * { cursor: pointer; }
+
 /* 3 · the bottom row ---------------------------------------------------------
    Folders on the left (the windows' Dock: above the window layer, so a window
    passes under it as under the Dock's glass), place · clock · theme on the right,

@@ -12,10 +12,13 @@ const BASE_TITLE = 'Alex Colombel — Product Designer';
 const DEBUG = /[?&]wavedebug\b/.test(location.search);
 const MODEL_URL = '/assets/3d/placeholder-walker.glb';
 const WALKER_ENABLED = false;
+const SITTER_URL = '/assets/3d/alex-sitter.glb';   // Alex's own figure, seated on a strip card (js/sitter.js)
+const SITTER_ENABLED = true;
 
 let content = null;
 let strip = null;
 let walker = null;
+let sitter = null;
 
 
 /* ── content ─────────────────────────────────────────────────────────────── */
@@ -314,6 +317,38 @@ function loadWalker(now = false) {
   return p;
 }
 
+/* ── sitter (Alex's own 3D figure on a strip card; optional) ────────────────
+   Loads after first paint at an idle moment so the page never waits for three or the
+   model; he fades in when ready. Any failure leaves no figure and one console line.
+   Not loaded at all for visitors saving data (Save-Data, prefers-reduced-data, 2g). */
+function savingData() {
+  const c = navigator.connection;
+  return !!(c?.saveData || /(^|-)2g$/.test(c?.effectiveType || '') || matchMedia('(prefers-reduced-data: reduce)').matches);
+}
+function loadSitter() {
+  const el = $('sitter');
+  if (!SITTER_ENABLED || !el || savingData()) { if (el) el.hidden = true; return; }
+  const go = async () => {
+    try {
+      const t0 = performance.now();
+      const m = await import('./sitter.js');
+      sitter = await m.createSitter(el, {
+        modelUrl: SITTER_URL, strip: $('strip'), avoid: $('bio'), below: $('dock'),
+        getVelocity: () => strip?.velocity || 0,
+        isDragging: () => $('strip').classList.contains('is-dragging'),
+        // no hold: the carousel keeps moving while he hops (he stands on the page, not the card)
+      });
+      sitter.setPaused(winOpen() || lbOpen());
+      if (DEBUG) { window.__sitter = sitter; console.log(`[wavedebug] sitter ready in ${(performance.now() - t0).toFixed(0)}ms (after idle)`); }
+    } catch (err) {
+      sitter = null;
+      console.info('[sitter] unavailable:', err?.message || err);
+    }
+  };
+  const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(go, { timeout: 2000 }) : setTimeout(go, 300));
+  document.readyState === 'complete' ? idle() : addEventListener('load', idle, { once: true });
+}
+
 /* ── intro: entirely CSS (index.html <head>), from the first paint. Here only:
    any click / key finishes it, the class goes once the morph has landed (so the
    logo ends untransformed in its natural place), and the walker walks in. */
@@ -380,9 +415,9 @@ async function boot() {
   });
 
   if (DEBUG) window.__strip = strip;   // ?wavedebug: __strip.velocity (px/s)
-  const pauseStrip = () => strip.setPaused(winOpen() || lbOpen());
+  const pauseStrip = () => { strip.setPaused(winOpen() || lbOpen()); sitter?.setPaused(winOpen() || lbOpen()); };
   // while the genie runs, the home underneath stops drawing (strip and walker), so every frame goes to the warp
-  const onGenie = on => { strip.freeze(on); try { walker?.setPaused(on); } catch (_) {} };
+  const onGenie = on => { strip.freeze(on); try { walker?.setPaused(on); } catch (_) {} sitter?.setPaused(on || winOpen() || lbOpen()); };
   initWindows({ requestClose, onOpen: pauseStrip, onClose: pauseStrip, onGenie });
   initLightbox({ navigate, onOpen: pauseStrip, onClose: pauseStrip });
 
@@ -413,6 +448,7 @@ async function boot() {
 
   const intro = document.documentElement.classList.contains('intro');
   const walkerReady = loadWalker(intro);
+  loadSitter();
   preloadWaves();
 
   // deep link on load (Netlify _redirects serves index.html for every path);
