@@ -1094,7 +1094,8 @@ export async function createSitter(host, {
     setOnPage(!offScreen);
     // re-seat, the only relocation: his card has been out of view (seated) and the strip calm for 1.2 s,
     // and the card is not coming back by itself (the strip carries cards in from the side it moves away from)
-    if (state === 'sit' && offScreen && !test && !reduced && !relocOK) {
+    // (phones: never; he stays on his one project and is simply out of view when it is)
+    if (state === 'sit' && offScreen && !test && !reduced && !relocOK && !phone) {
       const v = getVelocity(), x = a ? a.x : (tile?.getBoundingClientRect().left ?? 0);
       const coming = (x > innerWidth && v > 20) || (x < 0 && v < -20);
       awaySince = awaySince || now;
