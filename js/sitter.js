@@ -685,7 +685,7 @@ export async function createSitter(host, {
   function textRects() {
     if (textFrame === frameNo && textCache) return textCache;
     textFrame = frameNo; textCache = [];
-    if (!avoid) return textCache;
+    if (!avoid || phone) return textCache;                             // phones: he may pass in front of the info text (it sits behind him)
     const tw = document.createTreeWalker(avoid, NodeFilter.SHOW_TEXT, { acceptNode: (n) => (/\S/.test(n.data) ? 1 : 3) });
     const rg = document.createRange();
     for (let n = tw.nextNode(); n; n = tw.nextNode()) { rg.selectNodeContents(n); for (const q of rg.getClientRects()) if (q.width) textCache.push(q); }
@@ -717,10 +717,11 @@ export async function createSitter(host, {
     for (const el of strip.querySelectorAll('.tile')) {
       if (el.style.visibility === 'hidden') continue;
       const vis = el.classList.contains('is-sliced') ? 1 : visibleShare(el);
-      if (vis < 0.7 || el.offsetWidth / 2 < HAND_M * ppu) continue;       // his hands stay on the card, clear of its corners
+      if (vis < (phone ? 0.5 : 0.7) || el.offsetWidth / 2 < HAND_M * ppu) continue;       // his hands stay on the card, clear of its corners
       const a = seatOn(el, 0);
       if (!placeOK(a)) continue;
-      const s = -Math.abs(a.x - cx);
+      // phones show barely more than one card: take the one coming in, so he rides it across the whole screen
+      const s = phone ? (getVelocity() > 20 ? -a.x : a.x) : -Math.abs(a.x - cx);
       if (s > bs) { bs = s; best = { el, off: 0 }; }
     }
     return best;
