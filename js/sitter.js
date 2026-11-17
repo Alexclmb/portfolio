@@ -473,10 +473,7 @@ export async function createSitter(host, {
   const HOP = !!(timing && A.hopdown && A.hopup);
   // desktop relocation walks along the floor (v5: `walk` clip + its ground speed)
   const WALK = !!(HOP && A.walk && timing.walk);
-  // v6: a real mocap walk (0.637 u/s). At 1.0 it covers ~61 px/s at 1440 (96 px/u), under the strip's ~70 px/s
-  // drift, so it plays 1.2x (~73-77 px/s), the cap; ground speed is scaled the same, so no foot slides
-  const WALK_RATE = 1.2;
-  if (WALK) for (const k of ['walk', 'walkstart', 'walkstop']) if (A[k]) A[k].timeScale = WALK_RATE;
+  if (WALK) for (const k of ['walk', 'walkstart', 'walkstop']) if (A[k]) A[k].timeScale = 1.5;   // = WALK_RATE
   const look = createLook(THREE, { bones, pivot });
   const shadow = createShadow(THREE, { scene, renderer });
   const gl = renderer.getContext();
@@ -799,7 +796,8 @@ export async function createSitter(host, {
   const done = (a) => a.time >= a.getClip().duration - 1e-3;
   /* the trip's card: the valid card nearest the middle (relocation), or nearest to x (after a click) */
   /* on-screen ground speed (px/s) at the depth of his feet */
-  // (the clip plays WALK_RATE× and the ground speed is scaled by exactly the same, so no foot slides)
+  // (a brisk walk: the clip plays WALK_RATE× and the ground speed is scaled by exactly the same, so no foot slides)
+  const WALK_RATE = 1.5;
   const groundPx = () => { const d = camera.position.z; return WALK_RATE * timing.walk.speed * ppu * d / Math.max(1, d - _h.z); };
   let prevWalkT = 0;
   const wrapped = () => current === A.walk && A.walk.time < prevWalkT;   // the walk loop just came round to t = 0 (between steps)
