@@ -1,5 +1,5 @@
 {
-  "file": "alex-sitter.glb (= alex/alex-sitter-v5.glb)",
+  "file": "alex-sitter.glb (= alex/alex-sitter-v6.glb: v5 + mocap walk and idle stand)",
   "units": "metres, glTF space (+Y up, character faces +Z), origin = seat point (underside of the bottom at sit frame 0)",
   "fps": 30,
   "seatY": 0.0,
@@ -12,7 +12,7 @@
       "loop": true
     },
     "stand": {
-      "duration": 3.6,
+      "duration": 4.0333,
       "loop": true
     },
     "standup": {
@@ -75,34 +75,34 @@
       "loop": true,
       "cycles": 1,
       "cycleDuration": 1.4,
-      "speed": 0.5718,
-      "strideLength": 0.8005,
+      "speed": 0.6368,
+      "strideLength": 0.8915,
       "contacts": {
         "left": {
-          "contact": 0.8,
-          "liftoff": 0.4
+          "contact": 1.0333,
+          "liftoff": 0.3667
         },
         "right": {
-          "contact": 0.2,
-          "liftoff": 1.1
+          "contact": 0.3,
+          "liftoff": 1.3
         }
       },
       "groundY": -0.4228,
       "hipsX": 0.1067,
       "hipsForwardZ": 0.42,
-      "note": "in place, faces +Z. Move the root forward (along his facing) at `speed` m/s = `strideLength` per cycle and the planted foot does not slide (stance feet are IK-locked to exactly this speed). Times are within the loop; each foot is planted from contact to liftoff (wrapping). Hips centred on the stand pose (x 0.1067, z 0.42 like stand). t=0 = passing position, left foot in mid-stance."
+      "note": "in place, faces +Z (Casual_Walk mocap, one cycle). Move the root forward (along his facing) at `speed` m/s = `strideLength` per cycle and the planted foot does not slide (floor-contact vertices locked to exactly this speed, residual < 4 mm per cycle). Times are within the loop; each foot is planted from contact to liftoff (wrapping). Hips cycle-mean x 0.1067, z 0.42 like stand. t=0 = left foot in stance, right foot swinging (passing)."
     },
     "walkstart": {
-      "duration": 0.4667,
+      "duration": 0.5,
       "loop": false,
       "from": "stand frame 0",
       "to": "walk t=0",
-      "note": "eased blend with a small forward lean; ramp the root speed from 0 to walk.speed over this clip"
+      "note": "eased blend from stand frame 0 into the last 0.5 s of the walk cycle, ending exactly on walk t=0; ramp the root speed from 0 to walk.speed over this clip"
     },
     "walkstop": {
       "duration": 0.5,
       "loop": false,
-      "from": "walk t=0 (passing, left foot in stance)",
+      "from": "walk t=0 (left foot in stance, right foot swinging)",
       "to": "stand frame 0",
       "note": "start it when the walk loop wraps to t=0; ramp the root speed from walk.speed to 0 over this clip"
     }
@@ -110,8 +110,8 @@
   "standOffsetFromSeat": {
     "hipsForwardZ": 0.42,
     "hipsSideX": 0.1067,
-    "hipsUpY": 0.3244,
-    "note": "stand frame 0 Hips minus sit frame 0 Hips (sit Hips at y 0.2376, stand Hips at y 0.562); baked into hopdown/hopup/standup"
+    "hipsUpY": 0.2597,
+    "note": "stand frame 0 Hips minus sit frame 0 Hips (sit Hips at y 0.2376, stand Hips at y 0.4973 in the v6 idle stance); baked into hopdown/hopup/standup"
   },
   "seat": {
     "yMin": -0.0015,
